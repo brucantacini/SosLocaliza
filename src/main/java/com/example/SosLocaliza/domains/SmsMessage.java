@@ -5,10 +5,9 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-/**
- * Entidade que representa uma mensagem SMS enviada
- * Mapeada para a tabela T_SOS_SMS no banco de dados
- */
+//  Entidade que representa uma mensagem SMS enviada
+//  Mapeada para a tabela T_SOS_SMS no banco de dados
+
 @With
 @Getter
 @Entity
