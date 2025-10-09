@@ -6,10 +6,10 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * Entidade que representa um evento climático de emergência
- * Mapeada para a tabela T_SOS_EVENTO no banco de dados
- */
+
+ //  Entidade que representa um evento climático de emergência
+ //  Mapeada para a tabela T_SOS_EVENTO no banco de dados
+ 
 @With
 @Getter
 @Entity
