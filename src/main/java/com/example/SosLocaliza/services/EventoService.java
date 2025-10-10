@@ -1,6 +1,7 @@
 package com.example.SosLocaliza.services;
 
 import com.example.SosLocaliza.domains.Evento;
+import com.example.SosLocaliza.exceptions.EventoNotFoundException;
 import com.example.SosLocaliza.gateways.EventoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -60,11 +61,13 @@ public class EventoService {
 
     public void desativarEvento(String id) {
         Optional<Evento> eventoOpt = eventoRepository.findById(id);
-        if (eventoOpt.isPresent()) {
-            Evento evento = eventoOpt.get();
-            evento = evento.withAtivo(false);
-            eventoRepository.save(evento);
+        if (eventoOpt.isEmpty()) {
+            throw new EventoNotFoundException("Evento não encontrado com ID: " + id);
         }
+        
+        Evento evento = eventoOpt.get();
+        evento = evento.withAtivo(false);
+        eventoRepository.save(evento);
     }
 
     public Long contarEventosAtivos() {
