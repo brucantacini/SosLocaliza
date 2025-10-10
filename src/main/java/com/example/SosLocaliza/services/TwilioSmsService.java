@@ -2,6 +2,9 @@ package com.example.SosLocaliza.services;
 
 import com.example.SosLocaliza.domains.Evento;
 import com.example.SosLocaliza.domains.SmsMessage;
+import com.example.SosLocaliza.exceptions.SmsException;
+import com.example.SosLocaliza.exceptions.TwilioException;
+import com.example.SosLocaliza.exceptions.ValidationException;
 import com.example.SosLocaliza.gateways.dtos.request.SmsRequestDto;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
@@ -44,10 +47,7 @@ public class TwilioSmsService {
         try {
             // Validação do número de telefone
             if (!isValidPhoneNumber(smsMessage.getNumeroTelefone())) {
-                smsMessage = smsMessage.withEnviadoComSucesso(false)
-                                     .withErro("Número de telefone inválido: " + smsMessage.getNumeroTelefone());
-                log.error("Número de telefone inválido: {}", smsMessage.getNumeroTelefone());
-                return smsService.enviarSms(smsMessage);
+                throw new ValidationException("Número de telefone inválido: " + smsMessage.getNumeroTelefone());
             }
 
             // Preparar mensagem
@@ -67,13 +67,11 @@ public class TwilioSmsService {
             log.info("SMS enviado com sucesso para {}: {}", smsMessage.getNumeroTelefone(), message.getSid());
             
         } catch (ApiException e) {
-            smsMessage = smsMessage.withEnviadoComSucesso(false)
-                                 .withErro("Erro Twilio: " + e.getMessage());
             log.error("Erro ao enviar SMS via Twilio: {}", e.getMessage());
+            throw new TwilioException("Erro ao enviar SMS via Twilio: " + e.getMessage(), e);
         } catch (Exception e) {
-            smsMessage = smsMessage.withEnviadoComSucesso(false)
-                                 .withErro("Erro geral: " + e.getMessage());
             log.error("Erro geral ao enviar SMS: {}", e.getMessage());
+            throw new SmsException("Erro geral ao enviar SMS: " + e.getMessage(), e);
         }
 
         return smsService.enviarSms(smsMessage);
