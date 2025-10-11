@@ -1,0 +1,46 @@
+spring:
+  config:
+    activate:
+      on-profile: oracle-fiap
+  
+  datasource:
+    url: jdbc:oracle:thin:@oracle.fiap.com.br:1521:ORCL
+    driver-class-name: oracle.jdbc.OracleDriver
+    username: rm560242
+    password: 271005
+  
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.OracleDialect
+        format_sql: true
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+    open-in-view: false
+
+# Configurações do Twilio
+twilio:
+  account-sid: ${TWILIO_ACCOUNT_SID:your_account_sid}
+  auth-token: ${TWILIO_AUTH_TOKEN:your_auth_token}
+  trial-number: ${TWILIO_TRIAL_NUMBER:your_trial_number}
+
+# Configurações do servidor
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+# Configurações de logging para Oracle FIAP
+logging:
+  level:
+    com.example.SosLocaliza: INFO
+    org.springframework.web: INFO
+    org.hibernate.SQL: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: WARN
+    com.twilio: INFO
+    oracle.jdbc: WARN
