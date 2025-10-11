@@ -26,7 +26,7 @@ public class SmsService {
         return smsRepository.save(smsMessage);
     }
 
-    public SmsMessage enviarSmsComEvento(SmsMessage smsMessage, String idEvento) {
+    public SmsMessage enviarSmsComEvento(SmsMessage smsMessage, Long idEvento) {
         Optional<Evento> eventoOpt = eventoRepository.findById(idEvento);
         if (eventoOpt.isPresent()) {
             Evento evento = eventoOpt.get();
@@ -55,7 +55,7 @@ public class SmsService {
         return smsRepository.findByDdd(ddd);
     }
 
-    public List<SmsMessage> buscarSmsPorEvento(String idEvento) {
+    public List<SmsMessage> buscarSmsPorEvento(Long idEvento) {
         return smsRepository.findByEventoIdEvento(idEvento);
     }
 
@@ -87,11 +87,11 @@ public class SmsService {
         return smsRepository.findUltimoSmsPorNumero(numero);
     }
 
-    public List<SmsMessage> buscarSmsPorEventoEStatus(String idEvento, Boolean sucesso) {
+    public List<SmsMessage> buscarSmsPorEventoEStatus(Long idEvento, Boolean sucesso) {
         return smsRepository.findByEventoAndStatus(idEvento, sucesso);
     }
 
-    public SmsMessage marcarSmsComoEnviado(String idSms) {
+    public SmsMessage marcarSmsComoEnviado(Long idSms) {
         Optional<SmsMessage> smsOpt = smsRepository.findById(idSms);
         if (smsOpt.isPresent()) {
             SmsMessage sms = smsOpt.get();
@@ -101,7 +101,7 @@ public class SmsService {
         return null;
     }
 
-    public SmsMessage marcarSmsComoErro(String idSms, String erro) {
+    public SmsMessage marcarSmsComoErro(Long idSms, String erro) {
         Optional<SmsMessage> smsOpt = smsRepository.findById(idSms);
         if (smsOpt.isPresent()) {
             SmsMessage sms = smsOpt.get();

@@ -77,7 +77,7 @@ public class TwilioSmsService {
         return smsService.enviarSms(smsMessage);
     }
 
-    public SmsMessage enviarSmsComEvento(SmsRequestDto smsRequestDto, String idEvento) {
+    public SmsMessage enviarSmsComEvento(SmsRequestDto smsRequestDto, Long idEvento) {
         inicializarTwilio();
         
         SmsMessage smsMessage = smsRequestDto.toSmsMessage();

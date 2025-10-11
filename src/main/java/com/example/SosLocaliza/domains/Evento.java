@@ -21,9 +21,9 @@ import java.util.List;
 public class Evento {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_EVENTO")
-    private String idEvento;
+    private Long idEvento;
 
     @Column(name = "NOME_EVENTO", nullable = false, length = 100)
     private String nomeEvento;

@@ -18,7 +18,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -90,7 +89,7 @@ public class EventoController {
     }
 
     @GetMapping("/getById/{id}")
-    public ResponseEntity<EventoResponseDto> buscarEventoPorId(@PathVariable String id) {
+    public ResponseEntity<EventoResponseDto> buscarEventoPorId(@PathVariable Long id) {
         Optional<Evento> eventoOpt = eventoService.buscarEventoPorId(id);
         
         if (eventoOpt.isPresent()) {
@@ -103,7 +102,7 @@ public class EventoController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<EventoResponseDto> atualizarEvento(
-            @PathVariable String id,
+            @PathVariable Long id,
             @RequestBody @Valid EventoUpdateDto eventoDto
     ) {
         Optional<Evento> eventoExistenteOpt = eventoService.buscarEventoPorId(id);
@@ -120,13 +119,13 @@ public class EventoController {
 
     @DeleteMapping("/delete/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletarEvento(@PathVariable String id) {
+    public void deletarEvento(@PathVariable Long id) {
         eventoService.deletarEvento(id);
     }
 
     @PatchMapping("/desativar/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void desativarEvento(@PathVariable String id) {
+    public void desativarEvento(@PathVariable Long id) {
         eventoService.desativarEvento(id);
     }
 
