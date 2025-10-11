@@ -28,6 +28,16 @@ twilio:
   auth-token: ${TWILIO_AUTH_TOKEN:your_auth_token}
   trial-number: ${TWILIO_TRIAL_NUMBER:your_trial_number}
 
+# Configurações do Swagger/OpenAPI
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha
+    tryItOutEnabled: true
+
 # Configurações do Oracle (para produção)
 spring:
   profiles:

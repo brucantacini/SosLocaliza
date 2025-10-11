@@ -5,6 +5,13 @@ import com.example.SosLocaliza.gateways.dtos.request.EventoRequestDto;
 import com.example.SosLocaliza.gateways.dtos.request.EventoUpdateDto;
 import com.example.SosLocaliza.gateways.dtos.response.EventoResponseDto;
 import com.example.SosLocaliza.services.EventoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,24 +29,43 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/eventos")
 @RequiredArgsConstructor
+@Tag(name = "Eventos", description = "API para gerenciamento de eventos climáticos de emergência")
 public class EventoController {
 
     private final EventoService eventoService;
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public EventoResponseDto criarEvento(@RequestBody @Valid EventoRequestDto eventoDto) {
+    @Operation(summary = "Criar novo evento", description = "Cria um novo evento climático de emergência")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Evento criado com sucesso",
+                    content = @Content(schema = @Schema(implementation = EventoResponseDto.class))),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos")
+    })
+    public EventoResponseDto criarEvento(
+            @Parameter(description = "Dados do evento a ser criado")
+            @RequestBody @Valid EventoRequestDto eventoDto) {
         Evento evento = eventoDto.toEvento();
         Evento eventoCriado = eventoService.criarEvento(evento);
         return EventoResponseDto.fromEvento(eventoCriado);
     }
 
     @GetMapping("/getAll")
+    @Operation(summary = "Listar eventos", description = "Lista todos os eventos com paginação e filtros")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de eventos retornada com sucesso"),
+            @ApiResponse(responseCode = "204", description = "Nenhum evento encontrado")
+    })
     public ResponseEntity<?> listarEventos(
+            @Parameter(description = "Número da página (padrão: 0)")
             @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Direção da ordenação (ASC/DESC)")
             @RequestParam(defaultValue = "ASC") Sort.Direction direction,
+            @Parameter(description = "Tamanho da página (padrão: 10)")
             @RequestParam(defaultValue = "10") int size,
+            @Parameter(description = "Filtro por nome do evento")
             @RequestParam(required = false) String nome,
+            @Parameter(description = "Mostrar apenas eventos ativos")
             @RequestParam(defaultValue = "true") boolean apenasAtivos
     ) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "dataCriacao"));
