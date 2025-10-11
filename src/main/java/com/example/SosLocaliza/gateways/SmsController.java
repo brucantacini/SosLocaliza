@@ -8,6 +8,7 @@ import com.example.SosLocaliza.services.TwilioSmsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -50,9 +51,7 @@ public class SmsController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) Boolean sucesso
     ) {
-        Pageable pageable = Pageable.ofSize(size)
-                .withPage(page)
-                .withSort(Sort.by(direction, "dataEnvio"));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "dataEnvio"));
 
         Page<SmsMessage> smsPage;
         

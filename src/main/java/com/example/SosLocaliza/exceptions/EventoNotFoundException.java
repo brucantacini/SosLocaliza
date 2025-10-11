@@ -21,3 +21,5 @@ public class EventoNotFoundException extends RuntimeException {
         this.errorCode = "EVENTO_NOT_FOUND";
     }
 }
+
+

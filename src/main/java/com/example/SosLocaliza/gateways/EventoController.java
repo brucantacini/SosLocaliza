@@ -8,6 +8,7 @@ import com.example.SosLocaliza.services.EventoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -41,9 +42,7 @@ public class EventoController {
             @RequestParam(required = false) String nome,
             @RequestParam(defaultValue = "true") boolean apenasAtivos
     ) {
-        Pageable pageable = Pageable.ofSize(size)
-                .withPage(page)
-                .withSort(Sort.by(direction, "dataCriacao"));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "dataCriacao"));
 
         Page<Evento> eventos;
         
