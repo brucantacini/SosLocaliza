@@ -5,6 +5,13 @@ import com.example.SosLocaliza.gateways.dtos.request.SmsRequestDto;
 import com.example.SosLocaliza.gateways.dtos.response.SmsResponseDto;
 import com.example.SosLocaliza.services.SmsService;
 import com.example.SosLocaliza.services.TwilioSmsService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,6 +29,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/sms")
 @RequiredArgsConstructor
+@Tag(name = "SMS", description = "API para envio e gerenciamento de mensagens SMS de emergência")
 public class SmsController {
 
     private final SmsService smsService;
@@ -29,7 +37,16 @@ public class SmsController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public SmsResponseDto enviarSms(@RequestBody @Valid SmsRequestDto smsRequestDto) {
+    @Operation(summary = "Enviar SMS", description = "Envia uma mensagem SMS via Twilio")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "SMS enviado com sucesso",
+                    content = @Content(schema = @Schema(implementation = SmsResponseDto.class))),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+            @ApiResponse(responseCode = "503", description = "Erro no serviço Twilio")
+    })
+    public SmsResponseDto enviarSms(
+            @Parameter(description = "Dados do SMS a ser enviado")
+            @RequestBody @Valid SmsRequestDto smsRequestDto) {
         SmsMessage smsEnviado = twilioSmsService.enviarSmsViaTwilio(smsRequestDto);
         return SmsResponseDto.fromSmsMessage(smsEnviado);
     }
