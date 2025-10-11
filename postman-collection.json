@@ -1,0 +1,380 @@
+{
+  "info": {
+    "name": "SOS Localiza API Tests",
+    "description": "Coleção de testes para a API SOS Localiza - Sistema de Emergência Climática",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Eventos",
+      "item": [
+        {
+          "name": "Criar Evento",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nomeEvento\": \"Enchente na Região Sul\",\n  \"descricaoEvento\": \"Alagamento severo em várias ruas da região\",\n  \"causas\": \"Chuva intensa e sistema de drenagem inadequado\",\n  \"alertas\": \"Nível do rio subindo rapidamente\",\n  \"acoesAntes\": \"Evacuar áreas de risco\",\n  \"acoesDurante\": \"Não atravessar ruas alagadas\",\n  \"acoesDepois\": \"Verificar danos estruturais\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/eventos/add",
+              "host": ["{{base_url}}"],
+              "path": ["eventos", "add"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar Todos Eventos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/eventos/getAll?page=0&size=10&direction=ASC",
+              "host": ["{{base_url}}"],
+              "path": ["eventos", "getAll"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                },
+                {
+                  "key": "direction",
+                  "value": "ASC"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar Evento por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/eventos/getById/{{evento_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["eventos", "getById", "{{evento_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar Evento",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nomeEvento\": \"Enchente na Região Sul - ATUALIZADO\",\n  \"descricaoEvento\": \"Alagamento severo em várias ruas da região - SITUAÇÃO CRÍTICA\",\n  \"causas\": \"Chuva intensa e sistema de drenagem inadequado\",\n  \"alertas\": \"Nível do rio subindo rapidamente - ALERTA MÁXIMO\",\n  \"acoesAntes\": \"Evacuar áreas de risco IMEDIATAMENTE\",\n  \"acoesDurante\": \"NÃO atravessar ruas alagadas\",\n  \"acoesDepois\": \"Verificar danos estruturais\",\n  \"ativo\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/eventos/update/{{evento_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["eventos", "update", "{{evento_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Desativar Evento",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/eventos/desativar/{{evento_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["eventos", "desativar", "{{evento_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar Eventos por Nome",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/eventos/buscarPorNome?nome=enchente",
+              "host": ["{{base_url}}"],
+              "path": ["eventos", "buscarPorNome"],
+              "query": [
+                {
+                  "key": "nome",
+                  "value": "enchente"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obter Estatísticas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/eventos/estatisticas",
+              "host": ["{{base_url}}"],
+              "path": ["eventos", "estatisticas"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "SMS",
+      "item": [
+        {
+          "name": "Enviar SMS",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"remetente\": \"Defesa Civil\",\n  \"ddd\": \"11\",\n  \"numero\": \"999999999\",\n  \"mensagem\": \"ALERTA: Enchente na região. Evacue imediatamente!\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/sms",
+              "host": ["{{base_url}}"],
+              "path": ["sms"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Enviar SMS de Emergência",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"remetente\": \"Sistema SOS Localiza\",\n  \"ddd\": \"11\",\n  \"numero\": \"888888888\",\n  \"mensagem\": \"Situação crítica detectada! Evacue imediatamente!\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/sms/emergencia/{{evento_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["sms", "emergencia", "{{evento_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar Todos SMS",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/sms/getAll?page=0&size=10&direction=DESC",
+              "host": ["{{base_url}}"],
+              "path": ["sms", "getAll"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                },
+                {
+                  "key": "direction",
+                  "value": "DESC"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar SMS por Número",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/sms/buscarPorNumero?numeroTelefone=+5511999999999",
+              "host": ["{{base_url}}"],
+              "path": ["sms", "buscarPorNumero"],
+              "query": [
+                {
+                  "key": "numeroTelefone",
+                  "value": "+5511999999999"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar SMS por DDD",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/sms/buscarPorDdd?ddd=11",
+              "host": ["{{base_url}}"],
+              "path": ["sms", "buscarPorDdd"],
+              "query": [
+                {
+                  "key": "ddd",
+                  "value": "11"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar SMS por Evento",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/sms/buscarPorEvento/{{evento_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["sms", "buscarPorEvento", "{{evento_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar SMS por Período",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/sms/buscarPorPeriodo?dataInicio=2024-01-01T00:00:00&dataFim=2024-12-31T23:59:59",
+              "host": ["{{base_url}}"],
+              "path": ["sms", "buscarPorPeriodo"],
+              "query": [
+                {
+                  "key": "dataInicio",
+                  "value": "2024-01-01T00:00:00"
+                },
+                {
+                  "key": "dataFim",
+                  "value": "2024-12-31T23:59:59"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obter Estatísticas SMS",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/sms/estatisticas",
+              "host": ["{{base_url}}"],
+              "path": ["sms", "estatisticas"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Testes de Validação",
+      "item": [
+        {
+          "name": "Criar Evento - Validação Nome Obrigatório",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descricaoEvento\": \"Teste sem nome\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/eventos/add",
+              "host": ["{{base_url}}"],
+              "path": ["eventos", "add"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Enviar SMS - Validação DDD Inválido",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"remetente\": \"Teste\",\n  \"ddd\": \"123\",\n  \"numero\": \"999999999\",\n  \"mensagem\": \"Teste\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/sms",
+              "host": ["{{base_url}}"],
+              "path": ["sms"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar Evento - ID Inexistente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/eventos/getById/00000000-0000-0000-0000-000000000000",
+              "host": ["{{base_url}}"],
+              "path": ["eventos", "getById", "00000000-0000-0000-0000-000000000000"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080/api",
+      "type": "string"
+    },
+    {
+      "key": "evento_id",
+      "value": "substitua-pelo-id-do-evento-criado",
+      "type": "string"
+    }
+  ]
+}
