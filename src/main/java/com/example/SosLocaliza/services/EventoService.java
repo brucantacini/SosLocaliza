@@ -27,7 +27,7 @@ public class EventoService {
         return eventoRepository.save(evento);
     }
 
-    public Optional<Evento> buscarEventoPorId(String id) {
+    public Optional<Evento> buscarEventoPorId(Long id) {
         return eventoRepository.findById(id);
     }
 
@@ -55,11 +55,11 @@ public class EventoService {
         return eventoRepository.findByNomeEventoContainingIgnoreCase(nomeEvento, pageable);
     }
 
-    public void deletarEvento(String id) {
+    public void deletarEvento(Long id) {
         eventoRepository.deleteById(id);
     }
 
-    public void desativarEvento(String id) {
+    public void desativarEvento(Long id) {
         Optional<Evento> eventoOpt = eventoRepository.findById(id);
         if (eventoOpt.isEmpty()) {
             throw new EventoNotFoundException("Evento não encontrado com ID: " + id);

@@ -4,7 +4,7 @@ import com.example.SosLocaliza.domains.Evento;
 import java.time.LocalDateTime;
 
 public record EventoResponseDto(
-        String idEvento,
+        Long idEvento,
         String nomeEvento,
         String descricaoEvento,
         String causas,

@@ -54,7 +54,7 @@ public class SmsController {
     @PostMapping("/emergencia/{idEvento}")
     @ResponseStatus(HttpStatus.CREATED)
     public SmsResponseDto enviarSmsEmergencia(
-            @PathVariable String idEvento,
+            @PathVariable Long idEvento,
             @RequestBody @Valid SmsRequestDto smsRequestDto
     ) {
         SmsMessage smsEnviado = twilioSmsService.enviarSmsComEvento(smsRequestDto, idEvento);
@@ -116,7 +116,7 @@ public class SmsController {
     }
 
     @GetMapping("/buscarPorEvento/{idEvento}")
-    public ResponseEntity<List<SmsResponseDto>> buscarSmsPorEvento(@PathVariable String idEvento) {
+    public ResponseEntity<List<SmsResponseDto>> buscarSmsPorEvento(@PathVariable Long idEvento) {
         List<SmsMessage> smsList = smsService.buscarSmsPorEvento(idEvento);
         
         if (smsList.isEmpty()) {
@@ -171,13 +171,13 @@ public class SmsController {
 
     @PatchMapping("/marcarSucesso/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void marcarSmsComoSucesso(@PathVariable String id) {
+    public void marcarSmsComoSucesso(@PathVariable Long id) {
         smsService.marcarSmsComoEnviado(id);
     }
 
     @PatchMapping("/marcarErro/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void marcarSmsComoErro(@PathVariable String id, @RequestParam String erro) {
+    public void marcarSmsComoErro(@PathVariable Long id, @RequestParam String erro) {
         smsService.marcarSmsComoErro(id, erro);
     }
 

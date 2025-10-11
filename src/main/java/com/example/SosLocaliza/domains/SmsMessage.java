@@ -19,9 +19,9 @@ import java.time.LocalDateTime;
 public class SmsMessage {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_SMS")
-    private String idSms;
+    private Long idSms;
 
     @Column(name = "REMETENTE", nullable = false, length = 100)
     private String remetente;

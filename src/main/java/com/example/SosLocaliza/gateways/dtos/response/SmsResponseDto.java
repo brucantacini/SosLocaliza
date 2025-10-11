@@ -4,7 +4,7 @@ import com.example.SosLocaliza.domains.SmsMessage;
 import java.time.LocalDateTime;
 
 public record SmsResponseDto(
-        String idSms,
+        Long idSms,
         String remetente,
         String numeroTelefone,
         String ddd,
@@ -13,7 +13,7 @@ public record SmsResponseDto(
         LocalDateTime dataEnvio,
         Boolean enviadoComSucesso,
         String erro,
-        String idEvento
+        Long idEvento
 ) {
     public static SmsResponseDto fromSmsMessage(SmsMessage smsMessage) {
         return new SmsResponseDto(

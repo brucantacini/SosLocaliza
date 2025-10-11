@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface EventoRepository extends JpaRepository<Evento, String> {
+public interface EventoRepository extends JpaRepository<Evento, Long> {
 
      // Busca eventos por nome 
     List<Evento> findByNomeEventoContainingIgnoreCase(String nomeEvento);
@@ -29,7 +29,7 @@ public interface EventoRepository extends JpaRepository<Evento, String> {
 
     // Busca evento por ID e nome
     @Query(value = "SELECT * FROM T_SOS_EVENTO e WHERE e.ID_EVENTO = :id AND e.NOME_EVENTO = :nome", nativeQuery = true)
-    Optional<Evento> findByIdAndNomeEvento(@Param("id") String id, @Param("nome") String nomeEvento);
+    Optional<Evento> findByIdAndNomeEvento(@Param("id") Long id, @Param("nome") String nomeEvento);
 
     // Busca eventos por descrição
     @Query("SELECT e FROM Evento e WHERE e.descricaoEvento LIKE %:descricao% AND e.ativo = true")

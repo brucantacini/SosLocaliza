@@ -32,7 +32,7 @@ public class EventoUpdateDto {
 
     private Boolean ativo;
 
-    public Evento toEvento(String idEvento) {
+    public Evento toEvento(Long idEvento) {
         return Evento.builder()
                 .idEvento(idEvento)
                 .nomeEvento(this.nomeEvento)

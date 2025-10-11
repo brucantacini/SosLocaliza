@@ -14,7 +14,7 @@ import java.util.Optional;
     // Repositório para operações com a entidade SmsMessage
     // Seguindo padrões do Spring Data JPA
 
-public interface SmsRepository extends JpaRepository<SmsMessage, String> {
+public interface SmsRepository extends JpaRepository<SmsMessage, Long> {
 
     // Busca SMS por número de telefone
     List<SmsMessage> findByNumeroTelefone(String numeroTelefone);
@@ -29,7 +29,7 @@ public interface SmsRepository extends JpaRepository<SmsMessage, String> {
     List<SmsMessage> findByEnviadoComSucessoFalse();
 
 // Busca SMS por evento relacionado
-    List<SmsMessage> findByEventoIdEvento(String idEvento);
+    List<SmsMessage> findByEventoIdEvento(Long idEvento);
 
     // Busca SMS por DDD
     List<SmsMessage> findByDdd(String ddd);
@@ -67,7 +67,7 @@ public interface SmsRepository extends JpaRepository<SmsMessage, String> {
 
     // Busca SMS por evento e status
     @Query("SELECT s FROM SmsMessage s WHERE s.evento.idEvento = :idEvento AND s.enviadoComSucesso = :sucesso")
-    List<SmsMessage> findByEventoAndStatus(@Param("idEvento") String idEvento, @Param("sucesso") Boolean sucesso);
+    List<SmsMessage> findByEventoAndStatus(@Param("idEvento") Long idEvento, @Param("sucesso") Boolean sucesso);
 
     // Busca último SMS enviado para um número
     @Query("SELECT s FROM SmsMessage s WHERE s.numeroTelefone = :numero ORDER BY s.dataEnvio DESC")
