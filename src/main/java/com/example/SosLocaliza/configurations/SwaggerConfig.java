@@ -1,18 +1,20 @@
 package com.example.SosLocaliza.configurations;
 
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Contact;
-import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.info.License;
-import io.swagger.v3.oas.models.servers.Server;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+// SwaggerConfig temporariamente desabilitado - dependência removida
+// import io.swagger.v3.oas.models.OpenAPI;
+// import io.swagger.v3.oas.models.info.Contact;
+// import io.swagger.v3.oas.models.info.Info;
+// import io.swagger.v3.oas.models.info.License;
+// import io.swagger.v3.oas.models.servers.Server;
+// import org.springframework.context.annotation.Bean;
+// import org.springframework.context.annotation.Configuration;
+// import java.util.List;
 
-import java.util.List;
-
-@Configuration
+// @Configuration
 public class SwaggerConfig {
 
+    // Configuração temporariamente desabilitada
+    /*
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
@@ -36,5 +38,6 @@ public class SwaggerConfig {
                                 .description("Servidor de Produção")
                 ));
     }
+    */
 }
 
