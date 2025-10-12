@@ -34,18 +34,11 @@ public interface SmsRepository extends JpaRepository<SmsMessage, Long> {
     // Busca SMS por DDD
     List<SmsMessage> findByDdd(String ddd);
 
-    // Busca SMS por número
-    List<SmsMessage> findByNumero(String numero);
-
     // Busca SMS com paginação
     Page<SmsMessage> findAll(Pageable pageable);
 
     // Busca SMS enviados com sucesso com paginação
     Page<SmsMessage> findByEnviadoComSucessoTrue(Pageable pageable);
-
-    // Busca SMS por número completo
-    @Query(value = "SELECT * FROM T_SOS_SMS s WHERE s.DDD = :ddd AND s.NUMERO = :numero", nativeQuery = true)
-    List<SmsMessage> findByDddAndNumero(@Param("ddd") String ddd, @Param("numero") String numero);
 
     // Busca SMS por período de envio
     @Query("SELECT s FROM SmsMessage s WHERE s.dataEnvio BETWEEN :dataInicio AND :dataFim ORDER BY s.dataEnvio DESC")

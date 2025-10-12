@@ -83,8 +83,8 @@ public class SmsService {
         return smsRepository.countSmsComErro();
     }
 
-    public Optional<SmsMessage> buscarUltimoSmsPorNumero(String numero) {
-        return smsRepository.findUltimoSmsPorNumero(numero);
+    public Optional<SmsMessage> buscarUltimoSmsPorNumero(String numeroTelefone) {
+        return smsRepository.findUltimoSmsPorNumero(numeroTelefone);
     }
 
     public List<SmsMessage> buscarSmsPorEventoEStatus(Long idEvento, Boolean sucesso) {

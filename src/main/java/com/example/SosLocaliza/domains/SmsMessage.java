@@ -45,9 +45,6 @@ public class SmsMessage {
     @Column(name = "DDD", length = 3)
     private String ddd;
 
-    @Column(name = "NUMERO", length = 10)
-    private String numero;
-
     // Relacionamento com o evento relacionado
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_EVENTO")
