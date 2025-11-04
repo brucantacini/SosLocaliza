@@ -1,36 +1,42 @@
 package com.example.SosLocaliza.gateways.dtos.response;
 
 import com.example.SosLocaliza.domains.Evento;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
-public record EventoResponseDto(
-        Long idEvento,
-        String nomeEvento,
-        String descricaoEvento,
-        String causas,
-        String alertas,
-        String acoesAntes,
-        String acoesDurante,
-        String acoesDepois,
-        LocalDateTime dataCriacao,
-        LocalDateTime dataAtualizacao,
-        Boolean ativo
-) {
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public class EventoResponseDto extends BaseResponseDto<EventoResponseDto> {
+    
+    private Long idEvento;
+    private String nomeEvento;
+    private String descricaoEvento;
+    private String causas;
+    private String alertas;
+    private String acoesAntes;
+    private String acoesDurante;
+    private String acoesDepois;
+    private LocalDateTime dataCriacao;
+    private LocalDateTime dataAtualizacao;
+    private Boolean ativo;
+
     public static EventoResponseDto fromEvento(Evento evento) {
-        return new EventoResponseDto(
-                evento.getIdEvento(),
-                evento.getNomeEvento(),
-                evento.getDescricaoEvento(),
-                evento.getCausas(),
-                evento.getAlertas(),
-                evento.getAcoesAntes(),
-                evento.getAcoesDurante(),
-                evento.getAcoesDepois(),
-                evento.getDataCriacao(),
-                evento.getDataAtualizacao(),
-                evento.getAtivo()
-        );
+        EventoResponseDto dto = new EventoResponseDto();
+        dto.idEvento = evento.getIdEvento();
+        dto.nomeEvento = evento.getNomeEvento();
+        dto.descricaoEvento = evento.getDescricaoEvento();
+        dto.causas = evento.getCausas();
+        dto.alertas = evento.getAlertas();
+        dto.acoesAntes = evento.getAcoesAntes();
+        dto.acoesDurante = evento.getAcoesDurante();
+        dto.acoesDepois = evento.getAcoesDepois();
+        dto.dataCriacao = evento.getDataCriacao();
+        dto.dataAtualizacao = evento.getDataAtualizacao();
+        dto.ativo = evento.getAtivo();
+        return dto;
     }
 }
-
-
