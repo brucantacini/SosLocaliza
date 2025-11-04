@@ -1,0 +1,15 @@
+# ⚠️ EXEMPLO DE CONFIGURAÇÃO - NÃO USE CREDENCIAIS REAIS AQUI!
+# Copie este arquivo e renomeie para application-local.yml
+
+spring:
+  config:
+    activate:
+      on-profile: local
+
+# Configurações do Twilio
+twilio:
+  account-sid: ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  auth-token: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  trial-number: +12176248670
+  enabled: true
+
