@@ -49,7 +49,9 @@ public class SmsController {
             // @Parameter(description = "Dados do SMS a ser enviado")
             @RequestBody @Valid SmsRequestDto smsRequestDto) {
         SmsMessage smsEnviado = twilioSmsService.enviarSmsViaTwilio(smsRequestDto);
-        return SmsResponseDto.fromSmsMessage(smsEnviado);
+        SmsResponseDto response = SmsResponseDto.fromSmsMessage(smsEnviado);
+        HateoasLinkBuilder.adicionarLinksSms(response);
+        return response;
     }
 
     @PostMapping("/emergencia/{idEvento}")
@@ -59,7 +61,9 @@ public class SmsController {
             @RequestBody @Valid SmsRequestDto smsRequestDto
     ) {
         SmsMessage smsEnviado = twilioSmsService.enviarSmsComEvento(smsRequestDto, idEvento);
-        return SmsResponseDto.fromSmsMessage(smsEnviado);
+        SmsResponseDto response = SmsResponseDto.fromSmsMessage(smsEnviado);
+        HateoasLinkBuilder.adicionarLinksSms(response);
+        return response;
     }
 
     @GetMapping("/getAll")
@@ -79,7 +83,11 @@ public class SmsController {
             smsPage = smsService.listarSmsComPaginacao(pageable);
         }
 
-        Page<SmsResponseDto> smsResponse = smsPage.map(SmsResponseDto::fromSmsMessage);
+        Page<SmsResponseDto> smsResponse = smsPage.map(sms -> {
+            SmsResponseDto dto = SmsResponseDto.fromSmsMessage(sms);
+            HateoasLinkBuilder.adicionarLinksSms(dto);
+            return dto;
+        });
 
         if (smsPage.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -96,7 +104,11 @@ public class SmsController {
             return ResponseEntity.noContent().build();
         } else {
             List<SmsResponseDto> response = smsList.stream()
-                    .map(SmsResponseDto::fromSmsMessage)
+                    .map(sms -> {
+                        SmsResponseDto dto = SmsResponseDto.fromSmsMessage(sms);
+                        HateoasLinkBuilder.adicionarLinksSms(dto);
+                        return dto;
+                    })
                     .toList();
             return ResponseEntity.ok(response);
         }
@@ -110,7 +122,11 @@ public class SmsController {
             return ResponseEntity.noContent().build();
         } else {
             List<SmsResponseDto> response = smsList.stream()
-                    .map(SmsResponseDto::fromSmsMessage)
+                    .map(sms -> {
+                        SmsResponseDto dto = SmsResponseDto.fromSmsMessage(sms);
+                        HateoasLinkBuilder.adicionarLinksSms(dto);
+                        return dto;
+                    })
                     .toList();
             return ResponseEntity.ok(response);
         }
@@ -124,7 +140,11 @@ public class SmsController {
             return ResponseEntity.noContent().build();
         } else {
             List<SmsResponseDto> response = smsList.stream()
-                    .map(SmsResponseDto::fromSmsMessage)
+                    .map(sms -> {
+                        SmsResponseDto dto = SmsResponseDto.fromSmsMessage(sms);
+                        HateoasLinkBuilder.adicionarLinksSms(dto);
+                        return dto;
+                    })
                     .toList();
             return ResponseEntity.ok(response);
         }
@@ -144,7 +164,11 @@ public class SmsController {
             return ResponseEntity.noContent().build();
         } else {
             List<SmsResponseDto> response = smsList.stream()
-                    .map(SmsResponseDto::fromSmsMessage)
+                    .map(sms -> {
+                        SmsResponseDto dto = SmsResponseDto.fromSmsMessage(sms);
+                        HateoasLinkBuilder.adicionarLinksSms(dto);
+                        return dto;
+                    })
                     .toList();
             return ResponseEntity.ok(response);
         }
@@ -156,6 +180,7 @@ public class SmsController {
         
         if (smsOpt.isPresent()) {
             SmsResponseDto response = SmsResponseDto.fromSmsMessage(smsOpt.get());
+            HateoasLinkBuilder.adicionarLinksSms(response);
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.notFound().build();
