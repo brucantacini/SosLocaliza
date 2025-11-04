@@ -82,7 +82,11 @@ public class EventoController {
             eventos = eventoService.listarEventosComPaginacao(pageable);
         }
 
-        Page<EventoResponseDto> eventosResponse = eventos.map(EventoResponseDto::fromEvento);
+        Page<EventoResponseDto> eventosResponse = eventos.map(evento -> {
+            EventoResponseDto dto = EventoResponseDto.fromEvento(evento);
+            HateoasLinkBuilder.adicionarLinksEvento(dto);
+            return dto;
+        });
 
         if (eventos.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -97,6 +101,7 @@ public class EventoController {
         
         if (eventoOpt.isPresent()) {
             EventoResponseDto response = EventoResponseDto.fromEvento(eventoOpt.get());
+            HateoasLinkBuilder.adicionarLinksEvento(response);  
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.notFound().build();
@@ -114,6 +119,7 @@ public class EventoController {
             Evento eventoAtualizado = eventoDto.toEvento(id);
             Evento eventoSalvo = eventoService.atualizarEvento(eventoAtualizado);
             EventoResponseDto response = EventoResponseDto.fromEvento(eventoSalvo);
+            HateoasLinkBuilder.adicionarLinksEvento(response);
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.notFound().build();
@@ -140,7 +146,11 @@ public class EventoController {
             return ResponseEntity.noContent().build();
         } else {
             List<EventoResponseDto> response = eventos.stream()
-                    .map(EventoResponseDto::fromEvento)
+                    .map(evento -> {
+                        EventoResponseDto dto = EventoResponseDto.fromEvento(evento);
+                        HateoasLinkBuilder.adicionarLinksEvento(dto);
+                        return dto;
+                    })
                     .toList();
             return ResponseEntity.ok(response);
         }
@@ -154,7 +164,11 @@ public class EventoController {
             return ResponseEntity.noContent().build();
         } else {
             List<EventoResponseDto> response = eventos.stream()
-                    .map(EventoResponseDto::fromEvento)
+                    .map(evento -> {
+                        EventoResponseDto dto = EventoResponseDto.fromEvento(evento);
+                        HateoasLinkBuilder.adicionarLinksEvento(dto);
+                        return dto;
+                    })
                     .toList();
             return ResponseEntity.ok(response);
         }
