@@ -47,7 +47,9 @@ public class EventoController {
             @RequestBody @Valid EventoRequestDto eventoDto) {
         Evento evento = eventoDto.toEvento();
         Evento eventoCriado = eventoService.criarEvento(evento);
-        return EventoResponseDto.fromEvento(eventoCriado);
+        EventoResponseDto response = EventoResponseDto.fromEvento(eventoCriado);
+        HateoasLinkBuilder.adicionarLinksEvento(response);
+        return response;
     }
 
     @GetMapping("/getAll")
