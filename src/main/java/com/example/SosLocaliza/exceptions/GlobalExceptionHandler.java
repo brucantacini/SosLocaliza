@@ -8,7 +8,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.WebRequest;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -126,17 +125,14 @@ public class GlobalExceptionHandler {
             HttpServletRequest request) {
         
         log.error("Erro interno do servidor: {}", ex.getMessage(), ex);
+        log.error("Stack trace:", ex);
         
         ErrorResponseDto error = ErrorResponseDto.of(
                 "INTERNAL_SERVER_ERROR",
-                "Erro interno do servidor. Tente novamente mais tarde.",
+                "Erro interno do servidor: " + ex.getMessage(),
                 request.getRequestURI()
         );
         
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 }
-
-
-
-

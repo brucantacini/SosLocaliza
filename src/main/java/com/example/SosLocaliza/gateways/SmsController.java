@@ -5,16 +5,9 @@ import com.example.SosLocaliza.gateways.dtos.request.SmsRequestDto;
 import com.example.SosLocaliza.gateways.dtos.response.SmsResponseDto;
 import com.example.SosLocaliza.services.SmsService;
 import com.example.SosLocaliza.services.TwilioSmsService;
-// Swagger annotations removidas - dependência removida
-// import io.swagger.v3.oas.annotations.Operation;
-// import io.swagger.v3.oas.annotations.Parameter;
-// import io.swagger.v3.oas.annotations.media.Content;
-// import io.swagger.v3.oas.annotations.media.Schema;
-// import io.swagger.v3.oas.annotations.responses.ApiResponse;
-// import io.swagger.v3.oas.annotations.responses.ApiResponses;
-// import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +23,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/sms")
 @RequiredArgsConstructor
-// @Tag(name = "SMS", description = "API para envio e gerenciamento de mensagens SMS de emergência")
+@Slf4j
 public class SmsController {
 
     private final SmsService smsService;
@@ -38,16 +31,7 @@ public class SmsController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    // @Operation(summary = "Enviar SMS", description = "Envia uma mensagem SMS via Twilio")
-    // @ApiResponses(value = {
-    //         @ApiResponse(responseCode = "201", description = "SMS enviado com sucesso",
-    //                 content = @Content(schema = @Schema(implementation = SmsResponseDto.class))),
-    //         @ApiResponse(responseCode = "400", description = "Dados inválidos"),
-    //         @ApiResponse(responseCode = "503", description = "Erro no serviço Twilio")
-    // })
-    public SmsResponseDto enviarSms(
-            // @Parameter(description = "Dados do SMS a ser enviado")
-            @RequestBody @Valid SmsRequestDto smsRequestDto) {
+    public SmsResponseDto enviarSms(@RequestBody @Valid SmsRequestDto smsRequestDto) {
         SmsMessage smsEnviado = twilioSmsService.enviarSmsViaTwilio(smsRequestDto);
         SmsResponseDto response = SmsResponseDto.fromSmsMessage(smsEnviado);
         HateoasLinkBuilder.adicionarLinksSms(response);
@@ -174,16 +158,37 @@ public class SmsController {
         }
     }
 
-    @GetMapping("/ultimoSms/{numero}")
+    @GetMapping("/ultimoSms/{numero:.+}")
     public ResponseEntity<SmsResponseDto> buscarUltimoSmsPorNumero(@PathVariable String numero) {
-        Optional<SmsMessage> smsOpt = smsService.buscarUltimoSmsPorNumero(numero);
-        
-        if (smsOpt.isPresent()) {
-            SmsResponseDto response = SmsResponseDto.fromSmsMessage(smsOpt.get());
-            HateoasLinkBuilder.adicionarLinksSms(response);
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.notFound().build();
+        try {
+            log.info("Buscando último SMS para número: {}", numero);
+            
+            String numeroTratado = numero;
+            if (numero.contains("%")) {
+                numeroTratado = java.net.URLDecoder.decode(numero, java.nio.charset.StandardCharsets.UTF_8);
+            }
+            
+            numeroTratado = numeroTratado.replace(" ", "+");
+            
+            if (!numeroTratado.startsWith("+")) {
+                numeroTratado = "+" + numeroTratado.trim();
+            }
+            
+            log.info("Número tratado: {}", numeroTratado);
+            
+            Optional<SmsMessage> smsOpt = smsService.buscarUltimoSmsPorNumero(numeroTratado);
+            
+            if (smsOpt.isPresent()) {
+                SmsResponseDto response = SmsResponseDto.fromSmsMessage(smsOpt.get());
+                HateoasLinkBuilder.adicionarLinksSms(response);
+                return ResponseEntity.ok(response);
+            } else {
+                log.warn("SMS não encontrado para número: {}", numeroTratado);
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            log.error("Erro ao buscar último SMS: {}", e.getMessage(), e);
+            throw e;
         }
     }
 

@@ -25,11 +25,14 @@ spring:
         dialect: org.hibernate.dialect.H2Dialect
         format_sql: true
 
-# Configurações do Twilio - Removido (usando simulação local)
-# twilio:
-#   account-sid: ${TWILIO_ACCOUNT_SID:ACb84a1c0afbb6628678209002a9db4d6c}
-#   auth-token: ${TWILIO_AUTH_TOKEN:7a420445aa2fc29161ac7cc22e2b8353}
-#   trial-number: ${TWILIO_TRIAL_NUMBER:+15005550006}
+# Configurações do Twilio
+# ⚠️ Por segurança, use variáveis de ambiente:
+# TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_TRIAL_NUMBER, TWILIO_ENABLED
+twilio:
+  account-sid: ${TWILIO_ACCOUNT_SID:}
+  auth-token: ${TWILIO_AUTH_TOKEN:}
+  trial-number: ${TWILIO_TRIAL_NUMBER:+12176248670}
+  enabled: ${TWILIO_ENABLED:false}
 
 # Configurações do Swagger/OpenAPI - Temporariamente desabilitado
 # springdoc:

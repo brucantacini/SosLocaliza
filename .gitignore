@@ -31,3 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Configurações Locais (NÃO COMMITAR) ###
+application-local.yml
+application-secrets.yml
+*.secrets.yml
+.env
+.env.local

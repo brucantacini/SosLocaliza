@@ -20,6 +20,7 @@ Sistema de emergência para situações climáticas extremas (enchentes, desliza
 - **Java 21**
 - **Spring Boot 3.5.6**
 - **Spring Data JPA**
+- **Spring HATEOAS** (REST Nível 3)
 - **H2 Database** (desenvolvimento/testes)
 - **Oracle Database** (produção)
 - **Twilio SMS API**
@@ -36,7 +37,41 @@ Sistema de emergência para situações climáticas extremas (enchentes, desliza
 
 ## ⚙️ Configuração
 
-### 1. Configuração do Banco de Dados
+### 1. Configuração do Twilio (SMS Real)
+
+O sistema suporta **dois modos**:
+- **Modo Simulação**: Funciona sem configuração (padrão)
+- **Modo Twilio Real**: Envia SMS reais via Twilio
+
+#### Modo Simulação (Padrão)
+Sem configurar nada, o sistema usa modo simulação para testes.
+
+#### Modo Twilio Real (Opcional)
+
+Para enviar SMS reais, configure as variáveis de ambiente:
+
+```bash
+# Windows PowerShell
+$env:TWILIO_ACCOUNT_SID="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+$env:TWILIO_AUTH_TOKEN="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+$env:TWILIO_TRIAL_NUMBER="+15005550006"
+$env:TWILIO_ENABLED="true"
+
+# Linux/Mac
+export TWILIO_ACCOUNT_SID="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+export TWILIO_AUTH_TOKEN="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+export TWILIO_TRIAL_NUMBER="+15005550006"
+export TWILIO_ENABLED="true"
+```
+
+**Como obter credenciais Twilio**:
+1. Crie conta gratuita em: https://www.twilio.com/try-twilio
+2. Receba $15-20 de crédito grátis
+3. Obtenha Account SID e Auth Token no Dashboard
+
+📖 **Guia completo**: Consulte [GUIA_TWILIO.md](GUIA_TWILIO.md)
+
+### 2. Configuração do Banco de Dados
 
 #### Oracle FIAP (Padrão)
 
@@ -76,6 +111,91 @@ mvn spring-boot:run
 mvn clean package
 java -jar target/SosLocaliza-0.0.1-SNAPSHOT.jar
 ```
+
+## 🔗 HATEOAS (Hypermedia as the Engine of Application State)
+
+A API implementa **HATEOAS nível 3** do modelo de maturidade REST proposto por Leonard Richardson. Isso significa que todas as respostas incluem links navegáveis que permitem descobrir e acessar recursos relacionados sem precisar conhecer as URLs de antemão.
+
+### O que é HATEOAS?
+
+HATEOAS é um padrão REST que adiciona links nas respostas da API, permitindo que o cliente navegue pela API seguindo links, similar a navegar por um site web. Isso torna a API mais descoberta e evolutiva.
+
+### Nível de Maturidade REST
+
+- ✅ **Nível 1**: Recursos (URLs diferentes para cada recurso)
+- ✅ **Nível 2**: Verbos HTTP (GET, POST, PUT, DELETE)
+- ✅ **Nível 3**: HATEOAS (Links explícitos nas respostas) ← **Implementado nesta Sprint**
+
+### Estrutura de Resposta com HATEOAS
+
+Todas as respostas de recursos individuais (Evento e SMS) incluem um objeto `_links` com os links disponíveis:
+
+```json
+{
+  "idEvento": 1,
+  "nomeEvento": "Enchente na Região Sul",
+  "descricaoEvento": "Alagamento severo em várias ruas",
+  "ativo": true,
+  "_links": {
+    "self": {
+      "href": "http://localhost:8080/api/eventos/getById/1"
+    },
+    "collection": {
+      "href": "http://localhost:8080/api/eventos/getAll"
+    },
+    "update": {
+      "href": "http://localhost:8080/api/eventos/update/1"
+    },
+    "delete": {
+      "href": "http://localhost:8080/api/eventos/delete/1"
+    },
+    "desativar": {
+      "href": "http://localhost:8080/api/eventos/desativar/1"
+    },
+    "sms": {
+      "href": "http://localhost:8080/api/sms/buscarPorEvento/1"
+    }
+  }
+}
+```
+
+### Links Disponíveis por Recurso
+
+#### Eventos (`EventoResponseDto`)
+
+- `self` - Link para o próprio evento
+- `collection` - Link para listar todos os eventos
+- `update` - Link para atualizar o evento (PUT)
+- `delete` - Link para deletar o evento (DELETE)
+- `desativar` - Link para desativar o evento (PATCH)
+- `sms` - Link para ver SMSs relacionados ao evento
+
+#### SMS (`SmsResponseDto`)
+
+- `self` - Link para o próprio SMS
+- `collection` - Link para listar todos os SMS
+- `evento` - Link para o evento relacionado (se houver)
+
+### Exemplo de Uso
+
+1. **Criar um evento**:
+   ```bash
+   POST /api/eventos/add
+   ```
+   A resposta incluirá links para navegar pelo evento criado.
+
+2. **Seguir o link `collection`**:
+   O cliente pode usar o link `collection` retornado para listar todos os eventos.
+
+3. **Seguir o link `sms`**:
+   O cliente pode usar o link `sms` para ver todos os SMSs relacionados ao evento.
+
+### Benefícios
+
+- ✅ **Descoberta automática**: Cliente descobre endpoints disponíveis
+- ✅ **Menos hardcoding**: Não precisa decorar URLs
+- ✅ **Evolução fácil**: Mudanças de URL são menos impactantes
+- ✅ **Navegação natural**: Segue links como em um site web
 
 ## 📡 Endpoints da API
 

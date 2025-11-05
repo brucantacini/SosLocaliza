@@ -17,9 +17,45 @@ mvn spring-boot:run
 - **Porta**: 8081
 - **Context Path**: `/api`
 - **Banco**: Oracle FIAP
-- **SMS**: Simulado (sem Twilio)
+- **SMS**: Twilio Real (configurado) ou Simulado
 
-## 📊 Endpoints e JSONs para Teste
+---
+
+## 🔗 HATEOAS (Hypermedia as the Engine of Application State)
+
+A API implementa **HATEOAS nível 3**, o que significa que todas as respostas incluem links navegáveis (`_links`) que permitem descobrir e acessar recursos relacionados sem precisar conhecer as URLs de antemão.
+
+### **Estrutura de Links HATEOAS**
+
+Cada resposta de recurso inclui um objeto `_links` com:
+- **`self`**: Link para o próprio recurso
+- **`collection`**: Link para listar todos os recursos
+
+**Exemplo de resposta com HATEOAS:**
+```json
+{
+  "idSms": 1,
+  "remetente": "Sistema SOS Localiza",
+  "numeroTelefone": "+5511989302572",
+  "mensagem": "Teste!",
+  "_links": {
+    "self": {
+      "href": "/api/sms/ultimoSms/%2B5511989302572"
+    },
+    "collection": {
+      "href": "/api/sms/getAll?page=0&size=10&direction=DESC"
+    }
+  }
+}
+```
+
+### **Navegação HATEOAS**
+1. **Criar** um recurso → recebe links na resposta
+2. **Copiar** o link `collection` → colar no navegador/Postman
+3. **Listar** recursos → cada item tem seus próprios links
+4. **Seguir** link `self` → ver detalhes do recurso
+
+---
 
 ### **EVENTOS**
 
@@ -89,76 +125,126 @@ mvn spring-boot:run
 
 ### **SMS**
 
-#### **7. Enviar SMS Simulado**
+#### **7. Enviar SMS (com HATEOAS)**
 **endpoint** = `POST /api/sms`
 **json para teste** = 
 ```json
 {
   "remetente": "SOS Localiza",
   "ddd": "11",
-  "numeroTelefone": "999999999",
-  "mensagem": "Teste de SMS simulado - sistema funcionando!"
+  "numeroTelefone": "+5511989302572",
+  "mensagem": "Teste de SMS com HATEOAS!"
 }
 ```
 
-#### **8. Enviar SMS de Emergência**
+**Resposta esperada (com links HATEOAS):**
+```json
+{
+  "idSms": 1,
+  "remetente": "SOS Localiza",
+  "numeroTelefone": "+5511989302572",
+  "ddd": "11",
+  "mensagem": "Teste de SMS com HATEOAS!",
+  "dataEnvio": "2025-11-04T21:00:00",
+  "enviadoComSucesso": true,
+  "erro": null,
+  "idEvento": null,
+  "_links": {
+    "self": {
+      "href": "/api/sms/ultimoSms/%2B5511989302572"
+    },
+    "collection": {
+      "href": "/api/sms/getAll?page=0&size=10&direction=DESC"
+    }
+  }
+}
+```
+
+**✨ Navegação:** Copie o link `collection.href` e cole no navegador para listar todos os SMS.
+
+#### **8. Enviar SMS de Emergência (com HATEOAS)**
 **endpoint** = `POST /api/sms/emergencia/2`
 **json para teste** = 
 ```json
 {
   "remetente": "Defesa Civil",
   "ddd": "11",
-  "numeroTelefone": "888888888",
+  "numeroTelefone": "+5511989302572",
   "mensagem": "ALERTA: Risco de enchente na região!"
 }
 ```
 
-#### **9. Listar Todos SMS**
-**endpoint** = `GET /api/sms/getAll`
-**json para teste** = 
+**Resposta:** SMS criado com links HATEOAS (`self` e `collection`)
+
+#### **9. Listar Todos SMS (com HATEOAS)**
+**endpoint** = `GET /api/sms/getAll?page=0&size=10&direction=DESC`
+
+**Parâmetros opcionais:**
+- `page`: Número da página (padrão: 0)
+- `size`: Tamanho da página (padrão: 10)
+- `direction`: ASC ou DESC (padrão: DESC)
+- `sucesso`: true/false (opcional, filtra por status)
+
+**Resposta esperada:**
+- Lista paginada de SMS
+- **Cada SMS na lista tem seus próprios links HATEOAS** (`self` e `collection`)
+
+**Exemplo de uso:**
+```bash
+# Listar todos
+GET /api/sms/getAll?page=0&size=10&direction=DESC
+
+# Listar apenas SMS com sucesso
+GET /api/sms/getAll?page=0&size=10&direction=DESC&sucesso=true
+
+# Listar apenas SMS com erro
+GET /api/sms/getAll?page=0&size=10&direction=DESC&sucesso=false
+```
+
+#### **10. Buscar SMS por Número (com HATEOAS)**
+**endpoint** = `GET /api/sms/buscarPorNumero?numeroTelefone=+5511989302572`
+
+**Resposta:** Lista de SMS do número, **cada um com links HATEOAS**
+
+#### **11. Buscar SMS por DDD (com HATEOAS)**
+**endpoint** = `GET /api/sms/buscarPorDdd?ddd=11`
+
+**Resposta:** Lista de SMS do DDD 11, **cada um com links HATEOAS**
+
+#### **12. Buscar SMS por Evento (com HATEOAS)**
+**endpoint** = `GET /api/sms/buscarPorEvento/2`
+
+**Resposta:** Lista de SMS do evento, **cada um com links HATEOAS**
+
+#### **13. Buscar SMS por Período (com HATEOAS)**
+**endpoint** = `GET /api/sms/buscarPorPeriodo?dataInicio=2025-11-04T00:00:00&dataFim=2025-11-04T23:59:59`
+
+**Resposta:** Lista de SMS do período, **cada um com links HATEOAS**
+
+#### **14. Buscar Último SMS por Número (com HATEOAS)**
+**endpoint** = `GET /api/sms/ultimoSms/%2B5511989302572`
+
+**Nota:** Use `%2B` para codificar o `+` na URL, ou simplesmente `+5511989302572`
+
+**Resposta esperada:**
 ```json
 {
-  "page": 0,
-  "size": 10,
-  "direction": "DESC",
-  "sucesso": true
+  "idSms": 1,
+  "remetente": "SOS Localiza",
+  "numeroTelefone": "+5511989302572",
+  "mensagem": "Último SMS enviado",
+  "_links": {
+    "self": {
+      "href": "/api/sms/ultimoSms/%2B5511989302572"
+    },
+    "collection": {
+      "href": "/api/sms/getAll?page=0&size=10&direction=DESC"
+    }
+  }
 }
 ```
 
-#### **10. Buscar SMS por Número**
-**endpoint** = `GET /api/sms/buscarPorNumero?numeroTelefone=+5511999999999`
-**json para teste** = 
-```json
-{}
-```
-
-#### **11. Buscar SMS por DDD**
-**endpoint** = `GET /api/sms/buscarPorDdd?ddd=11`
-**json para teste** = 
-```json
-{}
-```
-
-#### **12. Buscar SMS por Evento**
-**endpoint** = `GET /api/sms/buscarPorEvento/2`
-**json para teste** = 
-```json
-{}
-```
-
-#### **13. Buscar SMS por Período**
-**endpoint** = `GET /api/sms/buscarPorPeriodo?dataInicio=2025-10-01T00:00:00&dataFim=2025-10-31T23:59:59`
-**json para teste** = 
-```json
-{}
-```
-
-#### **14. Buscar Último SMS por Número**
-**endpoint** = `GET /api/sms/ultimoSms/+5511999999999`
-**json para teste** = 
-```json
-{}
-```
+**✨ Navegação:** Copie o link `self.href` para ver os detalhes novamente, ou `collection.href` para listar todos os SMS.
 
 #### **15. Estatísticas de SMS**
 **endpoint** = `GET /api/sms/estatisticas`
@@ -191,6 +277,23 @@ mvn spring-boot:run
 - **404**: Não encontrado
 - **500**: Erro interno
 
+### **Presença de Links HATEOAS**
+Todos os endpoints de SMS retornam objeto `_links` com:
+- ✅ `self`: Link para o próprio recurso
+- ✅ `collection`: Link para listar todos os recursos
+
+**Exemplo:**
+```json
+{
+  "idSms": 1,
+  "mensagem": "Teste",
+  "_links": {
+    "self": { "href": "/api/sms/ultimoSms/%2B5511989302572" },
+    "collection": { "href": "/api/sms/getAll?page=0&size=10&direction=DESC" }
+  }
+}
+```
+
 ### **Estrutura de Resposta de Erro**
 ```json
 {
@@ -202,14 +305,26 @@ mvn spring-boot:run
 }
 ```
 
-### **Estrutura de Resposta de Sucesso**
+### **Estrutura de Resposta de Sucesso com HATEOAS**
 ```json
 {
-  "idEvento": "uuid-gerado",
-  "nomeEvento": "Enchente na Região Sul",
-  "descricaoEvento": "Alagamento severo...",
-  "dataCriacao": "2024-01-01T12:00:00",
-  "ativo": true
+  "idSms": 1,
+  "remetente": "Sistema SOS Localiza",
+  "numeroTelefone": "+5511989302572",
+  "ddd": "11",
+  "mensagem": "Teste de SMS!",
+  "dataEnvio": "2025-11-04T21:00:00",
+  "enviadoComSucesso": true,
+  "erro": null,
+  "idEvento": null,
+  "_links": {
+    "self": {
+      "href": "/api/sms/ultimoSms/%2B5511989302572"
+    },
+    "collection": {
+      "href": "/api/sms/getAll?page=0&size=10&direction=DESC"
+    }
+  }
 }
 ```
 
@@ -233,6 +348,7 @@ mvn spring-boot:run
 - ✅ `page`: Número da página (padrão: 0)
 - ✅ `size`: Tamanho da página (padrão: 10)
 - ✅ `direction`: ASC/DESC (padrão: ASC para eventos, DESC para SMS)
+- ✅ Cada item na lista paginada tem seus próprios links HATEOAS
 
 ## 🚨 Cenários de Erro
 
@@ -261,6 +377,9 @@ mvn spring-boot:run
 - [ ] Relacionamentos entre entidades funcionam
 - [ ] Logs são gerados adequadamente
 - [ ] Performance está dentro do esperado
+- [ ] **HATEOAS**: Todos os endpoints de SMS retornam `_links`
+- [ ] **HATEOAS**: Links `self` e `collection` são funcionais
+- [ ] **HATEOAS**: Navegação completa funcionando (criar → listar → buscar)
 
 ### **Métricas de Sucesso**
 - **Taxa de Sucesso**: > 95% dos testes passando
@@ -287,3 +406,23 @@ mvn spring-boot:run
 - Verifique se o Oracle FIAP está acessível
 - Confirme se as credenciais do banco estão corretas
 - Para desenvolvimento, use o perfil H2: `--spring.profiles.active=dev`
+
+### **Erro com Links HATEOAS**
+- Verifique se o objeto `_links` está presente na resposta
+- Teste copiando e colando o `href` diretamente no navegador
+- Para números com `+`, use encoding `%2B` ou `+` diretamente
+- Certifique-se de que a aplicação está rodando na porta 8081
+
+---
+
+## 🔗 Teste Completo de Navegação HATEOAS
+
+### **Fluxo: Criar → Listar → Buscar**
+
+1. **POST** `/api/sms` → Recebe SMS criado com links
+2. **Copiar** link `collection.href` → Cole no navegador/Postman
+3. **GET** `/api/sms/getAll?...` → Ver lista paginada (cada item com links)
+4. **Copiar** link `self.href` de um SMS → Cole no navegador/Postman
+5. **GET** `/api/sms/ultimoSms/{numero}` → Ver detalhes do SMS
+
+**Resultado:** Navegação completa pela API seguindo apenas os links retornados!

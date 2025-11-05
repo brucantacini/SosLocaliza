@@ -6,10 +6,6 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-
- //  Entidade que representa um evento climático de emergência
- //  Mapeada para a tabela T_SOS_EVENTO no banco de dados
- 
 @With
 @Getter
 @Entity
@@ -56,11 +52,7 @@ public class Evento {
     @Builder.Default
     private Boolean ativo = true;
 
-    // Relacionamento com SMS enviados para este evento
-    @OneToMany(
-            mappedBy = "evento",
-            fetch = FetchType.LAZY
-    )
+    @OneToMany(mappedBy = "evento", fetch = FetchType.LAZY)
     private List<SmsMessage> smsEnviados;
 
     @PrePersist

@@ -5,9 +5,6 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-//  Entidade que representa uma mensagem SMS enviada
-//  Mapeada para a tabela T_SOS_SMS no banco de dados
-
 @With
 @Getter
 @Entity
@@ -45,7 +42,6 @@ public class SmsMessage {
     @Column(name = "DDD", length = 3)
     private String ddd;
 
-    // Relacionamento com o evento relacionado
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_EVENTO")
     private Evento evento;

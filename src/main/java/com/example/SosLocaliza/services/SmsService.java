@@ -84,7 +84,13 @@ public class SmsService {
     }
 
     public Optional<SmsMessage> buscarUltimoSmsPorNumero(String numeroTelefone) {
-        return smsRepository.findUltimoSmsPorNumero(numeroTelefone);
+        List<SmsMessage> smsList = smsRepository.findByNumeroTelefone(numeroTelefone);
+        if (smsList.isEmpty()) {
+            return Optional.empty();
+        }
+        return smsList.stream()
+                .sorted((a, b) -> b.getDataEnvio().compareTo(a.getDataEnvio()))
+                .findFirst();
     }
 
     public List<SmsMessage> buscarSmsPorEventoEStatus(Long idEvento, Boolean sucesso) {
@@ -111,5 +117,3 @@ public class SmsService {
         return null;
     }
 }
-
-
