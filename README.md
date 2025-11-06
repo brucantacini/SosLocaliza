@@ -5,8 +5,10 @@ Sistema de emergência para situações climáticas extremas (enchentes, desliza
 ## 👥 Integrantes do Grupo
 
 - **Bruno Cantacini** - RM560242 - Desenvolvimento Backend, Arquitetura da Aplicação
-- **Amanda Galdino** -RM560066- Integração Twllio.
-- **Gustavo Gonçalves** -RM556823- Documentos, vídeo e diagramas.### Cronograma tarefas:
+- **Amanda Galdino** - RM560066 - Integração Twilio
+- **Gustavo Gonçalves** - RM556823 - Documentos, vídeo e diagramas
+
+### Cronograma tarefas:
 - https://trello.com/invite/b/68d7339fb360c5bde1caf0dc/ATTI0af812df390890d5b80e5048c67d862a00864906/sos-localiza
 
 ## 🎥 Vídeo de Apresentação
@@ -274,7 +276,13 @@ Content-Type: application/json
 
 ## 📊 Diagramas da Aplicação
 
-Estão na pasta "docs" do projeto.
+### Diagrama de Classes
+
+![Diagrama de Classes](Docs/DiagramaClasseJAava.png)
+
+### Diagrama de Entidade e Relacionamento (DER)
+
+![Diagrama DER](Docs/DER_Java.png)
 
 ## 📊 Estrutura do Banco de Dados
 
