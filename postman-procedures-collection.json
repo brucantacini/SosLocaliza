@@ -1,0 +1,239 @@
+{
+  "info": {
+    "name": "SOS Localiza - Procedures Sprint 2",
+    "description": "Coleção de testes para procedures do Oracle Database",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Localização",
+      "item": [
+        {
+          "name": "1. INSERT Localização 1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nomeLocal\": \"Escola Municipal Sol Nascente\",\n  \"ruaLocal\": \"Rua das Flores\",\n  \"numeroLocal\": 120,\n  \"cepLocal\": \"04567-000\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/procedures/localizacao",
+              "host": ["{{baseUrl}}"],
+              "path": ["procedures", "localizacao"]
+            }
+          }
+        },
+        {
+          "name": "2. INSERT Localização 2",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nomeLocal\": \"Posto de Saúde Central\",\n  \"ruaLocal\": \"Avenida Brasil\",\n  \"numeroLocal\": 540,\n  \"cepLocal\": \"03047-000\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/procedures/localizacao",
+              "host": ["{{baseUrl}}"],
+              "path": ["procedures", "localizacao"]
+            }
+          }
+        },
+        {
+          "name": "3. UPDATE Localização 1",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nomeLocal\": \"Escola Municipal Sol Nascente - Atualizada\",\n  \"ruaLocal\": \"Rua das Flores\",\n  \"numeroLocal\": 150,\n  \"cepLocal\": \"04567-001\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/procedures/localizacao/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["procedures", "localizacao", "1"]
+            }
+          }
+        },
+        {
+          "name": "4. UPDATE Localização 2",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nomeLocal\": \"Posto de Saúde Central - Atualizado\",\n  \"ruaLocal\": \"Avenida Brasil\",\n  \"numeroLocal\": 600,\n  \"cepLocal\": \"03047-100\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/procedures/localizacao/2",
+              "host": ["{{baseUrl}}"],
+              "path": ["procedures", "localizacao", "2"]
+            }
+          }
+        },
+        {
+          "name": "5. DELETE Localização 1",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/procedures/localizacao/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["procedures", "localizacao", "1"]
+            }
+          }
+        },
+        {
+          "name": "6. DELETE Localização 2",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/procedures/localizacao/2",
+              "host": ["{{baseUrl}}"],
+              "path": ["procedures", "localizacao", "2"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Usuário",
+      "item": [
+        {
+          "name": "7. INSERT Usuário 1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nomeCompleto\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\",\n  \"senha\": \"senha123\",\n  \"cpf\": \"12345678901\",\n  \"dataNascimento\": \"1995-05-20\",\n  \"idLocal\": 1,\n  \"ativo\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/procedures/usuario",
+              "host": ["{{baseUrl}}"],
+              "path": ["procedures", "usuario"]
+            }
+          }
+        },
+        {
+          "name": "8. INSERT Usuário 2",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nomeCompleto\": \"Pedro Santos\",\n  \"email\": \"pedro.santos@email.com\",\n  \"senha\": \"senha456\",\n  \"cpf\": \"98765432100\",\n  \"dataNascimento\": \"1992-08-10\",\n  \"idLocal\": 2,\n  \"ativo\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/procedures/usuario",
+              "host": ["{{baseUrl}}"],
+              "path": ["procedures", "usuario"]
+            }
+          }
+        },
+        {
+          "name": "9. UPDATE Usuário 1",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nomeCompleto\": \"Maria Silva Santos\",\n  \"email\": \"maria.santos@email.com\",\n  \"senha\": \"novaSenha123\",\n  \"cpf\": \"12345678901\",\n  \"dataNascimento\": \"1995-05-20\",\n  \"idLocal\": 1,\n  \"ativo\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/procedures/usuario/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["procedures", "usuario", "1"]
+            }
+          }
+        },
+        {
+          "name": "10. UPDATE Usuário 2",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nomeCompleto\": \"Pedro Santos Silva\",\n  \"email\": \"pedro.silva@email.com\",\n  \"senha\": \"novaSenha456\",\n  \"cpf\": \"98765432100\",\n  \"dataNascimento\": \"1992-08-10\",\n  \"idLocal\": 2,\n  \"ativo\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/procedures/usuario/2",
+              "host": ["{{baseUrl}}"],
+              "path": ["procedures", "usuario", "2"]
+            }
+          }
+        },
+        {
+          "name": "11. DELETE Usuário 1",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/procedures/usuario/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["procedures", "usuario", "1"]
+            }
+          }
+        },
+        {
+          "name": "12. DELETE Usuário 2",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/procedures/usuario/2",
+              "host": ["{{baseUrl}}"],
+              "path": ["procedures", "usuario", "2"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8081/api",
+      "type": "string"
+    }
+  ]
+}
+

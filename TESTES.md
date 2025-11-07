@@ -267,6 +267,117 @@ GET /api/sms/getAll?page=0&size=10&direction=DESC&sucesso=false
 {}
 ```
 
+---
+
+## 🔧 Integração Procedures Oracle - Sprint 2
+
+Este documento descreve como usar os endpoints REST que chamam as procedures do Oracle Database.
+
+### 📋 Endpoints Disponíveis
+
+#### **Localização**
+
+##### **1. INSERT - Criar Localização**
+```http
+POST /api/procedures/localizacao
+Content-Type: application/json
+
+{
+  "nomeLocal": "Escola Municipal Sol Nascente",
+  "ruaLocal": "Rua das Flores",
+  "numeroLocal": 120,
+  "cepLocal": "04567-000"
+}
+```
+
+**Resposta de Sucesso (201):**
+```json
+{
+  "id": 1,
+  "mensagem": "Localização inserida com sucesso. ID: 1",
+  "sucesso": true
+}
+```
+
+##### **2. UPDATE - Atualizar Localização**
+```http
+PUT /api/procedures/localizacao/1
+Content-Type: application/json
+
+{
+  "nomeLocal": "Escola Municipal Sol Nascente - Atualizada",
+  "ruaLocal": "Rua das Flores",
+  "numeroLocal": 150,
+  "cepLocal": "04567-001"
+}
+```
+
+##### **3. DELETE - Excluir Localização**
+```http
+DELETE /api/procedures/localizacao/1
+```
+
+#### **Usuário**
+
+##### **1. INSERT - Criar Usuário**
+```http
+POST /api/procedures/usuario
+Content-Type: application/json
+
+{
+  "nomeCompleto": "João Silva",
+  "email": "joao.silva@email.com",
+  "senha": "senha123",
+  "cpf": "12345678901",
+  "dataNascimento": "1990-01-15",
+  "idLocal": 1,
+  "ativo": 1
+}
+```
+
+##### **2. UPDATE - Atualizar Usuário**
+```http
+PUT /api/procedures/usuario/1
+Content-Type: application/json
+
+{
+  "nomeCompleto": "João Silva Santos",
+  "email": "joao.santos@email.com",
+  "senha": "novaSenha123",
+  "cpf": "12345678901",
+  "dataNascimento": "1990-01-15",
+  "idLocal": 2,
+  "ativo": 1
+}
+```
+
+##### **3. DELETE - Excluir Usuário**
+```http
+DELETE /api/procedures/usuario/1
+```
+
+### 🧪 Testando com Postman/Insomnia
+
+#### **Sequência de Testes (12 operações conforme requisito)**
+
+**Localização:**
+1. POST `/api/procedures/localizacao` - Criar Localização 1
+2. POST `/api/procedures/localizacao` - Criar Localização 2
+3. PUT `/api/procedures/localizacao/1` - Atualizar Localização 1
+4. PUT `/api/procedures/localizacao/2` - Atualizar Localização 2
+5. DELETE `/api/procedures/localizacao/1` - Excluir Localização 1
+6. DELETE `/api/procedures/localizacao/2` - Excluir Localização 2
+
+**Usuário:**
+7. POST `/api/procedures/usuario` - Criar Usuário 1
+8. POST `/api/procedures/usuario` - Criar Usuário 2
+9. PUT `/api/procedures/usuario/1` - Atualizar Usuário 1
+10. PUT `/api/procedures/usuario/2` - Atualizar Usuário 2
+11. DELETE `/api/procedures/usuario/1` - Excluir Usuário 1
+12. DELETE `/api/procedures/usuario/2` - Excluir Usuário 2
+
+---
+
 ## 📊 Resultados Esperados
 
 ### **Status HTTP Esperados**
