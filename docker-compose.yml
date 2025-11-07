@@ -1,0 +1,32 @@
+# Docker Compose para SOS Localiza
+# Orquestração da aplicação Spring Boot
+
+version: '3.8'
+
+services:
+  soslocaliza:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: soslocaliza-app
+    ports:
+      - "8081:8081"
+    environment:
+      # Perfil Spring Boot (oracle-fiap para produção)
+      - SPRING_PROFILES_ACTIVE=oracle-fiap
+      # Twilio desabilitado por padrão (pode ser habilitado via variáveis de ambiente)
+      - TWILIO_ENABLED=false
+      # Configurações do Oracle Database (ajustar conforme necessário)
+      - SPRING_DATASOURCE_URL=jdbc:oracle:thin:@oracle.fiap.com.br:1521:ORCL
+      - SPRING_DATASOURCE_USERNAME=rm560242
+      - SPRING_DATASOURCE_PASSWORD=271005
+    restart: unless-stopped
+    networks:
+      - soslocaliza-network
+    # Executar em background (requisito: projeto em background)
+    # Use: docker-compose up -d
+
+networks:
+  soslocaliza-network:
+    driver: bridge
+

@@ -1,0 +1,40 @@
+# Arquivos e diretórios a serem ignorados no build Docker
+
+# Maven
+target/
+!target/SosLocaliza-0.0.1-SNAPSHOT.jar
+.mvn/
+mvnw
+mvnw.cmd
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+
+# Sistema Operacional
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Documentação
+*.md
+!README.md
+Docs/
+
+# Testes
+src/test/
+
+# Logs
+*.log
+
+# Arquivos temporários
+*.tmp
+*.bak
+*.swp
+
