@@ -36,6 +36,16 @@ server:
   servlet:
     context-path: /api
 
+# Configurações do Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
+
 # Configurações de logging para Oracle FIAP
 logging:
   level:
