@@ -4,18 +4,33 @@ Sistema de emergência para situações climáticas extremas (enchentes, desliza
 
 ## 👥 Integrantes do Grupo
 
-- **Bruno Cantacini** - RM560242 - Desenvolvimento Backend, Arquitetura da Aplicação
-- **Amanda Galdino** - RM560066 - Integração Twilio
-- **Gustavo Gonçalves** - RM556823 - Documentos, vídeo e diagramas
+### Bruno Cantacini - RM560242
+**Responsabilidades**: Desenvolvimento Backend, Arquitetura da Aplicação, Implementação de Endpoints REST, Integração com Banco de Dados Oracle, Procedures e HATEOAS.
+
+### Amanda Galdino - RM560066
+**Responsabilidades**: Integração Twilio para envio de SMS, Configuração de APIs externas, Testes de integração.
+
+### Gustavo Gonçalves - RM556823
+**Responsabilidades**: Documentação do projeto, Criação de vídeos demonstrativos, Diagramas de Classes e DER, Documentação técnica.
 
 ### Cronograma tarefas:
 - https://trello.com/invite/b/68d7339fb360c5bde1caf0dc/ATTI0af812df390890d5b80e5048c67d862a00864906/sos-localiza
 
 ## 🎥 Vídeo de Apresentação
 
-🔗 https://www.youtube.com/watch?v=rsRSfEShnGk
+🔗 **Link do Vídeo**: https://www.youtube.com/watch?v=rsRSfEShnGk
 
-*O vídeo apresenta a proposta tecnológica, público-alvo da aplicação e os problemas que a aplicação se propõe a solucionar.*
+### Conteúdo do Vídeo
+
+O vídeo apresenta:
+- **Proposta Tecnológica**: Sistema de emergência climática com envio de SMS via Twilio
+- **Público-Alvo**: População em áreas de risco, Defesa Civil, Órgãos públicos de gestão de emergências
+- **Problemas que a aplicação soluciona**:
+  - Comunicação rápida e eficiente em situações de emergência climática
+  - Gestão centralizada de eventos de risco (enchentes, deslizamentos)
+  - Alertas automáticos via SMS para população em áreas afetadas
+  - Histórico e estatísticas de eventos e comunicações
+  - Integração com banco de dados Oracle para persistência confiável
 
 ## 🚀 Tecnologias Utilizadas
 
@@ -99,20 +114,63 @@ Acesse o console H2 em:
 http://localhost:8080/api/h2-console
 ```
 
-## 🏃‍♂️ Executando o Projeto
+## 🏃‍♂️ Como Rodar a Aplicação
 
-### Desenvolvimento
+### Opção 1: Execução Local (Desenvolvimento)
 
+#### Pré-requisitos
+- Java 21 instalado
+- Maven 3.6+ instalado
+- Acesso ao Oracle FIAP (ou use perfil H2 para desenvolvimento)
+
+#### Passo a Passo
+
+1. **Clone o repositório:**
+```bash
+git clone <URL_DO_REPOSITORIO>
+cd OracleSOSLocaliza/SosLocaliza
+```
+
+2. **Compile o projeto:**
+```bash
+mvn clean install
+```
+
+3. **Execute a aplicação:**
 ```bash
 mvn spring-boot:run
 ```
 
-### Produção
+4. **Acesse a aplicação:**
+```
+http://localhost:8081/api/actuator/health
+```
 
+### Opção 2: Execução com JAR (Produção)
+
+1. **Gere o JAR:**
 ```bash
 mvn clean package
+```
+
+2. **Execute o JAR:**
+```bash
 java -jar target/SosLocaliza-0.0.1-SNAPSHOT.jar
 ```
+
+### Opção 3: Execução com Docker (Recomendado para Produção)
+
+Consulte a seção [🐳 Deploy com Docker](#-deploy-com-docker) abaixo para instruções completas de deploy com Docker e Docker Compose.
+
+### Opção 4: Execução com H2 (Desenvolvimento sem Oracle)
+
+Para desenvolvimento sem acesso ao Oracle, use o perfil H2:
+
+```bash
+java -jar target/SosLocaliza-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev
+```
+
+Acesse o console H2 em: `http://localhost:8081/api/h2-console`
 
 ## 🐳 Deploy com Docker
 
@@ -587,33 +645,75 @@ Todas as respostas de recursos individuais (Evento e SMS) incluem um objeto `_li
 - ✅ **Evolução fácil**: Mudanças de URL são menos impactantes
 - ✅ **Navegação natural**: Segue links como em um site web
 
-## 📡 Endpoints da API
+## 📡 Documentação Completa da API - Endpoints
+
+### Base URL
+```
+http://localhost:8081/api
+```
 
 ### Eventos
 
-- `POST /api/eventos/add` - Criar evento
-- `GET /api/eventos/getAll` - Listar eventos (com paginação)
-- `GET /api/eventos/getById/{id}` - Buscar evento por ID
-- `PUT /api/eventos/update/{id}` - Atualizar evento
-- `DELETE /api/eventos/delete/{id}` - Deletar evento
-- `PATCH /api/eventos/desativar/{id}` - Desativar evento
-- `GET /api/eventos/buscarPorNome?nome=X` - Buscar por nome
-- `GET /api/eventos/buscarPorDescricao?descricao=X` - Buscar por descrição
-- `GET /api/eventos/estatisticas` - Estatísticas
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| `POST` | `/api/eventos/add` | Criar novo evento |
+| `GET` | `/api/eventos/getAll` | Listar todos os eventos (com paginação) |
+| `GET` | `/api/eventos/getById/{id}` | Buscar evento por ID |
+| `PUT` | `/api/eventos/update/{id}` | Atualizar evento existente |
+| `DELETE` | `/api/eventos/delete/{id}` | Deletar evento |
+| `PATCH` | `/api/eventos/desativar/{id}` | Desativar evento (soft delete) |
+| `GET` | `/api/eventos/buscarPorNome?nome={nome}` | Buscar eventos por nome |
+| `GET` | `/api/eventos/buscarPorDescricao?descricao={descricao}` | Buscar eventos por descrição |
+| `GET` | `/api/eventos/estatisticas` | Obter estatísticas dos eventos |
+
+**Parâmetros de Paginação (para getAll):**
+- `page`: Número da página (padrão: 0)
+- `size`: Tamanho da página (padrão: 10)
+- `direction`: Direção da ordenação - ASC ou DESC (padrão: ASC)
 
 ### SMS
 
-- `POST /api/sms` - Enviar SMS
-- `POST /api/sms/emergencia/{idEvento}` - Enviar SMS de emergência
-- `GET /api/sms/getAll` - Listar SMS (com paginação)
-- `GET /api/sms/buscarPorNumero?numeroTelefone=X` - Buscar por número
-- `GET /api/sms/buscarPorDdd?ddd=XX` - Buscar por DDD
-- `GET /api/sms/buscarPorEvento/{idEvento}` - Buscar por evento
-- `GET /api/sms/buscarPorPeriodo?dataInicio=X&dataFim=Y` - Buscar por período
-- `GET /api/sms/ultimoSms/{numero}` - Último SMS por número
-- `GET /api/sms/estatisticas` - Estatísticas
-- `PATCH /api/sms/marcarSucesso/{id}` - Marcar como sucesso
-- `PATCH /api/sms/marcarErro/{id}?erro=X` - Marcar como erro
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| `POST` | `/api/sms` | Enviar SMS |
+| `POST` | `/api/sms/emergencia/{idEvento}` | Enviar SMS de emergência vinculado a um evento |
+| `GET` | `/api/sms/getAll` | Listar todos os SMS (com paginação) |
+| `GET` | `/api/sms/buscarPorNumero?numeroTelefone={numero}` | Buscar SMS por número de telefone |
+| `GET` | `/api/sms/buscarPorDdd?ddd={ddd}` | Buscar SMS por DDD |
+| `GET` | `/api/sms/buscarPorEvento/{idEvento}` | Buscar SMS por evento |
+| `GET` | `/api/sms/buscarPorPeriodo?dataInicio={dataInicio}&dataFim={dataFim}` | Buscar SMS por período |
+| `GET` | `/api/sms/ultimoSms/{numero}` | Buscar último SMS enviado para um número |
+| `GET` | `/api/sms/estatisticas` | Obter estatísticas dos SMS |
+| `PATCH` | `/api/sms/marcarSucesso/{id}` | Marcar SMS como enviado com sucesso |
+| `PATCH` | `/api/sms/marcarErro/{id}?erro={mensagemErro}` | Marcar SMS como erro |
+
+**Parâmetros de Paginação (para getAll):**
+- `page`: Número da página (padrão: 0)
+- `size`: Tamanho da página (padrão: 10)
+- `direction`: Direção da ordenação - ASC ou DESC (padrão: DESC)
+- `sucesso`: true/false (opcional, filtra por status de envio)
+
+### Procedures Oracle (Sprint 2)
+
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| `POST` | `/api/procedures/localizacao` | Criar localização via procedure Oracle |
+| `PUT` | `/api/procedures/localizacao/{id}` | Atualizar localização via procedure Oracle |
+| `DELETE` | `/api/procedures/localizacao/{id}` | Deletar localização via procedure Oracle |
+| `POST` | `/api/procedures/usuario` | Criar usuário via procedure Oracle |
+| `PUT` | `/api/procedures/usuario/{id}` | Atualizar usuário via procedure Oracle |
+| `DELETE` | `/api/procedures/usuario/{id}` | Deletar usuário via procedure Oracle |
+
+### Actuator (Health Check)
+
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| `GET` | `/api/actuator/health` | Verificar saúde da aplicação |
+| `GET` | `/api/actuator/info` | Informações da aplicação |
+
+---
+
+**Total de Endpoints**: 25 endpoints disponíveis
 
 ## 🧪 Testando com Postman/Insomnia
 
@@ -668,9 +768,36 @@ Content-Type: application/json
 
 ![Diagrama de Classes](Docs/DiagramaClasseJAava.png)
 
+O diagrama de classes apresenta a estrutura das entidades principais do sistema:
+- **Evento**: Representa eventos climáticos de risco (enchentes, deslizamentos)
+- **Sms**: Representa mensagens SMS enviadas para alertas de emergência
+- **Localizacao**: Representa localizações geográficas (utilizada nas procedures Oracle)
+- **Usuario**: Representa usuários do sistema (utilizada nas procedures Oracle)
+
 ### Diagrama de Entidade e Relacionamento (DER)
 
 ![Diagrama DER](Docs/DER_Java.png)
+
+#### Relacionamentos e Constraints
+
+**T_SOS_EVENTO ↔ T_SOS_SMS**
+- **Tipo**: Um-para-Muitos (1:N)
+- **Relacionamento**: Um evento pode ter múltiplos SMS associados
+- **Constraint**: `T_SOS_SMS.ID_EVENTO` é Foreign Key para `T_SOS_EVENTO.ID_EVENTO`
+- **Comportamento**: Quando um evento é deletado, os SMS relacionados podem ser mantidos (ID_EVENTO pode ser NULL)
+
+**T_SOS_LOCALIZACAO ↔ T_SOS_USUARIO**
+- **Tipo**: Um-para-Muitos (1:N)
+- **Relacionamento**: Uma localização pode ter múltiplos usuários
+- **Constraint**: `T_SOS_USUARIO.ID_LOCAL` é Foreign Key para `T_SOS_LOCALIZACAO.ID_LOCAL`
+
+#### Constraints Principais
+
+- **Primary Keys**: Todas as tabelas possuem ID como chave primária (UUID)
+- **Not Null**: Campos obrigatórios incluem NOME_EVENTO, REMETENTE, NUMERO_TELEFONE, MENSAGEM
+- **Unique**: CPF do usuário deve ser único
+- **Check**: Validações de formato (CEP, telefone, email)
+- **Timestamps**: DATA_CRIACAO e DATA_ATUALIZACAO são gerenciados automaticamente
 
 ## 📊 Estrutura do Banco de Dados
 
