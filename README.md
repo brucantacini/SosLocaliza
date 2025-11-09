@@ -114,6 +114,394 @@ mvn clean package
 java -jar target/SosLocaliza-0.0.1-SNAPSHOT.jar
 ```
 
+## 🐳 Deploy com Docker
+
+### Pré-requisitos para Deploy
+
+- Docker instalado
+- Docker Compose instalado (ou plugin do Docker)
+- Java 21 e Maven (para build local)
+
+### 1. Build Local
+
+```bash
+# Compilar o projeto
+mvn clean package -DskipTests
+
+# Verificar JAR gerado
+ls -lh target/SosLocaliza-0.0.1-SNAPSHOT.jar
+```
+
+### 2. Deploy Local com Docker
+
+```bash
+# Build da imagem Docker
+docker build -t soslocaliza:latest .
+
+# Executar com Docker Compose (background)
+docker compose up -d
+
+# Verificar status
+docker compose ps
+
+# Ver logs
+docker compose logs -f soslocaliza
+# Pressione Ctrl+C para sair dos logs
+
+# Parar a aplicação
+docker compose down
+```
+
+### 3. Deploy na VM (Azure/AWS/GCP)
+
+#### 3.1. Instalação de Dependências na VM
+
+```bash
+# Atualizar sistema
+sudo apt update
+sudo apt upgrade -y
+
+# Instalar Git
+sudo apt install git -y
+
+# Instalar Java 21
+sudo apt install openjdk-21-jdk -y
+java -version
+
+# Configurar JAVA_HOME
+echo 'export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64' >> ~/.bashrc
+echo 'export PATH=$JAVA_HOME/bin:$PATH' >> ~/.bashrc
+source ~/.bashrc
+
+# Instalar Maven
+sudo apt install maven -y
+mvn -version
+
+# Instalar Docker (script oficial)
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo docker --version
+sudo docker compose version
+
+# Adicionar usuário ao grupo docker (opcional)
+sudo usermod -aG docker $USER
+# NOTA: Use 'sudo' nos comandos docker até fazer logout/login
+```
+
+#### 3.2. Clonar e Preparar Repositório
+
+```bash
+# Clonar repositório
+cd ~
+git clone <URL_DO_SEU_REPOSITORIO>
+cd OracleSOSLocaliza/SosLocaliza
+```
+
+#### 3.3. Build e Deploy na VM
+
+```bash
+# Build do JAR
+mvn clean package -DskipTests
+
+# Verificar JAR gerado
+ls -lh target/SosLocaliza-0.0.1-SNAPSHOT.jar
+
+# Build da imagem Docker
+sudo docker build -t soslocaliza:latest .
+
+# Executar com Docker Compose (background)
+sudo docker compose up -d
+
+# Verificar status
+sudo docker compose ps
+
+# Ver logs (aguarde aparecer "Started SosLocalizaApplication")
+sudo docker compose logs -f soslocaliza
+# Pressione Ctrl+C para sair dos logs
+
+# IMPORTANTE: Aguarde 30-60 segundos após subir o container antes de testar endpoints
+```
+
+#### 3.4. Gerenciamento do Container
+
+```bash
+# Parar aplicação
+sudo docker compose down
+
+# Reiniciar aplicação
+sudo docker compose restart
+
+# Ver logs em tempo real
+sudo docker compose logs -f
+
+# Ver status
+sudo docker compose ps
+
+# Rebuild e restart
+sudo docker compose up -d --build
+```
+
+#### 3.5. Configuração de Firewall (Azure)
+
+Se estiver usando Azure VM, configure o Network Security Group (NSG) para permitir tráfego na porta 8081:
+
+1. Acesse o portal Azure
+2. Vá em **Network Security Groups**
+3. Adicione regra de entrada:
+   - **Porta**: 8081
+   - **Protocolo**: TCP
+   - **Ação**: Allow
+   - **Prioridade**: 100
+
+### 4. Verificar Deploy
+
+```bash
+# Health Check (local)
+curl http://localhost:8081/api/actuator/health
+
+# Health Check (VM - substitua pelo IP público)
+curl http://<IP_PUBLICO_VM>:8081/api/actuator/health
+```
+
+Resposta esperada:
+```json
+{"status":"UP"}
+```
+
+## 🧪 Testes dos Endpoints
+
+### Base URL
+
+```
+http://localhost:8081/api
+```
+
+Para VM, substitua `localhost` pelo IP público da VM.
+
+### 1. Health Check
+
+```bash
+curl http://localhost:8081/api/actuator/health
+```
+
+### 2. Testes de Eventos
+
+#### Criar Evento
+```bash
+curl -X POST http://localhost:8081/api/eventos/add \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nomeEvento": "Enchente na Região Sul",
+    "descricaoEvento": "Alagamento severo em várias ruas",
+    "causas": "Chuva intensa",
+    "alertas": "Nível do rio subindo",
+    "acoesAntes": "Evacuar áreas de risco",
+    "acoesDurante": "Não atravessar ruas alagadas",
+    "acoesDepois": "Verificar danos estruturais"
+  }'
+```
+
+#### Listar Eventos
+```bash
+curl http://localhost:8081/api/eventos/getAll
+```
+
+#### Buscar Evento por ID
+```bash
+curl http://localhost:8081/api/eventos/getById/1
+```
+
+#### Atualizar Evento
+```bash
+curl -X PUT http://localhost:8081/api/eventos/update/1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nomeEvento": "Enchente na Região Sul - ATUALIZADO",
+    "descricaoEvento": "Alagamento severo atualizado"
+  }'
+```
+
+#### Deletar Evento
+```bash
+curl -X DELETE http://localhost:8081/api/eventos/delete/1
+```
+
+### 3. Testes de SMS
+
+#### Enviar SMS
+```bash
+curl -X POST http://localhost:8081/api/sms \
+  -H "Content-Type: application/json" \
+  -d '{
+    "remetente": "Defesa Civil",
+    "ddd": "11",
+    "numero": "999999999",
+    "mensagem": "ALERTA: Enchente na região. Evacue imediatamente!"
+  }'
+```
+
+#### Listar SMS
+```bash
+curl http://localhost:8081/api/sms/getAll
+```
+
+#### Buscar SMS por Número
+```bash
+curl "http://localhost:8081/api/sms/buscarPorNumero?numeroTelefone=+5511999999999"
+```
+
+### 4. Testes de Procedures (Oracle)
+
+#### Inserir Localização
+```bash
+curl -X POST http://localhost:8081/api/procedures/localizacao \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nomeLocal": "Praça da Sé",
+    "ruaLocal": "Praça da Sé",
+    "numeroLocal": 100,
+    "cepLocal": "01001000"
+  }'
+```
+
+#### Atualizar Localização
+```bash
+curl -X PUT http://localhost:8081/api/procedures/localizacao/1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nomeLocal": "Praça da Sé - Atualizado",
+    "ruaLocal": "Praça da Sé",
+    "numeroLocal": 200,
+    "cepLocal": "01001000"
+  }'
+```
+
+#### Deletar Localização
+```bash
+curl -X DELETE http://localhost:8081/api/procedures/localizacao/1
+```
+
+#### Inserir Usuário
+```bash
+curl -X POST http://localhost:8081/api/procedures/usuario \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nomeUsuario": "João Silva",
+    "cpfUsuario": "12345678901",
+    "emailUsuario": "joao@example.com",
+    "telefoneUsuario": "11999999999"
+  }'
+```
+
+#### Atualizar Usuário
+```bash
+curl -X PUT http://localhost:8081/api/procedures/usuario/1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nomeUsuario": "João Silva Santos",
+    "cpfUsuario": "12345678901",
+    "emailUsuario": "joao.santos@example.com",
+    "telefoneUsuario": "11988888888"
+  }'
+```
+
+#### Deletar Usuário
+```bash
+curl -X DELETE http://localhost:8081/api/procedures/usuario/1
+```
+
+### 5. Sequência Completa de Testes (12 Operações)
+
+Execute esta sequência para testar todas as operações CRUD:
+
+```bash
+# LOCALIZAÇÃO - 6 operações
+# 1. INSERT 1
+curl -X POST http://localhost:8081/api/procedures/localizacao \
+  -H "Content-Type: application/json" \
+  -d '{"nomeLocal":"Teste 1","ruaLocal":"Rua A","numeroLocal":100,"cepLocal":"12345678"}'
+
+# 2. INSERT 2
+curl -X POST http://localhost:8081/api/procedures/localizacao \
+  -H "Content-Type: application/json" \
+  -d '{"nomeLocal":"Teste 2","ruaLocal":"Rua B","numeroLocal":200,"cepLocal":"87654321"}'
+
+# 3. UPDATE 1 (substitua {id} pelo ID retornado)
+curl -X PUT http://localhost:8081/api/procedures/localizacao/{id} \
+  -H "Content-Type: application/json" \
+  -d '{"nomeLocal":"Teste 1 Atualizado","ruaLocal":"Rua A","numeroLocal":150,"cepLocal":"12345678"}'
+
+# 4. UPDATE 2
+curl -X PUT http://localhost:8081/api/procedures/localizacao/{id} \
+  -H "Content-Type: application/json" \
+  -d '{"nomeLocal":"Teste 2 Atualizado","ruaLocal":"Rua B","numeroLocal":250,"cepLocal":"87654321"}'
+
+# 5. DELETE 1
+curl -X DELETE http://localhost:8081/api/procedures/localizacao/{id}
+
+# 6. DELETE 2
+curl -X DELETE http://localhost:8081/api/procedures/localizacao/{id}
+
+# USUÁRIO - 6 operações
+# 7. INSERT 1
+curl -X POST http://localhost:8081/api/procedures/usuario \
+  -H "Content-Type: application/json" \
+  -d '{"nomeUsuario":"João Silva","cpfUsuario":"12345678901","emailUsuario":"joao@test.com","telefoneUsuario":"11999999999"}'
+
+# 8. INSERT 2
+curl -X POST http://localhost:8081/api/procedures/usuario \
+  -H "Content-Type: application/json" \
+  -d '{"nomeUsuario":"Maria Santos","cpfUsuario":"98765432100","emailUsuario":"maria@test.com","telefoneUsuario":"11888888888"}'
+
+# 9. UPDATE 1
+curl -X PUT http://localhost:8081/api/procedures/usuario/{id} \
+  -H "Content-Type: application/json" \
+  -d '{"nomeUsuario":"João Silva Santos","cpfUsuario":"12345678901","emailUsuario":"joao.santos@test.com","telefoneUsuario":"11977777777"}'
+
+# 10. UPDATE 2
+curl -X PUT http://localhost:8081/api/procedures/usuario/{id} \
+  -H "Content-Type: application/json" \
+  -d '{"nomeUsuario":"Maria Santos Silva","cpfUsuario":"98765432100","emailUsuario":"maria.silva@test.com","telefoneUsuario":"11866666666"}'
+
+# 11. DELETE 1
+curl -X DELETE http://localhost:8081/api/procedures/usuario/{id}
+
+# 12. DELETE 2
+curl -X DELETE http://localhost:8081/api/procedures/usuario/{id}
+```
+
+### 6. Testes com Postman/Insomnia
+
+Para facilitar os testes, você pode importar a coleção de endpoints disponível em [TESTES.md](TESTES.md) ou usar o arquivo [ENDPOINTS_TESTES_DATABASE.txt](ENDPOINTS_TESTES_DATABASE.txt).
+
+### 7. Troubleshooting
+
+#### Aplicação não inicia
+```bash
+# Verificar logs
+sudo docker compose logs -f soslocaliza
+
+# Verificar se a porta está em uso
+sudo netstat -tulpn | grep 8081
+
+# Verificar status do container
+sudo docker compose ps
+```
+
+#### Erro de conexão com banco
+- Verifique as credenciais do Oracle no `docker-compose.yml`
+- Confirme que a VM tem acesso ao Oracle FIAP
+- Teste a conexão: `telnet oracle.fiap.com.br 1521`
+
+#### Erro de permissão Docker
+```bash
+# Adicionar usuário ao grupo docker
+sudo usermod -aG docker $USER
+
+# OU usar sudo temporariamente
+sudo docker compose up -d
+```
+
 ## 🔗 HATEOAS (Hypermedia as the Engine of Application State)
 
 A API implementa **HATEOAS nível 3** do modelo de maturidade REST proposto por Leonard Richardson. Isso significa que todas as respostas incluem links navegáveis que permitem descobrir e acessar recursos relacionados sem precisar conhecer as URLs de antemão.
@@ -339,6 +727,7 @@ Todos os endpoints de listagem suportam paginação:
 - Tamanhos máximos de campos
 - Formato de datas
 
-## 🧪 Testes
+## 📚 Documentação Adicional
 
-Consulte o arquivo [TESTES.md](TESTES.md) para instruções detalhadas sobre como testar a API.
+- **[TESTES.md](TESTES.md)**: Instruções detalhadas sobre como testar a API
+- **[ENDPOINTS_TESTES_DATABASE.txt](ENDPOINTS_TESTES_DATABASE.txt)**: Endpoints para testes das procedures Oracle
