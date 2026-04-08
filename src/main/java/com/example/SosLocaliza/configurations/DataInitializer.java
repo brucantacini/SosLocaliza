@@ -22,21 +22,18 @@ public class DataInitializer implements CommandLineRunner {
     public void run(String... args) throws Exception {
         log.info("Inicializando dados de exemplo para o Oracle FIAP...");
         
-        // Verificar se já existem eventos
         List<Evento> eventosExistentes = eventoService.listarTodosEventos();
         if (!eventosExistentes.isEmpty()) {
             log.info("Eventos já existem no banco. Pulando inicialização de dados.");
             return;
         }
 
-        // Criar eventos de exemplo
         criarEventosExemplo();
         
         log.info("Dados de exemplo inicializados com sucesso!");
     }
 
     private void criarEventosExemplo() {
-        // Evento 1: Enchente
         Evento enchente = Evento.builder()
                 .nomeEvento("Enchente")
                 .descricaoEvento("Inundação causada por chuvas intensas que podem causar danos materiais e riscos à vida")
@@ -48,7 +45,6 @@ public class DataInitializer implements CommandLineRunner {
                 .ativo(true)
                 .build();
 
-        // Evento 2: Deslizamento
         Evento deslizamento = Evento.builder()
                 .nomeEvento("Deslizamento de Terra")
                 .descricaoEvento("Movimento de massa de solo e rochas em encostas, causado por chuvas ou instabilidade do terreno")
@@ -60,7 +56,6 @@ public class DataInitializer implements CommandLineRunner {
                 .ativo(true)
                 .build();
 
-        // Evento 3: Seca
         Evento seca = Evento.builder()
                 .nomeEvento("Seca")
                 .descricaoEvento("Período prolongado de ausência de chuvas que afeta recursos hídricos e agricultura")
@@ -72,7 +67,6 @@ public class DataInitializer implements CommandLineRunner {
                 .ativo(true)
                 .build();
 
-        // Evento 4: Tempestade
         Evento tempestade = Evento.builder()
                 .nomeEvento("Tempestade")
                 .descricaoEvento("Fenômeno meteorológico com ventos fortes, chuvas intensas e possíveis granizos")
@@ -84,7 +78,6 @@ public class DataInitializer implements CommandLineRunner {
                 .ativo(true)
                 .build();
 
-        // Evento 5: Incêndio Florestal
         Evento incendioFlorestal = Evento.builder()
                 .nomeEvento("Incêndio Florestal")
                 .descricaoEvento("Queimada descontrolada em áreas de vegetação que pode se espalhar rapidamente")
@@ -96,7 +89,6 @@ public class DataInitializer implements CommandLineRunner {
                 .ativo(true)
                 .build();
 
-        // Salvar eventos
         eventoService.criarEvento(enchente);
         eventoService.criarEvento(deslizamento);
         eventoService.criarEvento(seca);

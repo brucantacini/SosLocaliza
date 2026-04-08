@@ -33,6 +33,6 @@ public class UsuarioProcedureRequestDto {
     
     private Long idLocal;
     
-    private Integer ativo = 1; // 1 = ativo, 0 = inativo
+    private Integer ativo = 1;
 }
 

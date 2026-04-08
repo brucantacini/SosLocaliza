@@ -5,24 +5,25 @@ Sistema de emergência para situações climáticas extremas (enchentes, desliza
 ## 👥 Integrantes do Grupo
 
 ### Bruno Cantacini - RM560242
-**Responsabilidades**: Desenvolvimento Backend, Arquitetura da Aplicação, Implementação de Endpoints REST, Integração com Banco de Dados Oracle, Procedures e HATEOAS.
+
+**Responsabilidades**: Desenvolvimento Backend, Arquitetura da Aplicação, Implementação de Endpoints REST, Integração com Banco de Dados Oracle, Procedures e HATEOAS,  Criação de vídeos demonstrativos.
 
 ### Amanda Galdino - RM560066
+
 **Responsabilidades**: Integração Twilio para envio de SMS, Configuração de APIs externas, Testes de integração.
 
 ### Gustavo Gonçalves - RM556823
-**Responsabilidades**: Documentação do projeto, Criação de vídeos demonstrativos, Diagramas de Classes e DER, Documentação técnica.
 
-### Cronograma tarefas:
-- https://trello.com/invite/b/68d7339fb360c5bde1caf0dc/ATTI0af812df390890d5b80e5048c67d862a00864906/sos-localiza
+**Responsabilidades**: Documentação do projeto técnica.
 
 ## 🎥 Vídeo de Apresentação
 
-🔗 **Link do Vídeo**: https://www.youtube.com/watch?v=rsRSfEShnGk
+🔗 **Link do Vídeo**: 
 
 ### Conteúdo do Vídeo
 
 O vídeo apresenta:
+
 - **Proposta Tecnológica**: Sistema de emergência climática com envio de SMS via Twilio
 - **Público-Alvo**: População em áreas de risco, Defesa Civil, Órgãos públicos de gestão de emergências
 - **Problemas que a aplicação soluciona**:
@@ -48,27 +49,31 @@ O vídeo apresenta:
 - **Spring Security** (form login, HTTP Basic para API, perfis `ROLE_USER` e `ROLE_ADMIN`)
 - **Thymeleaf** (camada de visualização web)
 
-## Interface web (Sprint 3 — Java Advanced)
+## Interface web
 
 Após subir a aplicação, acesse no navegador:
 
-| URL | Descrição |
-|-----|-----------|
-| `http://localhost:8080/login` (dev) / `http://localhost:8081/login` (oracle-fiap) | Login (redireciona usuários não autenticados) |
-| `http://localhost:8080/` (dev) / `http://localhost:8081/` (oracle-fiap) | Página inicial (após login) |
+
+| URL                                                                                   | Descrição                                                                                             |
+| ------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `http://localhost:8080/login` (dev) / `http://localhost:8081/login` (oracle-fiap)     | Login (redireciona usuários não autenticados)                                                         |
+| `http://localhost:8080/` (dev) / `http://localhost:8081/` (oracle-fiap)               | Página inicial (após login)                                                                           |
 | `http://localhost:8080/socorro` (dev) / `http://localhost:8081/socorro` (oracle-fiap) | Fluxo **Pedido de socorro (SMS)** — escolha do evento e mensagem. Nome/telefone vêm do usuário logado |
-| `http://localhost:8080/admin` (dev) / `http://localhost:8081/admin` (oracle-fiap) | Fluxo **Painel administrativo** — estatísticas e histórico paginado de SMS (somente `ROLE_ADMIN`) |
+| `http://localhost:8080/admin` (dev) / `http://localhost:8081/admin` (oracle-fiap)     | Fluxo **Painel administrativo** — estatísticas e histórico paginado de SMS (somente `ROLE_ADMIN`)     |
+
 
 **Usuários de demonstração** (senha em ambos: `password`):
 
-| Usuário | Perfil |
-|---------|--------|
-| `admin` | Administrador (`ROLE_ADMIN`) — acesso ao painel e à API completa |
+
+| Usuário   | Perfil                                                                 |
+| --------- | ---------------------------------------------------------------------- |
+| `admin`   | Administrador (`ROLE_ADMIN`) — acesso ao painel e à API completa       |
 | `citizen` | Cidadão (`ROLE_USER`) — pedido de socorro e leitura de eventos via API |
+
 
 Os hashes BCrypt estão nas migrations `V2__seed_users.sql` (pastas `db/migration/h2` e `db/migration/oracle`).
 
-**REST API:** todos os controllers estão sob o prefixo `/api` (ex.: `GET /api/eventos/ativos`). Para testar com **curl** ou Postman, use **HTTP Basic** com `admin`/`password` ou `citizen`/`password`. O CSRF está desligado apenas para rotas `/api/**`; o login web usa CSRF normalmente.
+**REST API:** todos os controllers estão sob o prefixo `/api` (ex.: `GET /api/eventos/ativos`). Para testar com **curl** ou Postman, use **HTTP Basic** com `admin`/`password` ou `citizen`/`password`. O CSRF está desligado apenas para rotas `/api/`**; o login web usa CSRF normalmente.
 
 **Variáveis de ambiente (Oracle FIAP):** defina `ORACLE_PASSWORD` (e opcionalmente `ORACLE_USERNAME`). **Não** commite senhas no repositório. A pasta do projeto contém `.env.example`.
 
@@ -84,10 +89,12 @@ Os hashes BCrypt estão nas migrations `V2__seed_users.sql` (pastas `db/migratio
 ### 1. Configuração do Twilio (SMS Real)
 
 O sistema suporta **dois modos**:
+
 - **Modo Simulação**: Funciona sem configuração (padrão)
 - **Modo Twilio Real**: Envia SMS reais via Twilio
 
 #### Modo Simulação (Padrão)
+
 Sem configurar nada, o sistema usa modo simulação para testes.
 
 #### Modo Twilio Real (Opcional)
@@ -109,7 +116,8 @@ export TWILIO_ENABLED="true"
 ```
 
 **Como obter credenciais Twilio**:
-1. Crie conta gratuita em: https://www.twilio.com/try-twilio
+
+1. Crie conta gratuita em: [https://www.twilio.com/try-twilio](https://www.twilio.com/try-twilio)
 2. Receba $15-20 de crédito grátis
 3. Obtenha Account SID e Auth Token no Dashboard
 
@@ -125,7 +133,7 @@ Perfil Spring: `oracle-fiap` (porta **8081**).
 - Porta: `1521`
 - SID: `ORCL`
 - Usuário: variável `ORACLE_USERNAME` (padrão `rm560242` se não informada)
-- Senha: variável de ambiente **`ORACLE_PASSWORD`** (obrigatória; não versionar)
+- Senha: variável de ambiente `**ORACLE_PASSWORD`** (obrigatória; não versionar)
 
 Exemplo de `.env` local (na pasta `SosLocaliza`):
 
@@ -141,7 +149,7 @@ ORACLE_SID=ORCL
 
 #### Desenvolvimento (H2)
 
-O perfil padrão é **`dev`** (H2 em memória, Flyway em `classpath:db/migration/h2`, porta **8080**).
+O perfil padrão é `**dev**` (H2 em memória, Flyway em `classpath:db/migration/h2`, porta **8080**).
 
 ```bash
 java -jar target/SosLocaliza-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev
@@ -158,6 +166,7 @@ http://localhost:8080/h2-console
 ### Opção 1: Execução Local (Desenvolvimento)
 
 #### Pré-requisitos
+
 - Java 21 instalado
 - Maven 3.6+ instalado
 - Acesso ao Oracle FIAP (ou use perfil H2 para desenvolvimento)
@@ -165,32 +174,38 @@ http://localhost:8080/h2-console
 #### Passo a Passo
 
 1. **Clone o repositório:**
+
 ```bash
 git clone <URL_DO_REPOSITORIO>
 cd OracleSOSLocaliza/SosLocaliza
 ```
 
-2. **Compile o projeto:**
+1. **Compile o projeto:**
+
 ```bash
 mvn clean install
 ```
 
-3. **Execute a aplicação:**
+1. **Execute a aplicação:**
+
 ```bash
 ./mvnw spring-boot:run
 ```
 
-4. **Acesse a aplicação:**
+1. **Acesse a aplicação:**
+
 ```
 http://localhost:8080/actuator/health (perfil dev)
 ```
 
 Para Oracle FIAP, rode com perfil Oracle ativo:
+
 ```bash
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=oracle-fiap
 ```
 
 e acesse:
+
 ```
 http://localhost:8081/actuator/health
 ```
@@ -198,11 +213,13 @@ http://localhost:8081/actuator/health
 ### Opção 2: Execução com JAR (Produção)
 
 1. **Gere o JAR:**
+
 ```bash
 mvn clean package
 ```
 
-2. **Execute o JAR:**
+1. **Execute o JAR:**
+
 ```bash
 java -jar target/SosLocaliza-0.0.1-SNAPSHOT.jar
 ```
@@ -355,10 +372,10 @@ Se estiver usando Azure VM, configure o Network Security Group (NSG) para permit
 1. Acesse o portal Azure
 2. Vá em **Network Security Groups**
 3. Adicione regra de entrada:
-   - **Porta**: 8081
-   - **Protocolo**: TCP
-   - **Ação**: Allow
-   - **Prioridade**: 100
+  - **Porta**: 8081
+  - **Protocolo**: TCP
+  - **Ação**: Allow
+  - **Prioridade**: 100
 
 ### 4. Verificar Deploy
 
@@ -371,6 +388,7 @@ curl http://<IP_PUBLICO_VM>:8081/actuator/health
 ```
 
 Resposta esperada:
+
 ```json
 {"status":"UP"}
 ```
@@ -399,6 +417,7 @@ curl http://localhost:8081/actuator/health
 ### 2. Testes de Eventos
 
 #### Criar Evento
+
 ```bash
 curl -X POST http://localhost:8081/api/eventos/add \
   -H "Content-Type: application/json" \
@@ -414,21 +433,25 @@ curl -X POST http://localhost:8081/api/eventos/add \
 ```
 
 #### Listar Eventos
+
 ```bash
 curl -u admin:password "http://localhost:8081/api/eventos/getAll?page=0&size=10&direction=ASC"
 ```
 
 #### Listar apenas eventos ativos
+
 ```bash
 curl -u citizen:password http://localhost:8081/api/eventos/ativos
 ```
 
 #### Buscar Evento por ID
+
 ```bash
 curl http://localhost:8081/api/eventos/getById/1
 ```
 
 #### Atualizar Evento
+
 ```bash
 curl -X PUT http://localhost:8081/api/eventos/update/1 \
   -H "Content-Type: application/json" \
@@ -439,6 +462,7 @@ curl -X PUT http://localhost:8081/api/eventos/update/1 \
 ```
 
 #### Deletar Evento
+
 ```bash
 curl -X DELETE http://localhost:8081/api/eventos/delete/1
 ```
@@ -446,6 +470,7 @@ curl -X DELETE http://localhost:8081/api/eventos/delete/1
 ### 3. Testes de SMS
 
 #### Enviar SMS
+
 ```bash
 curl -X POST http://localhost:8081/api/sms \
   -H "Content-Type: application/json" \
@@ -459,11 +484,13 @@ curl -X POST http://localhost:8081/api/sms \
 ```
 
 #### Listar SMS
+
 ```bash
 curl http://localhost:8081/api/sms/getAll
 ```
 
 #### Buscar SMS por Número
+
 ```bash
 curl "http://localhost:8081/api/sms/buscarPorNumero?numeroTelefone=+5511999999999"
 ```
@@ -471,6 +498,7 @@ curl "http://localhost:8081/api/sms/buscarPorNumero?numeroTelefone=+551199999999
 ### 4. Testes de Procedures (Oracle)
 
 #### Inserir Localização
+
 ```bash
 curl -X POST http://localhost:8081/api/procedures/localizacao \
   -H "Content-Type: application/json" \
@@ -483,6 +511,7 @@ curl -X POST http://localhost:8081/api/procedures/localizacao \
 ```
 
 #### Atualizar Localização
+
 ```bash
 curl -X PUT http://localhost:8081/api/procedures/localizacao/1 \
   -H "Content-Type: application/json" \
@@ -495,11 +524,13 @@ curl -X PUT http://localhost:8081/api/procedures/localizacao/1 \
 ```
 
 #### Deletar Localização
+
 ```bash
 curl -X DELETE http://localhost:8081/api/procedures/localizacao/1
 ```
 
 #### Inserir Usuário
+
 ```bash
 curl -X POST http://localhost:8081/api/procedures/usuario \
   -H "Content-Type: application/json" \
@@ -512,6 +543,7 @@ curl -X POST http://localhost:8081/api/procedures/usuario \
 ```
 
 #### Atualizar Usuário
+
 ```bash
 curl -X PUT http://localhost:8081/api/procedures/usuario/1 \
   -H "Content-Type: application/json" \
@@ -524,6 +556,7 @@ curl -X PUT http://localhost:8081/api/procedures/usuario/1 \
 ```
 
 #### Deletar Usuário
+
 ```bash
 curl -X DELETE http://localhost:8081/api/procedures/usuario/1
 ```
@@ -595,6 +628,7 @@ Para facilitar os testes, consulte o guia de cenários em [TESTES.md](TESTES.md)
 ### 7. Troubleshooting
 
 #### Aplicação não inicia
+
 ```bash
 # Verificar logs
 sudo docker compose logs -f soslocaliza
@@ -607,11 +641,13 @@ sudo docker compose ps
 ```
 
 #### Erro de conexão com banco
+
 - Verifique as credenciais do Oracle no `docker-compose.yml`
 - Confirme que a VM tem acesso ao Oracle FIAP
 - Teste a conexão: `telnet oracle.fiap.com.br 1521`
 
 #### Erro de permissão Docker
+
 ```bash
 # Adicionar usuário ao grupo docker
 sudo usermod -aG docker $USER
@@ -687,23 +723,14 @@ Todas as respostas de recursos individuais (Evento e SMS) incluem um objeto `_li
 ### Exemplo de Uso
 
 1. **Criar um evento**:
-   ```bash
+  ```bash
    POST /api/eventos/add
-   ```
+  ```
    A resposta incluirá links para navegar pelo evento criado.
-
 2. **Seguir o link `collection`**:
-   O cliente pode usar o link `collection` retornado para listar todos os eventos.
-
+  O cliente pode usar o link `collection` retornado para listar todos os eventos.
 3. **Seguir o link `sms`**:
-   O cliente pode usar o link `sms` para ver todos os SMSs relacionados ao evento.
-
-### Benefícios
-
-- ✅ **Descoberta automática**: Cliente descobre endpoints disponíveis
-- ✅ **Menos hardcoding**: Não precisa decorar URLs
-- ✅ **Evolução fácil**: Mudanças de URL são menos impactantes
-- ✅ **Navegação natural**: Segue links como em um site web
+  O cliente pode usar o link `sms` para ver todos os SMSs relacionados ao evento.
 
 ## 📡 Documentação Completa da API - Endpoints
 
@@ -713,41 +740,47 @@ Base HTTP: `http://localhost:8081` — rotas REST usam o prefixo `/api/...`. Aut
 
 ### Eventos
 
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| `POST` | `/api/eventos/add` | Criar novo evento |
-| `GET` | `/api/eventos/getAll` | Listar todos os eventos (com paginação) |
-| `GET` | `/api/eventos/ativos` | Listar apenas eventos ativos (ex.: formulário de socorro) |
-| `GET` | `/api/eventos/getById/{id}` | Buscar evento por ID |
-| `PUT` | `/api/eventos/update/{id}` | Atualizar evento existente |
-| `DELETE` | `/api/eventos/delete/{id}` | Deletar evento |
-| `PATCH` | `/api/eventos/desativar/{id}` | Desativar evento (soft delete) |
-| `GET` | `/api/eventos/buscarPorNome?nome={nome}` | Buscar eventos por nome |
-| `GET` | `/api/eventos/buscarPorDescricao?descricao={descricao}` | Buscar eventos por descrição |
-| `GET` | `/api/eventos/estatisticas` | Obter estatísticas dos eventos |
+
+| Método   | Endpoint                                                | Descrição                                                 |
+| -------- | ------------------------------------------------------- | --------------------------------------------------------- |
+| `POST`   | `/api/eventos/add`                                      | Criar novo evento                                         |
+| `GET`    | `/api/eventos/getAll`                                   | Listar todos os eventos (com paginação)                   |
+| `GET`    | `/api/eventos/ativos`                                   | Listar apenas eventos ativos (ex.: formulário de socorro) |
+| `GET`    | `/api/eventos/getById/{id}`                             | Buscar evento por ID                                      |
+| `PUT`    | `/api/eventos/update/{id}`                              | Atualizar evento existente                                |
+| `DELETE` | `/api/eventos/delete/{id}`                              | Deletar evento                                            |
+| `PATCH`  | `/api/eventos/desativar/{id}`                           | Desativar evento (soft delete)                            |
+| `GET`    | `/api/eventos/buscarPorNome?nome={nome}`                | Buscar eventos por nome                                   |
+| `GET`    | `/api/eventos/buscarPorDescricao?descricao={descricao}` | Buscar eventos por descrição                              |
+| `GET`    | `/api/eventos/estatisticas`                             | Obter estatísticas dos eventos                            |
+
 
 **Parâmetros de Paginação (para getAll):**
+
 - `page`: Número da página (padrão: 0)
 - `size`: Tamanho da página (padrão: 10)
 - `direction`: Direção da ordenação - ASC ou DESC (padrão: ASC)
 
 ### SMS
 
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| `POST` | `/api/sms` | Enviar SMS |
-| `POST` | `/api/sms/emergencia/{idEvento}` | Enviar SMS de emergência vinculado a um evento |
-| `GET` | `/api/sms/getAll` | Listar todos os SMS (com paginação) |
-| `GET` | `/api/sms/buscarPorNumero?numeroTelefone={numero}` | Buscar SMS por número de telefone |
-| `GET` | `/api/sms/buscarPorDdd?ddd={ddd}` | Buscar SMS por DDD |
-| `GET` | `/api/sms/buscarPorEvento/{idEvento}` | Buscar SMS por evento |
-| `GET` | `/api/sms/buscarPorPeriodo?dataInicio={dataInicio}&dataFim={dataFim}` | Buscar SMS por período |
-| `GET` | `/api/sms/ultimoSms/{numero}` | Buscar último SMS enviado para um número |
-| `GET` | `/api/sms/estatisticas` | Obter estatísticas dos SMS |
-| `PATCH` | `/api/sms/marcarSucesso/{id}` | Marcar SMS como enviado com sucesso |
-| `PATCH` | `/api/sms/marcarErro/{id}?erro={mensagemErro}` | Marcar SMS como erro |
+
+| Método  | Endpoint                                                              | Descrição                                      |
+| ------- | --------------------------------------------------------------------- | ---------------------------------------------- |
+| `POST`  | `/api/sms`                                                            | Enviar SMS                                     |
+| `POST`  | `/api/sms/emergencia/{idEvento}`                                      | Enviar SMS de emergência vinculado a um evento |
+| `GET`   | `/api/sms/getAll`                                                     | Listar todos os SMS (com paginação)            |
+| `GET`   | `/api/sms/buscarPorNumero?numeroTelefone={numero}`                    | Buscar SMS por número de telefone              |
+| `GET`   | `/api/sms/buscarPorDdd?ddd={ddd}`                                     | Buscar SMS por DDD                             |
+| `GET`   | `/api/sms/buscarPorEvento/{idEvento}`                                 | Buscar SMS por evento                          |
+| `GET`   | `/api/sms/buscarPorPeriodo?dataInicio={dataInicio}&dataFim={dataFim}` | Buscar SMS por período                         |
+| `GET`   | `/api/sms/ultimoSms/{numero}`                                         | Buscar último SMS enviado para um número       |
+| `GET`   | `/api/sms/estatisticas`                                               | Obter estatísticas dos SMS                     |
+| `PATCH` | `/api/sms/marcarSucesso/{id}`                                         | Marcar SMS como enviado com sucesso            |
+| `PATCH` | `/api/sms/marcarErro/{id}?erro={mensagemErro}`                        | Marcar SMS como erro                           |
+
 
 **Parâmetros de Paginação (para getAll):**
+
 - `page`: Número da página (padrão: 0)
 - `size`: Tamanho da página (padrão: 10)
 - `direction`: Direção da ordenação - ASC ou DESC (padrão: DESC)
@@ -755,21 +788,25 @@ Base HTTP: `http://localhost:8081` — rotas REST usam o prefixo `/api/...`. Aut
 
 ### Procedures Oracle (Sprint 2)
 
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| `POST` | `/api/procedures/localizacao` | Criar localização via procedure Oracle |
-| `PUT` | `/api/procedures/localizacao/{id}` | Atualizar localização via procedure Oracle |
-| `DELETE` | `/api/procedures/localizacao/{id}` | Deletar localização via procedure Oracle |
-| `POST` | `/api/procedures/usuario` | Criar usuário via procedure Oracle |
-| `PUT` | `/api/procedures/usuario/{id}` | Atualizar usuário via procedure Oracle |
-| `DELETE` | `/api/procedures/usuario/{id}` | Deletar usuário via procedure Oracle |
+
+| Método   | Endpoint                           | Descrição                                  |
+| -------- | ---------------------------------- | ------------------------------------------ |
+| `POST`   | `/api/procedures/localizacao`      | Criar localização via procedure Oracle     |
+| `PUT`    | `/api/procedures/localizacao/{id}` | Atualizar localização via procedure Oracle |
+| `DELETE` | `/api/procedures/localizacao/{id}` | Deletar localização via procedure Oracle   |
+| `POST`   | `/api/procedures/usuario`          | Criar usuário via procedure Oracle         |
+| `PUT`    | `/api/procedures/usuario/{id}`     | Atualizar usuário via procedure Oracle     |
+| `DELETE` | `/api/procedures/usuario/{id}`     | Deletar usuário via procedure Oracle       |
+
 
 ### Actuator (Health Check)
 
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| `GET` | `/actuator/health` | Verificar saúde da aplicação |
-| `GET` | `/actuator/info` | Informações da aplicação |
+
+| Método | Endpoint           | Descrição                    |
+| ------ | ------------------ | ---------------------------- |
+| `GET`  | `/actuator/health` | Verificar saúde da aplicação |
+| `GET`  | `/actuator/info`   | Informações da aplicação     |
+
 
 ---
 
@@ -823,31 +860,17 @@ Content-Type: application/json
 }
 ```
 
-## 📊 Diagramas da Aplicação
-
-### Diagrama de Classes
-
-Diagrama de classes: disponível nos materiais de apresentação do grupo.
-
-O diagrama de classes apresenta a estrutura das entidades principais do sistema:
-- **Evento**: Representa eventos climáticos de risco (enchentes, deslizamentos)
-- **Sms**: Representa mensagens SMS enviadas para alertas de emergência
-- **Localizacao**: Representa localizações geográficas (utilizada nas procedures Oracle)
-- **Usuario**: Representa usuários do sistema (utilizada nas procedures Oracle)
-
-### Diagrama de Entidade e Relacionamento (DER)
-
-Diagrama DER: disponível nos materiais de apresentação do grupo.
-
 #### Relacionamentos e Constraints
 
 **T_SOS_EVENTO ↔ T_SOS_SMS**
+
 - **Tipo**: Um-para-Muitos (1:N)
 - **Relacionamento**: Um evento pode ter múltiplos SMS associados
 - **Constraint**: `T_SOS_SMS.ID_EVENTO` é Foreign Key para `T_SOS_EVENTO.ID_EVENTO`
 - **Comportamento**: cada SMS deve estar vinculado a um evento (`ID_EVENTO` obrigatório no Oracle em produção).
 
 **T_SOS_LOCALIZACAO ↔ T_SOS_USUARIO**
+
 - **Tipo**: Um-para-Muitos (1:N)
 - **Relacionamento**: Uma localização pode ter múltiplos usuários
 - **Constraint**: `T_SOS_USUARIO.ID_LOCAL` é Foreign Key para `T_SOS_LOCALIZACAO.ID_LOCAL`
@@ -889,6 +912,18 @@ Diagrama DER: disponível nos materiais de apresentação do grupo.
 - ERRO (VARCHAR 500)
 - ID_EVENTO (NUMBER/BIGINT, FK)
 
+### T_SOS_APP_USER
+
+- ID_USER (NUMBER/BIGINT)
+- USERNAME (VARCHAR 100)
+- PASSWORD (VARCHAR 100)
+- ENABLED (NUMBER(1))
+- ROLE (VARCHAR 50)
+- NOME_EXIBICAO (VARCHAR 100)
+- DDD (VARCHAR 2)
+- NUMERO_LOCAL (VARCHAR 9)
+- LOCALIZACAO (VARCHAR 200)
+
 ## 🔧 Configurações Avançadas
 
 ### Logs
@@ -918,4 +953,5 @@ Todos os endpoints de listagem suportam paginação:
 ## 📚 Documentação Adicional
 
 - **[TESTES.md](TESTES.md)**: Instruções detalhadas sobre como testar a API
-- Endpoints para testes das procedures Oracle: seção "Procedures Oracle (Sprint 2)" neste README e no arquivo [TESTES.md](TESTES.md)
+- Endpoints para testes das procedures.
+

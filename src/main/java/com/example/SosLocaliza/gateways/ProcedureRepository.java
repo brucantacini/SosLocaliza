@@ -19,18 +19,11 @@ public class ProcedureRepository {
     
     private final JdbcTemplate jdbcTemplate;
     
-    // ============================================================
-    // PROCEDURES DE LOCALIZACAO
-    // ============================================================
-    
-    /**
-     * Chama a procedure PROC_INSERT_LOCALIZACAO
-     */
     public Map<String, Object> insertLocalizacao(String nomeLocal, String ruaLocal, 
                                                  Integer numeroLocal, String cepLocal) {
         try {
             SimpleJdbcCall call = new SimpleJdbcCall(jdbcTemplate)
-                    .withCatalogName(null) // Usa o schema padrão do usuário
+                    .withCatalogName(null)
                     .withProcedureName("PROC_INSERT_LOCALIZACAO")
                     .declareParameters(
                             new SqlParameter("p_nome_local", Types.VARCHAR),
@@ -56,9 +49,6 @@ public class ProcedureRepository {
         }
     }
     
-    /**
-     * Chama a procedure PROC_UPDATE_LOCALIZACAO
-     */
     public Map<String, Object> updateLocalizacao(Long idLocal, String nomeLocal, 
                                                  String ruaLocal, Integer numeroLocal, String cepLocal) {
         try {
@@ -90,9 +80,6 @@ public class ProcedureRepository {
         }
     }
     
-    /**
-     * Chama a procedure PROC_DELETE_LOCALIZACAO
-     */
     public Map<String, Object> deleteLocalizacao(Long idLocal) {
         try {
             SimpleJdbcCall call = new SimpleJdbcCall(jdbcTemplate)
@@ -113,13 +100,6 @@ public class ProcedureRepository {
         }
     }
     
-    // ============================================================
-    // PROCEDURES DE USUARIO
-    // ============================================================
-    
-    /**
-     * Chama a procedure PROC_INSERT_USUARIO
-     */
     public Map<String, Object> insertUsuario(String nomeCompleto, String email, String senha,
                                              String cpf, LocalDate dataNascimento, Long idLocal, Integer ativo) {
         try {
@@ -156,9 +136,6 @@ public class ProcedureRepository {
         }
     }
     
-    /**
-     * Chama a procedure PROC_UPDATE_USUARIO
-     */
     public Map<String, Object> updateUsuario(Long idUsuario, String nomeCompleto, String email,
                                              String senha, String cpf, LocalDate dataNascimento,
                                              Long idLocal, Integer ativo) {
@@ -197,9 +174,6 @@ public class ProcedureRepository {
         }
     }
     
-    /**
-     * Chama a procedure PROC_DELETE_USUARIO
-     */
     public Map<String, Object> deleteUsuario(Long idUsuario) {
         try {
             SimpleJdbcCall call = new SimpleJdbcCall(jdbcTemplate)

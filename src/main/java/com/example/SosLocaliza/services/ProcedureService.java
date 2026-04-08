@@ -20,10 +20,6 @@ public class ProcedureService {
     
     private final ProcedureRepository procedureRepository;
     
-    // ============================================================
-    // SERVIÇOS DE LOCALIZACAO
-    // ============================================================
-    
     public ProcedureResponseDto insertLocalizacao(LocalizacaoProcedureRequestDto dto) {
         try {
             Map<String, Object> result = procedureRepository.insertLocalizacao(
@@ -87,10 +83,6 @@ public class ProcedureService {
             return ProcedureResponseDto.erro("Erro ao excluir localização: " + e.getMessage());
         }
     }
-    
-    // ============================================================
-    // SERVIÇOS DE USUARIO
-    // ============================================================
     
     public ProcedureResponseDto insertUsuario(UsuarioProcedureRequestDto dto) {
         try {

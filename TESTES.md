@@ -5,6 +5,20 @@
 http://localhost:8081/api
 ```
 
+## 🔐 Autenticação (obrigatória para `/api/**`)
+
+As rotas da API exigem **HTTP Basic Auth**.  
+Sem credenciais, o retorno será `401 Unauthorized`.
+
+Usuários de teste:
+- `admin` / `password` (acesso total)
+- `citizen` / `password` (acesso limitado)
+
+Exemplo:
+```bash
+curl -u admin:password "http://localhost:8081/api/eventos/getAll?page=0&size=10&direction=ASC"
+```
+
 ## 🚀 Como Executar os Testes
 
 ### **1. Configuração Inicial**
@@ -76,6 +90,10 @@ Cada resposta de recurso inclui um objeto `_links` com:
 
 #### **2. Listar Todos Eventos**
 **endpoint** = `GET /api/eventos/getAll`
+**curl (com auth)** =
+```bash
+curl -u admin:password "http://localhost:8081/api/eventos/getAll?page=0&size=10&direction=ASC"
+```
 **json para teste** = 
 ```json
 {
@@ -89,6 +107,10 @@ Cada resposta de recurso inclui um objeto `_links` com:
 
 #### **3. Buscar Evento por ID**
 **endpoint** = `GET /api/eventos/getById/1`
+**curl (com auth)** =
+```bash
+curl -u citizen:password "http://localhost:8081/api/eventos/getById/1"
+```
 **json para teste** = 
 ```json
 {}

@@ -15,7 +15,6 @@ public class HateoasLinkBuilder {
             eventoDto.add(Link.of("/api/eventos/getById/" + id).withSelfRel());
             eventoDto.add(Link.of("/api/eventos/getAll?page=0&size=10&direction=ASC").withRel("collection"));
         } catch (Exception e) {
-            // evita quebrar resposta se links falharem
         }
     }
 
@@ -28,7 +27,6 @@ public class HateoasLinkBuilder {
             
             smsDto.add(Link.of("/api/sms/getAll?page=0&size=10&direction=DESC").withRel("collection"));
         } catch (Exception e) {
-            // Se houver erro ao gerar links, apenas não adiciona-os (evita quebrar a resposta)
         }
     }
 

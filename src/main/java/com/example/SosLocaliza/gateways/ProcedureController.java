@@ -19,14 +19,6 @@ public class ProcedureController {
     
     private final ProcedureService procedureService;
     
-    // ============================================================
-    // ENDPOINTS DE LOCALIZACAO
-    // ============================================================
-    
-    /**
-     * POST /procedures/localizacao
-     * Insere uma nova localização usando a procedure PROC_INSERT_LOCALIZACAO
-     */
     @PostMapping("/localizacao")
     public ResponseEntity<ProcedureResponseDto> insertLocalizacao(
             @RequestBody @Valid LocalizacaoProcedureRequestDto dto) {
@@ -40,10 +32,6 @@ public class ProcedureController {
         }
     }
     
-    /**
-     * PUT /procedures/localizacao/{id}
-     * Atualiza uma localização usando a procedure PROC_UPDATE_LOCALIZACAO
-     */
     @PutMapping("/localizacao/{id}")
     public ResponseEntity<ProcedureResponseDto> updateLocalizacao(
             @PathVariable Long id,
@@ -58,10 +46,6 @@ public class ProcedureController {
         }
     }
     
-    /**
-     * DELETE /procedures/localizacao/{id}
-     * Exclui uma localização usando a procedure PROC_DELETE_LOCALIZACAO
-     */
     @DeleteMapping("/localizacao/{id}")
     public ResponseEntity<ProcedureResponseDto> deleteLocalizacao(@PathVariable Long id) {
         log.info("Chamando procedure PROC_DELETE_LOCALIZACAO para ID: {}", id);
@@ -74,14 +58,6 @@ public class ProcedureController {
         }
     }
     
-    // ============================================================
-    // ENDPOINTS DE USUARIO
-    // ============================================================
-    
-    /**
-     * POST /procedures/usuario
-     * Insere um novo usuário usando a procedure PROC_INSERT_USUARIO
-     */
     @PostMapping("/usuario")
     public ResponseEntity<ProcedureResponseDto> insertUsuario(
             @RequestBody @Valid UsuarioProcedureRequestDto dto) {
@@ -95,10 +71,6 @@ public class ProcedureController {
         }
     }
     
-    /**
-     * PUT /procedures/usuario/{id}
-     * Atualiza um usuário usando a procedure PROC_UPDATE_USUARIO
-     */
     @PutMapping("/usuario/{id}")
     public ResponseEntity<ProcedureResponseDto> updateUsuario(
             @PathVariable Long id,
@@ -113,10 +85,6 @@ public class ProcedureController {
         }
     }
     
-    /**
-     * DELETE /procedures/usuario/{id}
-     * Exclui um usuário usando a procedure PROC_DELETE_USUARIO
-     */
     @DeleteMapping("/usuario/{id}")
     public ResponseEntity<ProcedureResponseDto> deleteUsuario(@PathVariable Long id) {
         log.info("Chamando procedure PROC_DELETE_USUARIO para ID: {}", id);
