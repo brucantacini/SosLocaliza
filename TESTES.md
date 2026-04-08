@@ -132,8 +132,9 @@ Cada resposta de recurso inclui um objeto `_links` com:
 {
   "remetente": "SOS Localiza",
   "ddd": "11",
-  "numeroTelefone": "+5511989302572",
-  "mensagem": "Teste de SMS com HATEOAS!"
+  "numeroTelefone": "989302572",
+  "mensagem": "Teste de SMS com HATEOAS!",
+  "idEvento": 1
 }
 ```
 
@@ -148,7 +149,7 @@ Cada resposta de recurso inclui um objeto `_links` com:
   "dataEnvio": "2025-11-04T21:00:00",
   "enviadoComSucesso": true,
   "erro": null,
-  "idEvento": null,
+  "idEvento": 1,
   "_links": {
     "self": {
       "href": "/api/sms/ultimoSms/%2B5511989302572"
@@ -169,7 +170,7 @@ Cada resposta de recurso inclui um objeto `_links` com:
 {
   "remetente": "Defesa Civil",
   "ddd": "11",
-  "numeroTelefone": "+5511989302572",
+  "numeroTelefone": "989302572",
   "mensagem": "ALERTA: Risco de enchente na região!"
 }
 ```
@@ -427,7 +428,7 @@ Todos os endpoints de SMS retornam objeto `_links` com:
   "dataEnvio": "2025-11-04T21:00:00",
   "enviadoComSucesso": true,
   "erro": null,
-  "idEvento": null,
+  "idEvento": 1,
   "_links": {
     "self": {
       "href": "/api/sms/ultimoSms/%2B5511989302572"
@@ -464,17 +465,17 @@ Todos os endpoints de SMS retornam objeto `_links` com:
 ## 🚨 Cenários de Erro
 
 ### **Evento Não Encontrado**
-- **Endpoint**: `GET /eventos/getById/{id-inexistente}`
+- **Endpoint**: `GET /api/eventos/getById/{id-inexistente}`
 - **Status**: 404
 - **Erro**: `EVENTO_NOT_FOUND`
 
 ### **Validação de Telefone**
-- **Endpoint**: `POST /sms` com DDD inválido
+- **Endpoint**: `POST /api/sms` com DDD inválido
 - **Status**: 400
 - **Erro**: `VALIDATION_ERROR`
 
 ### **Erro Twilio**
-- **Endpoint**: `POST /sms` com credenciais inválidas
+- **Endpoint**: `POST /api/sms` com credenciais inválidas
 - **Status**: 503
 - **Erro**: `TWILIO_ERROR`
 
@@ -501,7 +502,7 @@ Todos os endpoints de SMS retornam objeto `_links` com:
 ## 🔧 Troubleshooting
 
 ### **Erro de Conexão**
-- Verifique se a aplicação está rodando na porta 8080
+- Verifique se a aplicação está rodando na porta 8081 (oracle-fiap) ou 8080 (dev)
 - Confirme se o contexto `/api` está configurado
 
 ### **Erro de Validação**

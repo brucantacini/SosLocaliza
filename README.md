@@ -1,4 +1,4 @@
-﻿# SOS Localiza - Sistema de Emergência Climática
+# SOS Localiza - Sistema de Emergência Climática
 
 Sistema de emergência para situações climáticas extremas (enchentes, deslizamentos) que permite envio de SMS de socorro via Twilio e gestão de informações sobre eventos de risco.
 
@@ -44,6 +44,33 @@ O vídeo apresenta:
 - **Lombok**
 - **Bean Validation**
 - **Maven**
+- **Flyway** (versionamento do schema do banco)
+- **Spring Security** (form login, HTTP Basic para API, perfis `ROLE_USER` e `ROLE_ADMIN`)
+- **Thymeleaf** (camada de visualização web)
+
+## Interface web (Sprint 3 — Java Advanced)
+
+Após subir a aplicação, acesse no navegador:
+
+| URL | Descrição |
+|-----|-----------|
+| `http://localhost:8080/login` (dev) / `http://localhost:8081/login` (oracle-fiap) | Login (redireciona usuários não autenticados) |
+| `http://localhost:8080/` (dev) / `http://localhost:8081/` (oracle-fiap) | Página inicial (após login) |
+| `http://localhost:8080/socorro` (dev) / `http://localhost:8081/socorro` (oracle-fiap) | Fluxo **Pedido de socorro (SMS)** — escolha do evento e mensagem. Nome/telefone vêm do usuário logado |
+| `http://localhost:8080/admin` (dev) / `http://localhost:8081/admin` (oracle-fiap) | Fluxo **Painel administrativo** — estatísticas e histórico paginado de SMS (somente `ROLE_ADMIN`) |
+
+**Usuários de demonstração** (senha em ambos: `password`):
+
+| Usuário | Perfil |
+|---------|--------|
+| `admin` | Administrador (`ROLE_ADMIN`) — acesso ao painel e à API completa |
+| `citizen` | Cidadão (`ROLE_USER`) — pedido de socorro e leitura de eventos via API |
+
+Os hashes BCrypt estão nas migrations `V2__seed_users.sql` (pastas `db/migration/h2` e `db/migration/oracle`).
+
+**REST API:** todos os controllers estão sob o prefixo `/api` (ex.: `GET /api/eventos/ativos`). Para testar com **curl** ou Postman, use **HTTP Basic** com `admin`/`password` ou `citizen`/`password`. O CSRF está desligado apenas para rotas `/api/**`; o login web usa CSRF normalmente.
+
+**Variáveis de ambiente (Oracle FIAP):** defina `ORACLE_PASSWORD` (e opcionalmente `ORACLE_USERNAME`). **Não** commite senhas no repositório. A pasta do projeto contém `.env.example`.
 
 ## 📋 Pré-requisitos
 
@@ -86,32 +113,44 @@ export TWILIO_ENABLED="true"
 2. Receba $15-20 de crédito grátis
 3. Obtenha Account SID e Auth Token no Dashboard
 
-📖 **Guia completo**: Consulte [GUIA_TWILIO.md](GUIA_TWILIO.md)
+📖 Guia rápido: use as variáveis de ambiente acima para ativar o envio real do Twilio.
 
 ### 2. Configuração do Banco de Dados
 
-#### Oracle FIAP (Padrão)
+#### Oracle FIAP
 
-O projeto está configurado para usar o Oracle FIAP por padrão:
+Perfil Spring: `oracle-fiap` (porta **8081**).
 
 - Host: `oracle.fiap.com.br`
 - Porta: `1521`
 - SID: `ORCL`
-- Usuário: `rm560242`
-- Senha: `271005`
+- Usuário: variável `ORACLE_USERNAME` (padrão `rm560242` se não informada)
+- Senha: variável de ambiente **`ORACLE_PASSWORD`** (obrigatória; não versionar)
+
+Exemplo de `.env` local (na pasta `SosLocaliza`):
+
+```properties
+spring.profiles.active=oracle-fiap
+SERVER_PORT=8081
+ORACLE_USERNAME=rm560242
+ORACLE_PASSWORD=*****
+ORACLE_HOST=oracle.fiap.com.br
+ORACLE_PORT=1521
+ORACLE_SID=ORCL
+```
 
 #### Desenvolvimento (H2)
 
-Para usar H2 em memória durante desenvolvimento, ative o perfil dev:
+O perfil padrão é **`dev`** (H2 em memória, Flyway em `classpath:db/migration/h2`, porta **8080**).
 
 ```bash
 java -jar target/SosLocaliza-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev
 ```
 
-Acesse o console H2 em:
+Console H2 (perfil `dev`):
 
 ```
-http://localhost:8080/api/h2-console
+http://localhost:8080/h2-console
 ```
 
 ## 🏃‍♂️ Como Rodar a Aplicação
@@ -138,12 +177,22 @@ mvn clean install
 
 3. **Execute a aplicação:**
 ```bash
-mvn spring-boot:run
+./mvnw spring-boot:run
 ```
 
 4. **Acesse a aplicação:**
 ```
-http://localhost:8081/api/actuator/health
+http://localhost:8080/actuator/health (perfil dev)
+```
+
+Para Oracle FIAP, rode com perfil Oracle ativo:
+```bash
+./mvnw spring-boot:run -Dspring-boot.run.profiles=oracle-fiap
+```
+
+e acesse:
+```
+http://localhost:8081/actuator/health
 ```
 
 ### Opção 2: Execução com JAR (Produção)
@@ -170,7 +219,7 @@ Para desenvolvimento sem acesso ao Oracle, use o perfil H2:
 java -jar target/SosLocaliza-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev
 ```
 
-Acesse o console H2 em: `http://localhost:8081/api/h2-console`
+Acesse o console H2 em: `http://localhost:8080/h2-console` (perfil `dev`; no `oracle-fiap` o H2 costuma não estar habilitado).
 
 ## 🐳 Deploy com Docker
 
@@ -315,10 +364,10 @@ Se estiver usando Azure VM, configure o Network Security Group (NSG) para permit
 
 ```bash
 # Health Check (local)
-curl http://localhost:8081/api/actuator/health
+curl http://localhost:8081/actuator/health
 
 # Health Check (VM - substitua pelo IP público)
-curl http://<IP_PUBLICO_VM>:8081/api/actuator/health
+curl http://<IP_PUBLICO_VM>:8081/actuator/health
 ```
 
 Resposta esperada:
@@ -330,16 +379,21 @@ Resposta esperada:
 
 ### Base URL
 
-```
-http://localhost:8081/api
+- **Interface web:** `http://localhost:8081/` (formulário de login em `/login`).
+- **API REST:** use a base `http://localhost:8081` com paths que começam em `/api` (ex.: `GET /api/eventos/ativos`).
+
+Chamadas à API exigem **HTTP Basic** (exceto health/info). Exemplo:
+
+```bash
+curl -u admin:password http://localhost:8081/api/eventos/ativos
 ```
 
-Para VM, substitua `localhost` pelo IP público da VM.
+Substitua `localhost` pelo IP público da VM quando aplicável.
 
 ### 1. Health Check
 
 ```bash
-curl http://localhost:8081/api/actuator/health
+curl http://localhost:8081/actuator/health
 ```
 
 ### 2. Testes de Eventos
@@ -361,7 +415,12 @@ curl -X POST http://localhost:8081/api/eventos/add \
 
 #### Listar Eventos
 ```bash
-curl http://localhost:8081/api/eventos/getAll
+curl -u admin:password "http://localhost:8081/api/eventos/getAll?page=0&size=10&direction=ASC"
+```
+
+#### Listar apenas eventos ativos
+```bash
+curl -u citizen:password http://localhost:8081/api/eventos/ativos
 ```
 
 #### Buscar Evento por ID
@@ -393,8 +452,9 @@ curl -X POST http://localhost:8081/api/sms \
   -d '{
     "remetente": "Defesa Civil",
     "ddd": "11",
-    "numero": "999999999",
-    "mensagem": "ALERTA: Enchente na região. Evacue imediatamente!"
+    "numeroTelefone": "999999999",
+    "mensagem": "ALERTA: Enchente na região. Evacue imediatamente!",
+    "idEvento": 1
   }'
 ```
 
@@ -530,7 +590,7 @@ curl -X DELETE http://localhost:8081/api/procedures/usuario/{id}
 
 ### 6. Testes com Postman/Insomnia
 
-Para facilitar os testes, você pode importar a coleção de endpoints disponível em [TESTES.md](TESTES.md) ou usar o arquivo [ENDPOINTS_TESTES_DATABASE.txt](ENDPOINTS_TESTES_DATABASE.txt).
+Para facilitar os testes, consulte o guia de cenários em [TESTES.md](TESTES.md) e os exemplos de payload deste README.
 
 ### 7. Troubleshooting
 
@@ -648,9 +708,8 @@ Todas as respostas de recursos individuais (Evento e SMS) incluem um objeto `_li
 ## 📡 Documentação Completa da API - Endpoints
 
 ### Base URL
-```
-http://localhost:8081/api
-```
+
+Base HTTP: `http://localhost:8081` — rotas REST usam o prefixo `/api/...`. Autenticação: HTTP Basic (`admin`/`citizen`, senha `password`).
 
 ### Eventos
 
@@ -658,6 +717,7 @@ http://localhost:8081/api
 |--------|----------|-----------|
 | `POST` | `/api/eventos/add` | Criar novo evento |
 | `GET` | `/api/eventos/getAll` | Listar todos os eventos (com paginação) |
+| `GET` | `/api/eventos/ativos` | Listar apenas eventos ativos (ex.: formulário de socorro) |
 | `GET` | `/api/eventos/getById/{id}` | Buscar evento por ID |
 | `PUT` | `/api/eventos/update/{id}` | Atualizar evento existente |
 | `DELETE` | `/api/eventos/delete/{id}` | Deletar evento |
@@ -708,8 +768,8 @@ http://localhost:8081/api
 
 | Método | Endpoint | Descrição |
 |--------|----------|-----------|
-| `GET` | `/api/actuator/health` | Verificar saúde da aplicação |
-| `GET` | `/api/actuator/info` | Informações da aplicação |
+| `GET` | `/actuator/health` | Verificar saúde da aplicação |
+| `GET` | `/actuator/info` | Informações da aplicação |
 
 ---
 
@@ -743,8 +803,9 @@ Content-Type: application/json
 {
   "remetente": "Defesa Civil",
   "ddd": "11",
-  "numero": "999999999",
-  "mensagem": "ALERTA: Enchente na região. Evacue imediatamente!"
+  "numeroTelefone": "999999999",
+  "mensagem": "ALERTA: Enchente na região. Evacue imediatamente!",
+  "idEvento": 1
 }
 ```
 
@@ -757,7 +818,7 @@ Content-Type: application/json
 {
   "remetente": "Sistema SOS Localiza",
   "ddd": "11",
-  "numero": "999999999",
+  "numeroTelefone": "999999999",
   "mensagem": "Situação crítica detectada!"
 }
 ```
@@ -766,7 +827,7 @@ Content-Type: application/json
 
 ### Diagrama de Classes
 
-![Diagrama de Classes](Docs/DiagramaClasseJAava.png)
+Diagrama de classes: disponível nos materiais de apresentação do grupo.
 
 O diagrama de classes apresenta a estrutura das entidades principais do sistema:
 - **Evento**: Representa eventos climáticos de risco (enchentes, deslizamentos)
@@ -776,7 +837,7 @@ O diagrama de classes apresenta a estrutura das entidades principais do sistema:
 
 ### Diagrama de Entidade e Relacionamento (DER)
 
-![Diagrama DER](Docs/DER_Java.png)
+Diagrama DER: disponível nos materiais de apresentação do grupo.
 
 #### Relacionamentos e Constraints
 
@@ -784,7 +845,7 @@ O diagrama de classes apresenta a estrutura das entidades principais do sistema:
 - **Tipo**: Um-para-Muitos (1:N)
 - **Relacionamento**: Um evento pode ter múltiplos SMS associados
 - **Constraint**: `T_SOS_SMS.ID_EVENTO` é Foreign Key para `T_SOS_EVENTO.ID_EVENTO`
-- **Comportamento**: Quando um evento é deletado, os SMS relacionados podem ser mantidos (ID_EVENTO pode ser NULL)
+- **Comportamento**: cada SMS deve estar vinculado a um evento (`ID_EVENTO` obrigatório no Oracle em produção).
 
 **T_SOS_LOCALIZACAO ↔ T_SOS_USUARIO**
 - **Tipo**: Um-para-Muitos (1:N)
@@ -793,7 +854,7 @@ O diagrama de classes apresenta a estrutura das entidades principais do sistema:
 
 #### Constraints Principais
 
-- **Primary Keys**: Todas as tabelas possuem ID como chave primária (UUID)
+- **Primary Keys**: As tabelas usam chaves numéricas (`NUMBER(19)` no Oracle e `BIGINT` no H2).
 - **Not Null**: Campos obrigatórios incluem NOME_EVENTO, REMETENTE, NUMERO_TELEFONE, MENSAGEM
 - **Unique**: CPF do usuário deve ser único
 - **Check**: Validações de formato (CEP, telefone, email)
@@ -803,7 +864,7 @@ O diagrama de classes apresenta a estrutura das entidades principais do sistema:
 
 ### T_SOS_EVENTO
 
-- ID_EVENTO (UUID)
+- ID_EVENTO (NUMBER/BIGINT)
 - NOME_EVENTO (VARCHAR 100)
 - DESCRICAO_EVENTO (VARCHAR 500)
 - CAUSAS (VARCHAR 300)
@@ -817,7 +878,7 @@ O diagrama de classes apresenta a estrutura das entidades principais do sistema:
 
 ### T_SOS_SMS
 
-- ID_SMS (UUID)
+- ID_SMS (NUMBER/BIGINT)
 - REMETENTE (VARCHAR 100)
 - NUMERO_TELEFONE (VARCHAR 20)
 - DDD (VARCHAR 3)
@@ -826,7 +887,7 @@ O diagrama de classes apresenta a estrutura das entidades principais do sistema:
 - DATA_ENVIO (TIMESTAMP)
 - ENVIADO_COM_SUCESSO (BOOLEAN)
 - ERRO (VARCHAR 500)
-- ID_EVENTO (UUID, FK)
+- ID_EVENTO (NUMBER/BIGINT, FK)
 
 ## 🔧 Configurações Avançadas
 
@@ -857,4 +918,4 @@ Todos os endpoints de listagem suportam paginação:
 ## 📚 Documentação Adicional
 
 - **[TESTES.md](TESTES.md)**: Instruções detalhadas sobre como testar a API
-- **[ENDPOINTS_TESTES_DATABASE.txt](ENDPOINTS_TESTES_DATABASE.txt)**: Endpoints para testes das procedures Oracle
+- Endpoints para testes das procedures Oracle: seção "Procedures Oracle (Sprint 2)" neste README e no arquivo [TESTES.md](TESTES.md)
