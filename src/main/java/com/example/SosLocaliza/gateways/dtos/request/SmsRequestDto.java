@@ -2,6 +2,7 @@ package com.example.SosLocaliza.gateways.dtos.request;
 
 import com.example.SosLocaliza.domains.SmsMessage;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -25,6 +26,7 @@ public class SmsRequestDto {
     @Size(max = 1000, message = "Mensagem deve ter no máximo 1000 caracteres")
     private String mensagem;
 
+    @NotNull(message = "ID do evento é obrigatório")
     private Long idEvento;
 
     public SmsMessage toSmsMessage() {

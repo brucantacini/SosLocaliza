@@ -66,10 +66,10 @@ public class TwilioSmsService {
                                     "Mensagem: " + smsRequestDto.getMensagem();
 
             if (twilioConfig.isEnabled()) {
-                SmsMessage smsEnviado = enviarSmsReal(smsMessage, mensagemCompleta);
+                SmsMessage smsEnviado = enviarSmsRealSemPersistir(smsMessage, mensagemCompleta);
                 return smsService.enviarSmsComEvento(smsEnviado, idEvento);
             } else {
-                SmsMessage smsEnviado = enviarSmsSimulado(smsMessage, mensagemCompleta);
+                SmsMessage smsEnviado = enviarSmsSimuladoSemPersistir(smsMessage);
                 return smsService.enviarSmsComEvento(smsEnviado, idEvento);
             }
 
@@ -113,6 +113,36 @@ public class TwilioSmsService {
             smsMessage = smsMessage.withEnviadoComSucesso(true).withErro(null);
             log.info("✅ [SIMULAÇÃO] SMS simulado enviado com sucesso!");
             return smsService.enviarSms(smsMessage);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new SmsException("Erro ao simular envio de SMS", e);
+        }
+    }
+
+    private SmsMessage enviarSmsRealSemPersistir(SmsMessage smsMessage, String mensagemCompleta) {
+        try {
+            log.info("📤 Enviando SMS REAL via Twilio para: {}", smsMessage.getNumeroTelefone());
+
+            Message message = Message.creator(
+                    new PhoneNumber(smsMessage.getNumeroTelefone()),
+                    new PhoneNumber(trialNumber),
+                    mensagemCompleta
+            ).create();
+
+            log.info("✅ SMS enviado com sucesso! SID: {}", message.getSid());
+            return smsMessage.withEnviadoComSucesso(true).withErro(null);
+        } catch (Exception e) {
+            log.error("❌ Erro ao enviar SMS via Twilio: {}", e.getMessage());
+            throw new TwilioException("Erro ao enviar SMS via Twilio: " + e.getMessage(), e);
+        }
+    }
+
+    private SmsMessage enviarSmsSimuladoSemPersistir(SmsMessage smsMessage) {
+        try {
+            log.info("📤 [SIMULAÇÃO] Enviando SMS simulado para: {}", smsMessage.getNumeroTelefone());
+            Thread.sleep(1000);
+            log.info("✅ [SIMULAÇÃO] SMS simulado enviado com sucesso!");
+            return smsMessage.withEnviadoComSucesso(true).withErro(null);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new SmsException("Erro ao simular envio de SMS", e);

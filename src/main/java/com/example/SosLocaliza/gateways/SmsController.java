@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/sms")
+@RequestMapping("/api/sms")
 @RequiredArgsConstructor
 @Slf4j
 public class SmsController {
@@ -32,7 +32,7 @@ public class SmsController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public SmsResponseDto enviarSms(@RequestBody @Valid SmsRequestDto smsRequestDto) {
-        SmsMessage smsEnviado = twilioSmsService.enviarSmsViaTwilio(smsRequestDto);
+        SmsMessage smsEnviado = twilioSmsService.enviarSmsComEvento(smsRequestDto, smsRequestDto.getIdEvento());
         SmsResponseDto response = SmsResponseDto.fromSmsMessage(smsEnviado);
         HateoasLinkBuilder.adicionarLinksSms(response);
         return response;

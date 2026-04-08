@@ -35,18 +35,6 @@ public class SmsService {
         return smsRepository.save(smsMessage);
     }
 
-    public List<SmsMessage> listarTodosSms() {
-        return smsRepository.findAll();
-    }
-
-    public List<SmsMessage> listarSmsEnviadosComSucesso() {
-        return smsRepository.findByEnviadoComSucessoTrue();
-    }
-
-    public List<SmsMessage> listarSmsComErro() {
-        return smsRepository.findByEnviadoComSucessoFalse();
-    }
-
     public List<SmsMessage> buscarSmsPorNumero(String numeroTelefone) {
         return smsRepository.findByNumeroTelefone(numeroTelefone);
     }
@@ -71,10 +59,6 @@ public class SmsService {
         return smsRepository.findByDataEnvioBetween(dataInicio, dataFim);
     }
 
-    public List<SmsMessage> buscarSmsComErroPorPeriodo(LocalDateTime dataInicio, LocalDateTime dataFim) {
-        return smsRepository.findSmsComErroPorPeriodo(dataInicio, dataFim);
-    }
-
     public Long contarSmsEnviadosComSucesso() {
         return smsRepository.countSmsEnviadosComSucesso();
     }
@@ -91,10 +75,6 @@ public class SmsService {
         return smsList.stream()
                 .sorted((a, b) -> b.getDataEnvio().compareTo(a.getDataEnvio()))
                 .findFirst();
-    }
-
-    public List<SmsMessage> buscarSmsPorEventoEStatus(Long idEvento, Boolean sucesso) {
-        return smsRepository.findByEventoAndStatus(idEvento, sucesso);
     }
 
     public SmsMessage marcarSmsComoEnviado(Long idSms) {

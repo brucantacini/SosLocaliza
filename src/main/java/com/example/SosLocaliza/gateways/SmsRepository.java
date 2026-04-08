@@ -14,8 +14,6 @@ public interface SmsRepository extends JpaRepository<SmsMessage, Long> {
 
     List<SmsMessage> findByNumeroTelefone(String numeroTelefone);
 
-    List<SmsMessage> findByRemetente(String remetente);
-
     List<SmsMessage> findByEnviadoComSucessoTrue();
 
     List<SmsMessage> findByEnviadoComSucessoFalse();
@@ -32,17 +30,10 @@ public interface SmsRepository extends JpaRepository<SmsMessage, Long> {
     List<SmsMessage> findByDataEnvioBetween(@Param("dataInicio") LocalDateTime dataInicio, 
                                           @Param("dataFim") LocalDateTime dataFim);
 
-    @Query("SELECT s FROM SmsMessage s WHERE s.enviadoComSucesso = false AND s.dataEnvio BETWEEN :dataInicio AND :dataFim")
-    List<SmsMessage> findSmsComErroPorPeriodo(@Param("dataInicio") LocalDateTime dataInicio, 
-                                              @Param("dataFim") LocalDateTime dataFim);
-
     @Query("SELECT COUNT(s) FROM SmsMessage s WHERE s.enviadoComSucesso = true")
     Long countSmsEnviadosComSucesso();
 
     @Query("SELECT COUNT(s) FROM SmsMessage s WHERE s.enviadoComSucesso = false")
     Long countSmsComErro();
-
-    @Query("SELECT s FROM SmsMessage s WHERE s.evento.idEvento = :idEvento AND s.enviadoComSucesso = :sucesso")
-    List<SmsMessage> findByEventoAndStatus(@Param("idEvento") Long idEvento, @Param("sucesso") Boolean sucesso);
 
 }
