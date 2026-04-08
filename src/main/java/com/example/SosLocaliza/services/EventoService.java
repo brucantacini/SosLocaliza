@@ -47,14 +47,6 @@ public class EventoService {
         return eventoRepository.findAll(pageable);
     }
 
-    public Page<Evento> listarEventosAtivosComPaginacao(Pageable pageable) {
-        return eventoRepository.findByAtivoTrue(pageable);
-    }
-
-    public Page<Evento> buscarEventosPorNomeComPaginacao(String nomeEvento, Pageable pageable) {
-        return eventoRepository.findByNomeEventoContainingIgnoreCase(nomeEvento, pageable);
-    }
-
     public void deletarEvento(Long id) {
         eventoRepository.deleteById(id);
     }

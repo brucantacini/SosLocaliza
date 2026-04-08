@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Painel administrativo — SOS Localiza</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link th:href="@{/css/app.css}" rel="stylesheet"/>
+</head>
+<body>
+<div th:replace="~{fragments/nav :: navbar}"></div>
+<main class="container-fluid pb-5 px-3">
+    <h1 class="h3 mb-4">Monitoramento de SMS</h1>
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card border-success">
+                <div class="card-body">
+                    <h2 class="h6 text-muted">Enviados com sucesso</h2>
+                    <p class="display-6 mb-0" th:text="${totalSucesso}">0</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-warning">
+                <div class="card-body">
+                    <h2 class="h6 text-muted">Com erro / pendente</h2>
+                    <p class="display-6 mb-0" th:text="${totalErro}">0</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-sm table-striped align-middle">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Data</th>
+                <th>Remetente</th>
+                <th>Telefone</th>
+                <th>Evento (ID)</th>
+                <th>Sucesso</th>
+                <th>Mensagem</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="s : ${smsLinhas}">
+                <td th:text="${s.idSms}"></td>
+                <td th:text="${s.dataEnvio}"></td>
+                <td th:text="${s.remetente}"></td>
+                <td th:text="${s.numeroTelefone}"></td>
+                <td th:text="${s.idEvento}"></td>
+                <td>
+                    <span th:if="${s.enviadoComSucesso}" class="badge text-bg-success">Sim</span>
+                    <span th:unless="${s.enviadoComSucesso}" class="badge text-bg-danger">Não</span>
+                </td>
+                <td class="text-truncate" style="max-width: 240px;" th:text="${s.mensagem}" th:title="${s.mensagem}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <nav th:if="${smsPage.totalPages > 1}" aria-label="Paginação">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${smsPage.first} ? 'disabled'">
+                <a class="page-link" th:href="@{/admin(page=${smsPage.number - 1})}">Anterior</a>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link" th:text="${smsPage.number + 1} + ' / ' + ${smsPage.totalPages}"></span>
+            </li>
+            <li class="page-item" th:classappend="${smsPage.last} ? 'disabled'">
+                <a class="page-link" th:href="@{/admin(page=${smsPage.number + 1})}">Próxima</a>
+            </li>
+        </ul>
+    </nav>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

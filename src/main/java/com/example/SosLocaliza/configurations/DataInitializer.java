@@ -13,7 +13,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-@Profile("oracle-fiap")
+@Profile({"dev", "oracle-fiap"})
 public class DataInitializer implements CommandLineRunner {
 
     private final EventoService eventoService;

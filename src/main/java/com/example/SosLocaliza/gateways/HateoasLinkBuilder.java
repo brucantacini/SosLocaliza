@@ -7,6 +7,16 @@ import org.springframework.hateoas.Link;
 public class HateoasLinkBuilder {
 
     public static void adicionarLinksEvento(EventoResponseDto eventoDto) {
+        try {
+            if (eventoDto.getIdEvento() == null) {
+                return;
+            }
+            Long id = eventoDto.getIdEvento();
+            eventoDto.add(Link.of("/api/eventos/getById/" + id).withSelfRel());
+            eventoDto.add(Link.of("/api/eventos/getAll?page=0&size=10&direction=ASC").withRel("collection"));
+        } catch (Exception e) {
+            // evita quebrar resposta se links falharem
+        }
     }
 
     public static void adicionarLinksSms(SmsResponseDto smsDto) {
@@ -22,7 +32,4 @@ public class HateoasLinkBuilder {
         }
     }
 
-    public static Link linkParaColecaoSms() {
-        return Link.of("/api/sms/getAll?page=0&size=10&direction=DESC").withRel("collection");
-    }
 }

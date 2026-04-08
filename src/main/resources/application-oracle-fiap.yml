@@ -2,16 +2,25 @@ spring:
   config:
     activate:
       on-profile: oracle-fiap
+
+  thymeleaf:
+    cache: false
   
   datasource:
-    url: jdbc:oracle:thin:@oracle.fiap.com.br:1521:ORCL
+    url: jdbc:oracle:thin:@${ORACLE_HOST:oracle.fiap.com.br}:${ORACLE_PORT:1521}:${ORACLE_SID:ORCL}
     driver-class-name: oracle.jdbc.OracleDriver
-    username: rm560242
-    password: 271005
+    username: ${ORACLE_USERNAME:rm560242}
+    password: ${ORACLE_PASSWORD:}
   
+  flyway:
+    enabled: true
+    locations: classpath:db/migration/oracle
+    baseline-on-migrate: true
+    validate-on-migrate: false
+
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
@@ -23,18 +32,16 @@ spring:
         order_updates: true
     open-in-view: false
 
-# Configurações do Twilio
+# Configurações do Twilio (use variáveis de ambiente; não versionar segredos)
 twilio:
-  account-sid: ${TWILIO_ACCOUNT_SID:ACb84a1c0afbb6628678209002a9db4d6c}
-  auth-token: ${TWILIO_AUTH_TOKEN:fc2fc329c5400229b2046323028c5e01}
+  account-sid: ${TWILIO_ACCOUNT_SID:}
+  auth-token: ${TWILIO_AUTH_TOKEN:}
   trial-number: ${TWILIO_TRIAL_NUMBER:+12176248670}
-  enabled: ${TWILIO_ENABLED:true}
+  enabled: ${TWILIO_ENABLED:false}
 
-# Configurações do servidor
+# Configurações do servidor (use SERVER_PORT no .env se 8081 estiver ocupada)
 server:
-  port: 8081
-  servlet:
-    context-path: /api
+  port: ${SERVER_PORT:8081}
 
 # Configurações do Actuator
 management:

@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/procedures")
+@RequestMapping("/api/procedures")
 @RequiredArgsConstructor
 @Slf4j
 public class ProcedureController {
@@ -28,7 +28,6 @@ public class ProcedureController {
      * Insere uma nova localização usando a procedure PROC_INSERT_LOCALIZACAO
      */
     @PostMapping("/localizacao")
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<ProcedureResponseDto> insertLocalizacao(
             @RequestBody @Valid LocalizacaoProcedureRequestDto dto) {
         log.info("Chamando procedure PROC_INSERT_LOCALIZACAO com dados: {}", dto);
@@ -84,7 +83,6 @@ public class ProcedureController {
      * Insere um novo usuário usando a procedure PROC_INSERT_USUARIO
      */
     @PostMapping("/usuario")
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<ProcedureResponseDto> insertUsuario(
             @RequestBody @Valid UsuarioProcedureRequestDto dto) {
         log.info("Chamando procedure PROC_INSERT_USUARIO com dados: {}", dto);

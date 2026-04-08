@@ -1,9 +1,11 @@
 spring:
+  config:
+    import: optional:file:./.env[.properties]
   application:
     name: sos-localiza
   
   profiles:
-    active: oracle-fiap
+    active: dev
   
   datasource:
     url: jdbc:h2:mem:testdb
