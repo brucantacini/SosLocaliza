@@ -1,13 +1,6 @@
-# Pipeline CI + CD no Azure DevOps — SOS Localiza (Spring Boot JAR → Azure App Service)
+# Pipeline CI + CD — SOS Localiza (sem UseJavaVersion / Cache / Maven task — só script + artefato + Azure CLI)
 #
-# Antes de rodar:
-# 1) Coloque este arquivo na RAIZ do repositório que o Azure DevOps usa (se o pom.xml estiver na raiz, ok).
-# 2) Em Pipelines → Library ou em Pipeline variables, defina (ou edite abaixo):
-#    - AZURE_RESOURCE_GROUP, AZURE_WEBAPP_NAME
-# 3) Crie Service connection: Project settings → Service connections → Azure Resource Manager.
-# 4) Substitua REPLACE_AZURE_RM_CONNECTION pelo nome dessa conexão.
-#
-# Opcional: remova o condition do stage CD para deploy em qualquer branch (apenas para testes).
+# Substitua REPLACE_AZURE_RM_CONNECTION pelo nome da Service connection (Azure Resource Manager).
 
 trigger:
   branches:
@@ -20,39 +13,38 @@ pool:
 
 variables:
   jarName: SosLocaliza-0.0.1-SNAPSHOT.jar
-  # Ajuste para o seu App Service ou use variáveis secretas na UI do DevOps
   AZURE_RESOURCE_GROUP: rg-soslocaliza
   AZURE_WEBAPP_NAME: app-soslocaliza-560242
 
 stages:
   - stage: CI_Build
-    displayName: CI — Build (Maven)
+    displayName: CI — Build (Maven via apt)
     jobs:
       - job: MavenBuild
         displayName: Compilar e publicar JAR
         steps:
           - checkout: self
 
-          # UseJavaVersion@1 exige extensão em algumas orgs; o Maven@3 já seleciona JDK no agente hospedado.
-          - task: Cache@2
-            inputs:
-              key: 'maven | "$(Agent.OS)" | **/pom.xml'
-              restoreKeys: |
-                maven | "$(Agent.OS)"
-              path: $(HOME)/.m2/repository
-
-          - task: Maven@3
-            displayName: mvn clean package
-            inputs:
-              mavenPomFile: pom.xml
-              goals: clean package
-              options: -DskipTests
-              publishJUnitResults: false
-              jdkVersionOption: "1.21"
-              jdkArchitectureOption: x64
+          - script: |
+              set -euo pipefail
+              sudo apt-get update -qq
+              sudo apt-get install -y maven
+              MVN_EXTRA=""
+              if sudo apt-get install -y openjdk-21-jdk-headless; then
+                export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+              else
+                sudo apt-get install -y openjdk-17-jdk-headless
+                export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+                MVN_EXTRA="-Dmaven.compiler.release=17"
+              fi
+              export PATH="$JAVA_HOME/bin:$PATH"
+              java -version
+              mvn -version
+              mvn clean package -DskipTests -B $MVN_EXTRA
+            displayName: Instalar JDK + Maven e gerar JAR
 
           - task: PublishBuildArtifacts@1
-            displayName: Publicar JAR como artefato
+            displayName: Publicar JAR
             inputs:
               PathtoPublish: $(System.DefaultWorkingDirectory)/target/$(jarName)
               ArtifactName: app-jar
@@ -64,7 +56,7 @@ stages:
     condition: succeeded()
     jobs:
       - job: DeployJar
-        displayName: Deploy JAR (Linux Java)
+        displayName: Deploy JAR
         steps:
           - download: current
             artifact: app-jar
