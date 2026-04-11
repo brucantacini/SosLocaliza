@@ -1,0 +1,87 @@
+# Pipeline CI + CD no Azure DevOps — SOS Localiza (Spring Boot JAR → Azure App Service)
+#
+# Antes de rodar:
+# 1) Coloque este arquivo na RAIZ do repositório que o Azure DevOps usa (se o pom.xml estiver na raiz, ok).
+# 2) Em Pipelines → Library ou em Pipeline variables, defina (ou edite abaixo):
+#    - AZURE_RESOURCE_GROUP, AZURE_WEBAPP_NAME
+# 3) Crie Service connection: Project settings → Service connections → Azure Resource Manager.
+# 4) Substitua REPLACE_AZURE_RM_CONNECTION pelo nome dessa conexão.
+#
+# Opcional: remova o condition do stage CD para deploy em qualquer branch (apenas para testes).
+
+trigger:
+  branches:
+    include:
+      - main
+      - master
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  jarName: SosLocaliza-0.0.1-SNAPSHOT.jar
+  # Ajuste para o seu App Service ou use variáveis secretas na UI do DevOps
+  AZURE_RESOURCE_GROUP: rg-soslocaliza
+  AZURE_WEBAPP_NAME: app-soslocaliza-560242
+
+stages:
+  - stage: CI_Build
+    displayName: CI — Build (Maven)
+    jobs:
+      - job: MavenBuild
+        displayName: Compilar e publicar JAR
+        steps:
+          - checkout: self
+
+          - task: UseJavaVersion@1
+            inputs:
+              versionSpec: "21"
+              jdkArchitectureOption: x64
+
+          - task: Cache@2
+            inputs:
+              key: 'maven | "$(Agent.OS)" | **/pom.xml'
+              restoreKeys: |
+                maven | "$(Agent.OS)"
+              path: $(HOME)/.m2/repository
+
+          - task: Maven@3
+            displayName: mvn clean package
+            inputs:
+              mavenPomFile: pom.xml
+              goals: clean package
+              options: -DskipTests
+              publishJUnitResults: false
+
+          - task: PublishBuildArtifacts@1
+            displayName: Publicar JAR como artefato
+            inputs:
+              PathtoPublish: $(System.DefaultWorkingDirectory)/target/$(jarName)
+              ArtifactName: app-jar
+              publishLocation: pipeline
+
+  - stage: CD_Deploy
+    displayName: CD — Deploy Azure App Service
+    dependsOn: CI_Build
+    condition: succeeded()
+    jobs:
+      - job: DeployJar
+        displayName: Deploy JAR (Linux Java)
+        steps:
+          - download: current
+            artifact: app-jar
+
+          - task: AzureCLI@2
+            displayName: az webapp deploy --type jar
+            inputs:
+              azureSubscription: REPLACE_AZURE_RM_CONNECTION
+              scriptType: bash
+              inlineScript: |
+                set -euo pipefail
+                JAR_PATH="$(Pipeline.Workspace)/app-jar/$(jarName)"
+                test -f "$JAR_PATH"
+                az webapp deploy \
+                  --resource-group "$(AZURE_RESOURCE_GROUP)" \
+                  --name "$(AZURE_WEBAPP_NAME)" \
+                  --src-path "$JAR_PATH" \
+                  --type jar
