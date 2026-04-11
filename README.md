@@ -48,6 +48,81 @@ O vídeo apresenta:
 - **Flyway** (versionamento do schema do banco)
 - **Spring Security** (form login, HTTP Basic para API, perfis `ROLE_USER` e `ROLE_ADMIN`)
 - **Thymeleaf** (camada de visualização web)
+- **Azure Pipelines** (`azure-pipelines.yml` na raiz do repositório — CI Maven + CD no Azure App Service)
+
+## Repositório GitHub, pipeline CI/CD e reprodução (entrega para DEVOPS)
+
+Esta seção reúne o que o professor precisa para **reproduzir o projeto**, **executar a pipeline** no Azure DevOps e **testar a API** com scripts JSON de CRUD.
+
+### Código-fonte no GitHub
+
+- Repositório com o **código-fonte completo** da aplicação (Spring Boot), `**pom.xml`**, `**mvnw**`, recursos em `src/main/resources` (incluindo migrations Flyway) e testes em `src/test`.
+- **Definição da pipeline:** arquivo `**azure-pipelines.yml`** na **raiz do repositório** (mesmo nível do `pom.xml`).
+- **O que a pipeline faz:**
+  - **CI:** agente Ubuntu instala JDK/Maven, executa `mvn clean package -DskipTests` e publica o JAR `SosLocaliza-0.0.1-SNAPSHOT.jar` como artefato.
+  - **CD:** baixa o artefato e executa `az webapp deploy --type jar` no **Azure App Service** indicado pelas variáveis.
+- **Variáveis no YAML** (ajuste se necessário): `AZURE_SERVICE_CONNECTION` (nome exato da **Service connection** do tipo Azure Resource Manager), `AZURE_RESOURCE_GROUP`, `AZURE_WEBAPP_NAME`, `jarName`.
+
+### Pré-requisitos para executar a pipeline (Azure DevOps)
+
+1. Conta em [Azure DevOps](https://dev.azure.com) com **organização** e **projeto** criados.
+2. **Service connection** em *Project settings → Service connections → Azure Resource Manager*, com permissão na assinatura onde está o App Service; o **nome** da conexão deve coincidir com `AZURE_SERVICE_CONNECTION` no `azure-pipelines.yml`.
+3. **Paralelismo (Microsoft-hosted agents):** contas novas frequentemente exigem solicitação gratuita em [aka.ms/azpipelines-parallelism-request](https://aka.ms/azpipelines-parallelism-request). Sem isso, jobs com `vmImage: ubuntu-latest` podem falhar antes de iniciar.
+4. Repositório GitHub (ou Azure Repos) com o `azure-pipelines.yml` na raiz, após **clone** ou fork.
+
+### Passo a passo — criar e rodar a pipeline
+
+1. No projeto DevOps: **Pipelines → New pipeline**.
+2. Conecte o **GitHub** (ou Azure Repos) e selecione o repositório e a branch (`main` / `master`).
+3. Escolha **Existing Azure Pipelines YAML file** e aponte para `**/azure-pipelines.yml`**.
+4. Confira se `AZURE_SERVICE_CONNECTION` corresponde ao nome da Service connection criada.
+5. **Save and run** (ou deixe o CI disparar no próximo push).
+
+### Testes após o deploy ou em ambiente local
+
+
+| Objetivo                    | Comando / ação                                                                                  |
+| --------------------------- | ----------------------------------------------------------------------------------------------- |
+| Compilar e testes unitários | `mvn clean verify` (ou `mvn test`) na pasta raiz do projeto                                     |
+| Pacote sem testes (rápido)  | `mvn clean package -DskipTests`                                                                 |
+| Subir aplicação (H2)        | `./mvnw spring-boot:run` ou `java -jar target/SosLocaliza-0.0.1-SNAPSHOT.jar` com perfil `dev`  |
+| Subir com Oracle FIAP       | perfil `oracle-fiap` e variáveis `ORACLE_*` conforme seção *Configuração do Banco* deste README |
+| Saúde da API                | `curl http://localhost:8080/actuator/health` (dev) ou porta **8081** (oracle-fiap)              |
+
+
+Testes detalhados da API com **curl** estão nas seções **Testes de Eventos**, **Testes de SMS** e **Testes de Procedures** mais abaixo.
+
+### Scripts JSON do CRUD (corpo das requisições)
+
+Na pasta `**api-examples/crud/`** há arquivos JSON prontos para importar no **Postman** / **Insomnia** ou usar com `curl -d @arquivo.json`:
+
+
+| Arquivo                   | Uso                                        |
+| ------------------------- | ------------------------------------------ |
+| `evento-create.json`      | **POST** `/api/eventos/add`                |
+| `evento-update.json`      | **PUT** `/api/eventos/update/{id}`         |
+| `localizacao-create.json` | **POST** `/api/procedures/localizacao`     |
+| `localizacao-update.json` | **PUT** `/api/procedures/localizacao/{id}` |
+| `usuario-create.json`     | **POST** `/api/procedures/usuario`         |
+| `usuario-update.json`     | **PUT** `/api/procedures/usuario/{id}`     |
+| `sms-create.json`         | **POST** `/api/sms`                        |
+
+
+Autenticação: **HTTP Basic** `admin` / `password` (ou `citizen` / `password` onde aplicável). Content-Type: `application/json`.
+
+**Consulta e exclusão (sem corpo JSON):**  
+**GET** `/api/eventos/getById/{id}`, **GET** `/api/eventos/getAll?page=0&size=10&direction=ASC`, **DELETE** `/api/eventos/delete/{id}`; procedures: **DELETE** `/api/procedures/localizacao/{id}` e `/api/procedures/usuario/{id}`.
+
+Exemplo com arquivo na pasta `api-examples/crud`:
+
+```bash
+cd api-examples/crud
+curl -u admin:password -X POST "http://localhost:8081/api/eventos/add" \
+  -H "Content-Type: application/json" \
+  -d @evento-create.json
+```
+
+> **Oracle:** endpoints em `/api/procedures/`* exigem banco Oracle configurado (perfil `oracle-fiap`). **Eventos** e parte da API funcionam também com H2 no perfil `dev`.
 
 ## Interface web
 
