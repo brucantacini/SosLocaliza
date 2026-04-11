@@ -33,11 +33,7 @@ stages:
         steps:
           - checkout: self
 
-          - task: UseJavaVersion@1
-            inputs:
-              versionSpec: "21"
-              jdkArchitectureOption: x64
-
+          # UseJavaVersion@1 exige extensão em algumas orgs; o Maven@3 já seleciona JDK no agente hospedado.
           - task: Cache@2
             inputs:
               key: 'maven | "$(Agent.OS)" | **/pom.xml'
@@ -52,6 +48,8 @@ stages:
               goals: clean package
               options: -DskipTests
               publishJUnitResults: false
+              jdkVersionOption: "1.21"
+              jdkArchitectureOption: x64
 
           - task: PublishBuildArtifacts@1
             displayName: Publicar JAR como artefato
