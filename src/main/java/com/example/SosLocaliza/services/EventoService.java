@@ -3,6 +3,7 @@ package com.example.SosLocaliza.services;
 import com.example.SosLocaliza.domains.Evento;
 import com.example.SosLocaliza.exceptions.EventoNotFoundException;
 import com.example.SosLocaliza.gateways.EventoRepository;
+import com.example.SosLocaliza.gateways.SmsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,7 @@ import java.util.Optional;
 public class EventoService {
 
     private final EventoRepository eventoRepository;
+    private final SmsRepository smsRepository;
 
     public Evento criarEvento(Evento evento) {
         return eventoRepository.save(evento);
@@ -48,6 +50,7 @@ public class EventoService {
     }
 
     public void deletarEvento(Long id) {
+        smsRepository.deleteAll(smsRepository.findByEventoIdEvento(id));
         eventoRepository.deleteById(id);
     }
 

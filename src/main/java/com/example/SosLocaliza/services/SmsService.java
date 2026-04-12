@@ -2,6 +2,9 @@ package com.example.SosLocaliza.services;
 
 import com.example.SosLocaliza.domains.Evento;
 import com.example.SosLocaliza.domains.SmsMessage;
+import com.example.SosLocaliza.exceptions.EventoNotFoundException;
+import com.example.SosLocaliza.exceptions.SmsNotFoundException;
+import com.example.SosLocaliza.gateways.dtos.request.SmsUpdateDto;
 import com.example.SosLocaliza.gateways.EventoRepository;
 import com.example.SosLocaliza.gateways.SmsRepository;
 import lombok.RequiredArgsConstructor;
@@ -95,5 +98,36 @@ public class SmsService {
             return smsRepository.save(sms);
         }
         return null;
+    }
+
+    public Optional<SmsMessage> buscarSmsPorId(Long idSms) {
+        return smsRepository.findById(idSms);
+    }
+
+    public SmsMessage atualizarSms(Long idSms, SmsUpdateDto dto) {
+        SmsMessage existing = smsRepository.findById(idSms)
+                .orElseThrow(() -> new SmsNotFoundException("SMS não encontrado com ID: " + idSms));
+        Evento evento = eventoRepository.findById(dto.getIdEvento())
+                .orElseThrow(() -> new EventoNotFoundException("Evento não encontrado com ID: " + dto.getIdEvento()));
+        String numeroCompleto = "+55" + dto.getDdd() + dto.getNumeroTelefone();
+        boolean enviado = dto.getEnviadoComSucesso() != null
+                ? dto.getEnviadoComSucesso()
+                : Boolean.TRUE.equals(existing.getEnviadoComSucesso());
+        SmsMessage merged = existing
+                .withRemetente(dto.getRemetente())
+                .withDdd(dto.getDdd())
+                .withNumeroTelefone(numeroCompleto)
+                .withMensagem(dto.getMensagem())
+                .withEvento(evento)
+                .withEnviadoComSucesso(enviado)
+                .withErro(dto.getErro());
+        return smsRepository.save(merged);
+    }
+
+    public void deletarSms(Long idSms) {
+        if (!smsRepository.existsById(idSms)) {
+            throw new SmsNotFoundException("SMS não encontrado com ID: " + idSms);
+        }
+        smsRepository.deleteById(idSms);
     }
 }

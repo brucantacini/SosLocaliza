@@ -20,11 +20,13 @@ public class HateoasLinkBuilder {
 
     public static void adicionarLinksSms(SmsResponseDto smsDto) {
         try {
-            if (smsDto.getNumeroTelefone() != null && !smsDto.getNumeroTelefone().isEmpty()) {
+            if (smsDto.getIdSms() != null) {
+                smsDto.add(Link.of("/api/sms/getById/" + smsDto.getIdSms()).withSelfRel());
+            } else if (smsDto.getNumeroTelefone() != null && !smsDto.getNumeroTelefone().isEmpty()) {
                 String numeroEncoded = java.net.URLEncoder.encode(smsDto.getNumeroTelefone(), java.nio.charset.StandardCharsets.UTF_8);
                 smsDto.add(Link.of("/api/sms/ultimoSms/" + numeroEncoded).withSelfRel());
             }
-            
+
             smsDto.add(Link.of("/api/sms/getAll?page=0&size=10&direction=DESC").withRel("collection"));
         } catch (Exception e) {
         }
