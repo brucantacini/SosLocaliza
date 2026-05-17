@@ -32,6 +32,22 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(ex.getStatus()).body(error);
     }
 
+    @ExceptionHandler(SmsNotFoundException.class)
+    public ResponseEntity<ErrorResponseDto> handleSmsNotFoundException(
+            SmsNotFoundException ex,
+            HttpServletRequest request) {
+
+        log.error("SMS não encontrado: {}", ex.getMessage());
+
+        ErrorResponseDto error = ErrorResponseDto.of(
+                ex.getErrorCode(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(ex.getStatus()).body(error);
+    }
+
     @ExceptionHandler(SmsException.class)
     public ResponseEntity<ErrorResponseDto> handleSmsException(
             SmsException ex, 

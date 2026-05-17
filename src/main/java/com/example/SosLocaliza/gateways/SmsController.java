@@ -2,6 +2,7 @@ package com.example.SosLocaliza.gateways;
 
 import com.example.SosLocaliza.domains.SmsMessage;
 import com.example.SosLocaliza.gateways.dtos.request.SmsRequestDto;
+import com.example.SosLocaliza.gateways.dtos.request.SmsUpdateDto;
 import com.example.SosLocaliza.gateways.dtos.response.SmsResponseDto;
 import com.example.SosLocaliza.services.SmsService;
 import com.example.SosLocaliza.services.TwilioSmsService;
@@ -48,6 +49,34 @@ public class SmsController {
         SmsResponseDto response = SmsResponseDto.fromSmsMessage(smsEnviado);
         HateoasLinkBuilder.adicionarLinksSms(response);
         return response;
+    }
+
+    @GetMapping("/getById/{id}")
+    public ResponseEntity<SmsResponseDto> buscarPorId(@PathVariable Long id) {
+        return smsService.buscarSmsPorId(id)
+                .map(sms -> {
+                    SmsResponseDto dto = SmsResponseDto.fromSmsMessage(sms);
+                    HateoasLinkBuilder.adicionarLinksSms(dto);
+                    return ResponseEntity.ok(dto);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<SmsResponseDto> atualizar(
+            @PathVariable Long id,
+            @RequestBody @Valid SmsUpdateDto dto
+    ) {
+        SmsMessage atualizado = smsService.atualizarSms(id, dto);
+        SmsResponseDto response = SmsResponseDto.fromSmsMessage(atualizado);
+        HateoasLinkBuilder.adicionarLinksSms(response);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletar(@PathVariable Long id) {
+        smsService.deletarSms(id);
     }
 
     @GetMapping("/getAll")

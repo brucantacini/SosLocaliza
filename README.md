@@ -2,6 +2,8 @@
 
 Sistema de emergência para situações climáticas extremas (enchentes, deslizamentos) que permite envio de SMS de socorro via Twilio e gestão de informações sobre eventos de risco.
 
+Este **README** concentra **descrição do produto**, **stack Java/Spring**, **configuração** (Twilio, Oracle, H2) e **como executar** a aplicação em desenvolvimento. Para **deploy na nuvem**, **CI/CD**, **Docker/VM** e **testes da API com JSON de CRUD**, use **[README_DEVOPS.md](README_DEVOPS.md)**.
+
 ## 👥 Integrantes do Grupo
 
 ### Bruno Cantacini - RM560242
@@ -18,7 +20,7 @@ Sistema de emergência para situações climáticas extremas (enchentes, desliza
 
 ## 🎥 Vídeo de Apresentação
 
-🔗 **Link do Vídeo**: 
+🔗 **Link do Vídeo**:  [https://youtu.be/9Shjtsz0vjM](https://youtu.be/9Shjtsz0vjM)
 
 ### Conteúdo do Vídeo
 
@@ -48,6 +50,10 @@ O vídeo apresenta:
 - **Flyway** (versionamento do schema do banco)
 - **Spring Security** (form login, HTTP Basic para API, perfis `ROLE_USER` e `ROLE_ADMIN`)
 - **Thymeleaf** (camada de visualização web)
+
+## Documentação DevOps (deploy, nuvem e testes da entrega)
+
+Instruções para **reproduzir deploy no Azure**, **pipeline CI/CD**, **scripts JSON de CRUD**, **Postman/curl** e **Docker/VM** estão no arquivo **[README_DEVOPS.md](README_DEVOPS.md)** — use-o como referência principal para a correção da Sprint DevOps.
 
 ## Interface web
 
@@ -149,6 +155,8 @@ Perfil Spring: `oracle-fiap` (porta **8081**).
 - Usuário: variável `ORACLE_USERNAME` (padrão `rm560242` se não informada)
 - Senha: variável de ambiente `**ORACLE_PASSWORD`** (obrigatória; não versionar)
 
+**Script SQL da Sprint 3 (DBA):** se você rodar no Oracle o arquivo da disciplina com `T_SOS_EVENTO`, `T_SOS_SMS` e FK entre eles, o modelo JPA deste projeto já está alinhado a essas tabelas. Use **ou** as migrations Flyway em `db/migration/oracle` **ou** o script DBA no mesmo schema; se as tabelas já existirem e o Flyway tentar criá-las de novo, a inicialização pode falhar — nesse caso alinhe com o professor (baseline Flyway ou schema só via script).
+
 Exemplo de `.env` local (na pasta `SosLocaliza`):
 
 ```properties
@@ -191,7 +199,7 @@ http://localhost:8082/h2-console
 
 ```bash
 git clone <URL_DO_REPOSITORIO>
-cd OracleSOSLocaliza/SosLocaliza
+cd SosLocaliza
 ```
 
 1. **Compile o projeto:**
@@ -238,9 +246,9 @@ mvn clean package
 java -jar target/SosLocaliza-0.0.1-SNAPSHOT.jar
 ```
 
-### Opção 3: Execução com Docker (Recomendado para Produção)
+### Opção 3: Docker / nuvem / pipeline
 
-Consulte a seção [🐳 Deploy com Docker](#-deploy-com-docker) abaixo para instruções completas de deploy com Docker e Docker Compose.
+Para **Docker Compose**, **VM**, **Azure App Service** e **Azure Pipelines**, consulte **[README_DEVOPS.md](README_DEVOPS.md)**.
 
 ### Opção 4: Execução com H2 (Desenvolvimento sem Oracle)
 
@@ -252,423 +260,7 @@ java -jar target/SosLocaliza-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev
 
 Acesse o console H2 em: `http://localhost:8082/h2-console` (perfil `dev`; no `oracle-fiap` o H2 costuma não estar habilitado).
 
-## 🐳 Deploy com Docker
-
-### Pré-requisitos para Deploy
-
-- Docker instalado
-- Docker Compose instalado (ou plugin do Docker)
-- Java 21 e Maven (para build local)
-
-### 1. Build Local
-
-```bash
-# Compilar o projeto
-mvn clean package -DskipTests
-
-# Verificar JAR gerado
-ls -lh target/SosLocaliza-0.0.1-SNAPSHOT.jar
-```
-
-### 2. Deploy Local com Docker
-
-```bash
-# Build da imagem Docker
-docker build -t soslocaliza:latest .
-
-# Executar com Docker Compose (background)
-docker compose up -d
-
-# Verificar status
-docker compose ps
-
-# Ver logs
-docker compose logs -f soslocaliza
-# Pressione Ctrl+C para sair dos logs
-
-# Parar a aplicação
-docker compose down
-```
-
-### 3. Deploy na VM (Azure/AWS/GCP)
-
-#### 3.1. Instalação de Dependências na VM
-
-```bash
-# Atualizar sistema
-sudo apt update
-sudo apt upgrade -y
-
-# Instalar Git
-sudo apt install git -y
-
-# Instalar Java 21
-sudo apt install openjdk-21-jdk -y
-java -version
-
-# Configurar JAVA_HOME
-echo 'export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64' >> ~/.bashrc
-echo 'export PATH=$JAVA_HOME/bin:$PATH' >> ~/.bashrc
-source ~/.bashrc
-
-# Instalar Maven
-sudo apt install maven -y
-mvn -version
-
-# Instalar Docker (script oficial)
-curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh
-sudo docker --version
-sudo docker compose version
-
-# Adicionar usuário ao grupo docker (opcional)
-sudo usermod -aG docker $USER
-# NOTA: Use 'sudo' nos comandos docker até fazer logout/login
-```
-
-#### 3.2. Clonar e Preparar Repositório
-
-```bash
-# Clonar repositório
-cd ~
-git clone <URL_DO_SEU_REPOSITORIO>
-cd OracleSOSLocaliza/SosLocaliza
-```
-
-#### 3.3. Build e Deploy na VM
-
-```bash
-# Build do JAR
-mvn clean package -DskipTests
-
-# Verificar JAR gerado
-ls -lh target/SosLocaliza-0.0.1-SNAPSHOT.jar
-
-# Build da imagem Docker
-sudo docker build -t soslocaliza:latest .
-
-# Executar com Docker Compose (background)
-sudo docker compose up -d
-
-# Verificar status
-sudo docker compose ps
-
-# Ver logs (aguarde aparecer "Started SosLocalizaApplication")
-sudo docker compose logs -f soslocaliza
-# Pressione Ctrl+C para sair dos logs
-
-# IMPORTANTE: Aguarde 30-60 segundos após subir o container antes de testar endpoints
-```
-
-#### 3.4. Gerenciamento do Container
-
-```bash
-# Parar aplicação
-sudo docker compose down
-
-# Reiniciar aplicação
-sudo docker compose restart
-
-# Ver logs em tempo real
-sudo docker compose logs -f
-
-# Ver status
-sudo docker compose ps
-
-# Rebuild e restart
-sudo docker compose up -d --build
-```
-
-#### 3.5. Configuração de Firewall (Azure)
-
-Se estiver usando Azure VM, configure o Network Security Group (NSG) para permitir tráfego na porta 8081:
-
-1. Acesse o portal Azure
-2. Vá em **Network Security Groups**
-3. Adicione regra de entrada:
-  - **Porta**: 8081
-  - **Protocolo**: TCP
-  - **Ação**: Allow
-  - **Prioridade**: 100
-
-### 4. Verificar Deploy
-
-```bash
-# Health Check (local)
-curl http://localhost:8081/actuator/health
-
-# Health Check (VM - substitua pelo IP público)
-curl http://<IP_PUBLICO_VM>:8081/actuator/health
-```
-
-Resposta esperada:
-
-```json
-{"status":"UP"}
-```
-
-## 🧪 Testes dos Endpoints
-
-### Base URL
-
-- **Interface web:** `http://localhost:8081/` (formulário de login em `/login`).
-- **API REST:** use a base `http://localhost:8081` com paths que começam em `/api` (ex.: `GET /api/eventos/ativos`).
-
-Chamadas à API exigem **HTTP Basic** (exceto health/info). Exemplo:
-
-```bash
-curl -u admin:password http://localhost:8081/api/eventos/ativos
-```
-
-Substitua `localhost` pelo IP público da VM quando aplicável.
-
-### 1. Health Check
-
-```bash
-curl http://localhost:8081/actuator/health
-```
-
-### 2. Testes de Eventos
-
-#### Criar Evento
-
-```bash
-curl -X POST http://localhost:8081/api/eventos/add \
-  -H "Content-Type: application/json" \
-  -d '{
-    "nomeEvento": "Enchente na Região Sul",
-    "descricaoEvento": "Alagamento severo em várias ruas",
-    "causas": "Chuva intensa",
-    "alertas": "Nível do rio subindo",
-    "acoesAntes": "Evacuar áreas de risco",
-    "acoesDurante": "Não atravessar ruas alagadas",
-    "acoesDepois": "Verificar danos estruturais"
-  }'
-```
-
-#### Listar Eventos
-
-```bash
-curl -u admin:password "http://localhost:8081/api/eventos/getAll?page=0&size=10&direction=ASC"
-```
-
-#### Listar apenas eventos ativos
-
-```bash
-curl -u citizen:password http://localhost:8081/api/eventos/ativos
-```
-
-#### Buscar Evento por ID
-
-```bash
-curl http://localhost:8081/api/eventos/getById/1
-```
-
-#### Atualizar Evento
-
-```bash
-curl -X PUT http://localhost:8081/api/eventos/update/1 \
-  -H "Content-Type: application/json" \
-  -d '{
-    "nomeEvento": "Enchente na Região Sul - ATUALIZADO",
-    "descricaoEvento": "Alagamento severo atualizado"
-  }'
-```
-
-#### Deletar Evento
-
-```bash
-curl -X DELETE http://localhost:8081/api/eventos/delete/1
-```
-
-### 3. Testes de SMS
-
-#### Enviar SMS
-
-```bash
-curl -X POST http://localhost:8081/api/sms \
-  -H "Content-Type: application/json" \
-  -d '{
-    "remetente": "Defesa Civil",
-    "ddd": "11",
-    "numeroTelefone": "999999999",
-    "mensagem": "ALERTA: Enchente na região. Evacue imediatamente!",
-    "idEvento": 1
-  }'
-```
-
-#### Listar SMS
-
-```bash
-curl http://localhost:8081/api/sms/getAll
-```
-
-#### Buscar SMS por Número
-
-```bash
-curl "http://localhost:8081/api/sms/buscarPorNumero?numeroTelefone=+5511999999999"
-```
-
-### 4. Testes de Procedures (Oracle)
-
-#### Inserir Localização
-
-```bash
-curl -X POST http://localhost:8081/api/procedures/localizacao \
-  -H "Content-Type: application/json" \
-  -d '{
-    "nomeLocal": "Praça da Sé",
-    "ruaLocal": "Praça da Sé",
-    "numeroLocal": 100,
-    "cepLocal": "01001000"
-  }'
-```
-
-#### Atualizar Localização
-
-```bash
-curl -X PUT http://localhost:8081/api/procedures/localizacao/1 \
-  -H "Content-Type: application/json" \
-  -d '{
-    "nomeLocal": "Praça da Sé - Atualizado",
-    "ruaLocal": "Praça da Sé",
-    "numeroLocal": 200,
-    "cepLocal": "01001000"
-  }'
-```
-
-#### Deletar Localização
-
-```bash
-curl -X DELETE http://localhost:8081/api/procedures/localizacao/1
-```
-
-#### Inserir Usuário
-
-```bash
-curl -X POST http://localhost:8081/api/procedures/usuario \
-  -H "Content-Type: application/json" \
-  -d '{
-    "nomeUsuario": "João Silva",
-    "cpfUsuario": "12345678901",
-    "emailUsuario": "joao@example.com",
-    "telefoneUsuario": "11999999999"
-  }'
-```
-
-#### Atualizar Usuário
-
-```bash
-curl -X PUT http://localhost:8081/api/procedures/usuario/1 \
-  -H "Content-Type: application/json" \
-  -d '{
-    "nomeUsuario": "João Silva Santos",
-    "cpfUsuario": "12345678901",
-    "emailUsuario": "joao.santos@example.com",
-    "telefoneUsuario": "11988888888"
-  }'
-```
-
-#### Deletar Usuário
-
-```bash
-curl -X DELETE http://localhost:8081/api/procedures/usuario/1
-```
-
-### 5. Sequência Completa de Testes (12 Operações)
-
-Execute esta sequência para testar todas as operações CRUD:
-
-```bash
-# LOCALIZAÇÃO - 6 operações
-# 1. INSERT 1
-curl -X POST http://localhost:8081/api/procedures/localizacao \
-  -H "Content-Type: application/json" \
-  -d '{"nomeLocal":"Teste 1","ruaLocal":"Rua A","numeroLocal":100,"cepLocal":"12345678"}'
-
-# 2. INSERT 2
-curl -X POST http://localhost:8081/api/procedures/localizacao \
-  -H "Content-Type: application/json" \
-  -d '{"nomeLocal":"Teste 2","ruaLocal":"Rua B","numeroLocal":200,"cepLocal":"87654321"}'
-
-# 3. UPDATE 1 (substitua {id} pelo ID retornado)
-curl -X PUT http://localhost:8081/api/procedures/localizacao/{id} \
-  -H "Content-Type: application/json" \
-  -d '{"nomeLocal":"Teste 1 Atualizado","ruaLocal":"Rua A","numeroLocal":150,"cepLocal":"12345678"}'
-
-# 4. UPDATE 2
-curl -X PUT http://localhost:8081/api/procedures/localizacao/{id} \
-  -H "Content-Type: application/json" \
-  -d '{"nomeLocal":"Teste 2 Atualizado","ruaLocal":"Rua B","numeroLocal":250,"cepLocal":"87654321"}'
-
-# 5. DELETE 1
-curl -X DELETE http://localhost:8081/api/procedures/localizacao/{id}
-
-# 6. DELETE 2
-curl -X DELETE http://localhost:8081/api/procedures/localizacao/{id}
-
-# USUÁRIO - 6 operações
-# 7. INSERT 1
-curl -X POST http://localhost:8081/api/procedures/usuario \
-  -H "Content-Type: application/json" \
-  -d '{"nomeUsuario":"João Silva","cpfUsuario":"12345678901","emailUsuario":"joao@test.com","telefoneUsuario":"11999999999"}'
-
-# 8. INSERT 2
-curl -X POST http://localhost:8081/api/procedures/usuario \
-  -H "Content-Type: application/json" \
-  -d '{"nomeUsuario":"Maria Santos","cpfUsuario":"98765432100","emailUsuario":"maria@test.com","telefoneUsuario":"11888888888"}'
-
-# 9. UPDATE 1
-curl -X PUT http://localhost:8081/api/procedures/usuario/{id} \
-  -H "Content-Type: application/json" \
-  -d '{"nomeUsuario":"João Silva Santos","cpfUsuario":"12345678901","emailUsuario":"joao.santos@test.com","telefoneUsuario":"11977777777"}'
-
-# 10. UPDATE 2
-curl -X PUT http://localhost:8081/api/procedures/usuario/{id} \
-  -H "Content-Type: application/json" \
-  -d '{"nomeUsuario":"Maria Santos Silva","cpfUsuario":"98765432100","emailUsuario":"maria.silva@test.com","telefoneUsuario":"11866666666"}'
-
-# 11. DELETE 1
-curl -X DELETE http://localhost:8081/api/procedures/usuario/{id}
-
-# 12. DELETE 2
-curl -X DELETE http://localhost:8081/api/procedures/usuario/{id}
-```
-
-### 6. Testes com Postman/Insomnia
-
-Para facilitar os testes, consulte o guia de cenários em [TESTES.md](TESTES.md) e os exemplos de payload deste README.
-
-### 7. Troubleshooting
-
-#### Aplicação não inicia
-
-```bash
-# Verificar logs
-sudo docker compose logs -f soslocaliza
-
-# Verificar se a porta está em uso
-sudo netstat -tulpn | grep 8081
-
-# Verificar status do container
-sudo docker compose ps
-```
-
-#### Erro de conexão com banco
-
-- Verifique as credenciais do Oracle no `docker-compose.yml`
-- Confirme que a VM tem acesso ao Oracle FIAP
-- Teste a conexão: `telnet oracle.fiap.com.br 1521`
-
-#### Erro de permissão Docker
-
-```bash
-# Adicionar usuário ao grupo docker
-sudo usermod -aG docker $USER
-
-# OU usar sudo temporariamente
-sudo docker compose up -d
-```
+Exemplos de **curl**, **Postman**, **Docker**, **deploy em VM/Azure** e **scripts JSON de CRUD** para reprodução completa: **[README_DEVOPS.md](README_DEVOPS.md)**.
 
 ## 🔗 HATEOAS (Hypermedia as the Engine of Application State)
 
@@ -782,6 +374,9 @@ Base HTTP: `http://localhost:8081` — rotas REST usam o prefixo `/api/...`. Aut
 | ------- | --------------------------------------------------------------------- | ---------------------------------------------- |
 | `POST`  | `/api/sms`                                                            | Enviar SMS                                     |
 | `POST`  | `/api/sms/emergencia/{idEvento}`                                      | Enviar SMS de emergência vinculado a um evento |
+| `GET`   | `/api/sms/getById/{id}`                                               | Buscar SMS por ID                              |
+| `PUT`   | `/api/sms/update/{id}`                                                | Atualizar SMS (inclui vínculo com evento)      |
+| `DELETE`| `/api/sms/delete/{id}`                                                | Excluir SMS                                    |
 | `GET`   | `/api/sms/getAll`                                                     | Listar todos os SMS (com paginação)            |
 | `GET`   | `/api/sms/buscarPorNumero?numeroTelefone={numero}`                    | Buscar SMS por número de telefone              |
 | `GET`   | `/api/sms/buscarPorDdd?ddd={ddd}`                                     | Buscar SMS por DDD                             |
@@ -826,53 +421,7 @@ Base HTTP: `http://localhost:8081` — rotas REST usam o prefixo `/api/...`. Aut
 
 **Total de Endpoints**: 25 endpoints disponíveis
 
-## 🧪 Testando com Postman/Insomnia
-
-### Exemplo de Criação de Evento
-
-```json
-POST /api/eventos/add
-Content-Type: application/json
-
-{
-  "nomeEvento": "Enchente na Região Sul",
-  "descricaoEvento": "Alagamento severo em várias ruas",
-  "causas": "Chuva intensa e sistema de drenagem inadequado",
-  "alertas": "Nível do rio subindo rapidamente",
-  "acoesAntes": "Evacuar áreas de risco",
-  "acoesDurante": "Não atravessar ruas alagadas",
-  "acoesDepois": "Verificar danos estruturais"
-}
-```
-
-### Exemplo de Envio de SMS
-
-```json
-POST /api/sms
-Content-Type: application/json
-
-{
-  "remetente": "Defesa Civil",
-  "ddd": "11",
-  "numeroTelefone": "999999999",
-  "mensagem": "ALERTA: Enchente na região. Evacue imediatamente!",
-  "idEvento": 1
-}
-```
-
-### Exemplo de SMS de Emergência
-
-```json
-POST /api/sms/emergencia/{idEvento}
-Content-Type: application/json
-
-{
-  "remetente": "Sistema SOS Localiza",
-  "ddd": "11",
-  "numeroTelefone": "999999999",
-  "mensagem": "Situação crítica detectada!"
-}
-```
+Exemplos de corpo JSON, Postman e pasta `api-examples/crud/`: **[README_DEVOPS.md](README_DEVOPS.md)**.
 
 #### Relacionamentos e Constraints
 
@@ -964,8 +513,8 @@ Todos os endpoints de listagem suportam paginação:
 - Tamanhos máximos de campos
 - Formato de datas
 
-## 📚 Documentação Adicional
+## 📚 Documentação adicional
 
-- **[TESTES.md](TESTES.md)**: Instruções detalhadas sobre como testar a API
-- Endpoints para testes das procedures.
+- **[README_DEVOPS.md](README_DEVOPS.md)**: deploy (Azure, Docker, VM), pipeline CI/CD, testes com curl/Postman e **scripts JSON de CRUD** (entrega Sprint DevOps).
+- **[TESTES.md](TESTES.md)**: cenários de teste da API e procedures.
 
