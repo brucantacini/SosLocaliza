@@ -65,7 +65,7 @@ public class SocorroController {
         dto.setNumeroTelefone(usuario.getNumeroLocal().trim());
         dto.setMensagem(form.getMensagem());
         twilioSmsService.enviarSmsComEvento(dto, form.getIdEvento());
-        redirectAttributes.addFlashAttribute("successMessage", "Solicitação de socorro registrada. Acompanhe o status no painel administrativo.");
+        redirectAttributes.addFlashAttribute("successMessage", "Solicitação de socorro registrada. Acompanhe o status no painel de mensagens enviadas.");
         return "redirect:/socorro";
     }
 

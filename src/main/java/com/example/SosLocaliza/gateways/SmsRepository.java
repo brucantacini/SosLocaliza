@@ -3,6 +3,7 @@ package com.example.SosLocaliza.gateways;
 import com.example.SosLocaliza.domains.SmsMessage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,6 +22,10 @@ public interface SmsRepository extends JpaRepository<SmsMessage, Long> {
     List<SmsMessage> findByEventoIdEvento(Long idEvento);
 
     List<SmsMessage> findByDdd(String ddd);
+
+    @EntityGraph(attributePaths = "evento")
+    @Query("SELECT s FROM SmsMessage s")
+    Page<SmsMessage> findAllWithEvento(Pageable pageable);
 
     Page<SmsMessage> findAll(Pageable pageable);
 

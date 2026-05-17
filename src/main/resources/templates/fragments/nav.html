@@ -16,7 +16,7 @@
                     <a class="nav-link" th:href="@{/socorro}">Pedido de socorro (SMS)</a>
                 </li>
                 <li class="nav-item" sec:authorize="hasRole('ADMIN')">
-                    <a class="nav-link" th:href="@{/admin}">Painel administrativo</a>
+                    <a class="nav-link" th:href="@{/admin}">Alertas Recebidos</a>
                 </li>
             </ul>
             <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" class="d-flex">

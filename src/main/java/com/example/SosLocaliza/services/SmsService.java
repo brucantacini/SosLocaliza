@@ -48,7 +48,7 @@ public class SmsService {
     }
 
     public Page<SmsMessage> listarSmsComPaginacao(Pageable pageable) {
-        return smsRepository.findAll(pageable);
+        return smsRepository.findAllWithEvento(pageable);
     }
 
     public Page<SmsMessage> listarSmsEnviadosComSucessoComPaginacao(Pageable pageable) {

@@ -12,14 +12,14 @@ services:
     ports:
       - "8081:8081"
     environment:
-      # Perfil Spring Boot (oracle-fiap para produção)
+      # Perfil Spring Boot (Oracle produção / FIAP)
       - SPRING_PROFILES_ACTIVE=oracle-fiap
-      # Twilio desabilitado por padrão (pode ser habilitado via variáveis de ambiente)
       - TWILIO_ENABLED=false
-      # Configurações do Oracle Database (ajustar conforme necessário)
-      - SPRING_DATASOURCE_URL=jdbc:oracle:thin:@oracle.fiap.com.br:1521:ORCL
-      - SPRING_DATASOURCE_USERNAME=rm560242
-      - SPRING_DATASOURCE_PASSWORD=271005
+      # Defina no host ou num ficheiro .env na mesma pasta: ORACLE_USERNAME, ORACLE_PASSWORD
+      # Opcional: SPRING_DATASOURCE_URL=jdbc:oracle:thin:@host:1521:ORCL
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL:-jdbc:oracle:thin:@oracle.fiap.com.br:1521:ORCL}
+      - SPRING_DATASOURCE_USERNAME=${ORACLE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${ORACLE_PASSWORD}
     restart: unless-stopped
     networks:
       - soslocaliza-network

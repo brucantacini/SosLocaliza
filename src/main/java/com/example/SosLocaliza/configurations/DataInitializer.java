@@ -20,16 +20,29 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        log.info("Inicializando dados de exemplo para o Oracle FIAP...");
-        
-        List<Evento> eventosExistentes = eventoService.listarTodosEventos();
-        if (!eventosExistentes.isEmpty()) {
-            log.info("Eventos já existem no banco. Pulando inicialização de dados.");
+        log.info("Verificando eventos de emergência ativos (app mobile / SMS)...");
+
+        Long totalAtivos = eventoService.contarEventosAtivos();
+        if (totalAtivos != null && totalAtivos > 0) {
+            log.info("{} evento(s) ativo(s); nada a fazer.", totalAtivos);
+            return;
+        }
+
+        /* Linhas antigas (ex.: Oracle) com ATIVO NULL/0: existem em T_SOS_EVENTO mas /ativos vinha vazio. */
+        List<Evento> todos = eventoService.listarTodosEventos();
+        for (Evento e : todos) {
+            if (!Boolean.TRUE.equals(e.getAtivo())) {
+                log.info("Reativando evento id={} ({})", e.getIdEvento(), e.getNomeEvento());
+                eventoService.atualizarEvento(e.withAtivo(true));
+            }
+        }
+
+        if (eventoService.contarEventosAtivos() != null && eventoService.contarEventosAtivos() > 0) {
+            log.info("Eventos existentes reativados.");
             return;
         }
 
         criarEventosExemplo();
-        
         log.info("Dados de exemplo inicializados com sucesso!");
     }
 

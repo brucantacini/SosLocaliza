@@ -56,10 +56,10 @@ Após subir a aplicação, acesse no navegador:
 
 | URL                                                                                   | Descrição                                                                                             |
 | ------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| `http://localhost:8080/login` (dev) / `http://localhost:8081/login` (oracle-fiap)     | Login (redireciona usuários não autenticados)                                                         |
-| `http://localhost:8080/` (dev) / `http://localhost:8081/` (oracle-fiap)               | Página inicial (após login)                                                                           |
-| `http://localhost:8080/socorro` (dev) / `http://localhost:8081/socorro` (oracle-fiap) | Fluxo **Pedido de socorro (SMS)** — escolha do evento e mensagem. Nome/telefone vêm do usuário logado |
-| `http://localhost:8080/admin` (dev) / `http://localhost:8081/admin` (oracle-fiap)     | Fluxo **Painel administrativo** — estatísticas e histórico paginado de SMS (somente `ROLE_ADMIN`)     |
+| `http://localhost:8082/login` (dev) / `http://localhost:8081/login` (oracle-fiap)     | Login (redireciona usuários não autenticados)                                                         |
+| `http://localhost:8082/` (dev) / `http://localhost:8081/` (oracle-fiap)               | Página inicial (após login)                                                                           |
+| `http://localhost:8082/socorro` (dev) / `http://localhost:8081/socorro` (oracle-fiap) | Fluxo **Pedido de socorro (SMS)** — escolha do evento e mensagem. Nome/telefone vêm do usuário logado |
+| `http://localhost:8082/admin` (dev) / `http://localhost:8081/admin` (oracle-fiap)     | **Painel de mensagens enviadas** — histórico paginado de SMS (somente `ROLE_ADMIN`)     |
 
 
 **Usuários de demonstração** (senha em ambos: `password`):
@@ -76,6 +76,20 @@ Os hashes BCrypt estão nas migrations `V2__seed_users.sql` (pastas `db/migratio
 **REST API:** todos os controllers estão sob o prefixo `/api` (ex.: `GET /api/eventos/ativos`). Para testar com **curl** ou Postman, use **HTTP Basic** com `admin`/`password` ou `citizen`/`password`. O CSRF está desligado apenas para rotas `/api/`**; o login web usa CSRF normalmente.
 
 **Variáveis de ambiente (Oracle FIAP):** defina `ORACLE_PASSWORD` (e opcionalmente `ORACLE_USERNAME`). **Não** commite senhas no repositório. A pasta do projeto contém `.env.example`.
+
+**Produção Oracle (alinhado com o app mobile):**
+
+| Item | Valor |
+|------|--------|
+| Perfil recomendado | `oracle-fiap` (FIAP) ou `prod` (equivale a `oracle-fiap` via grupo de perfis) |
+| Alternativa genérica Oracle | `oracle` — mesmo Flyway em `db/migration/oracle`, `ddl-auto: validate` |
+| Flyway | `classpath:db/migration/oracle` — cria/atualiza `T_SOS_EVENTO`, `T_SOS_SMS`, `T_SOS_APP_USER` + colunas de perfil (V6/V7) |
+| JPA | `validate` — o schema vem das migrations; não use `update`/`create-drop` em produção |
+| Porta padrão | **8081** (`oracle-fiap`) vs **8082** (`dev`, alinhado ao Metro Expo do app em **8081**) — no Expo use `EXPO_PUBLIC_API_BASE_URL` com a porta do Spring |
+| Variáveis | `ORACLE_HOST`, `ORACLE_PORT`, `ORACLE_SID`, `ORACLE_USERNAME`, `ORACLE_PASSWORD` (obrigatória em FIAP se o default vazio não servir) |
+| Dados iniciais | Migrations `V2`/`V5` inserem `admin` e `citizen`; `DataInitializer` roda em `dev` e `oracle-fiap` e cria eventos de exemplo se a tabela estiver vazia |
+
+Exemplo: `mvnw spring-boot:run -Dspring-boot.run.profiles=oracle-fiap` ou `SPRING_PROFILES_ACTIVE=prod`.
 
 ## 📋 Pré-requisitos
 
@@ -149,7 +163,7 @@ ORACLE_SID=ORCL
 
 #### Desenvolvimento (H2)
 
-O perfil padrão é `**dev**` (H2 em memória, Flyway em `classpath:db/migration/h2`, porta **8080**).
+O perfil padrão é `**dev**` (H2 em memória, Flyway em `classpath:db/migration/h2`, porta **8082**).
 
 ```bash
 java -jar target/SosLocaliza-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev
@@ -158,7 +172,7 @@ java -jar target/SosLocaliza-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev
 Console H2 (perfil `dev`):
 
 ```
-http://localhost:8080/h2-console
+http://localhost:8082/h2-console
 ```
 
 ## 🏃‍♂️ Como Rodar a Aplicação
@@ -195,7 +209,7 @@ mvn clean install
 1. **Acesse a aplicação:**
 
 ```
-http://localhost:8080/actuator/health (perfil dev)
+http://localhost:8082/actuator/health (perfil dev)
 ```
 
 Para Oracle FIAP, rode com perfil Oracle ativo:
@@ -236,7 +250,7 @@ Para desenvolvimento sem acesso ao Oracle, use o perfil H2:
 java -jar target/SosLocaliza-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev
 ```
 
-Acesse o console H2 em: `http://localhost:8080/h2-console` (perfil `dev`; no `oracle-fiap` o H2 costuma não estar habilitado).
+Acesse o console H2 em: `http://localhost:8082/h2-console` (perfil `dev`; no `oracle-fiap` o H2 costuma não estar habilitado).
 
 ## 🐳 Deploy com Docker
 
@@ -682,22 +696,22 @@ Todas as respostas de recursos individuais (Evento e SMS) incluem um objeto `_li
   "ativo": true,
   "_links": {
     "self": {
-      "href": "http://localhost:8080/api/eventos/getById/1"
+      "href": "http://localhost:8082/api/eventos/getById/1"
     },
     "collection": {
-      "href": "http://localhost:8080/api/eventos/getAll"
+      "href": "http://localhost:8082/api/eventos/getAll"
     },
     "update": {
-      "href": "http://localhost:8080/api/eventos/update/1"
+      "href": "http://localhost:8082/api/eventos/update/1"
     },
     "delete": {
-      "href": "http://localhost:8080/api/eventos/delete/1"
+      "href": "http://localhost:8082/api/eventos/delete/1"
     },
     "desativar": {
-      "href": "http://localhost:8080/api/eventos/desativar/1"
+      "href": "http://localhost:8082/api/eventos/desativar/1"
     },
     "sms": {
-      "href": "http://localhost:8080/api/sms/buscarPorEvento/1"
+      "href": "http://localhost:8082/api/sms/buscarPorEvento/1"
     }
   }
 }

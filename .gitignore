@@ -38,3 +38,6 @@ application-secrets.yml
 *.secrets.yml
 .env
 .env.local
+
+# H2 em ficheiro (perfil dev — ./data/soslocaliza-dev.*)
+data/

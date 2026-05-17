@@ -13,14 +13,14 @@
     <h1 class="h2 mb-3">Emergências climáticas</h1>
     <p class="lead">
         Use o fluxo <strong>Pedido de socorro (SMS)</strong> para enviar alerta vinculado a um tipo de evento.
-        O painel administrativo exibe estatísticas e o histórico de SMS (somente perfil administrador).
+        O painel de mensagens enviadas exibe o histórico de SMS (somente perfil administrador).
     </p>
     <ul class="list-unstyled mt-4">
         <li sec:authorize="hasAnyRole('USER','ADMIN')" class="mb-2">
             <a th:href="@{/socorro}" class="btn btn-outline-primary">Abrir pedido de socorro por SMS</a>
         </li>
         <li sec:authorize="hasRole('ADMIN')" class="mb-2">
-            <a th:href="@{/admin}" class="btn btn-outline-secondary">Abrir painel administrativo</a>
+            <a th:href="@{/admin}" class="btn btn-outline-secondary">Abrir painel de mensagens enviadas</a>
         </li>
     </ul>
 </main>

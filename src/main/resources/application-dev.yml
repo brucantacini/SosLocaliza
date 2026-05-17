@@ -3,17 +3,18 @@ spring:
   config:
     activate:
       on-profile: dev
-  
-  datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: password
-  
+
   h2:
     console:
       enabled: true
       path: /h2-console
+  
+  # H2 em ficheiro: SMS e utilizadores persistem entre reinícios (perfil dev só; produção = Oracle).
+  datasource:
+    url: jdbc:h2:file:./data/soslocaliza-dev;AUTO_SERVER=FALSE;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
   
   flyway:
     enabled: true
@@ -38,9 +39,9 @@ spring:
 #   auth-token: ${TWILIO_AUTH_TOKEN:7a420445aa2fc29161ac7cc22e2b8353}
 #   trial-number: ${TWILIO_TRIAL_NUMBER:+15005550006}
 
-# Configurações do servidor
+# Configurações do servidor (8082 para não conflitar com Metro Expo em 8081 no sosLocal)
 server:
-  port: 8080
+  port: 8082
 
 # Configurações de logging para desenvolvimento
 logging:

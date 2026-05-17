@@ -3,6 +3,10 @@ spring:
     activate:
       on-profile: oracle-fiap
 
+  h2:
+    console:
+      enabled: false
+
   thymeleaf:
     cache: false
   
@@ -39,9 +43,9 @@ twilio:
   trial-number: ${TWILIO_TRIAL_NUMBER:+12176248670}
   enabled: ${TWILIO_ENABLED:false}
 
-# Configurações do servidor (use SERVER_PORT no .env se 8081 estiver ocupada)
+# Porta 8082: mesmo padrão do perfil dev (Expo/Metro costuma usar 8081)
 server:
-  port: ${SERVER_PORT:8081}
+  port: ${SERVER_PORT:8082}
 
 # Configurações do Actuator
 management:
