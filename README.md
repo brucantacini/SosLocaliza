@@ -12,7 +12,7 @@ Este **README** concentra **descrição do produto**, **stack Java/Spring**, **c
 
 ### Amanda Galdino - RM560066
 
-**Responsabilidades**: Integração Twilio para envio de SMS, Configuração de APIs externas, Testes de integração.
+**Responsabilidades**: Integração com o app mobile.
 
 ### Gustavo Gonçalves - RM556823
 
@@ -65,7 +65,7 @@ Após subir a aplicação, acesse no navegador:
 | `http://localhost:8082/login` (dev) / `http://localhost:8081/login` (oracle-fiap)     | Login (redireciona usuários não autenticados)                                                         |
 | `http://localhost:8082/` (dev) / `http://localhost:8081/` (oracle-fiap)               | Página inicial (após login)                                                                           |
 | `http://localhost:8082/socorro` (dev) / `http://localhost:8081/socorro` (oracle-fiap) | Fluxo **Pedido de socorro (SMS)** — escolha do evento e mensagem. Nome/telefone vêm do usuário logado |
-| `http://localhost:8082/admin` (dev) / `http://localhost:8081/admin` (oracle-fiap)     | **Painel de mensagens enviadas** — histórico paginado de SMS (somente `ROLE_ADMIN`)     |
+| `http://localhost:8082/admin` (dev) / `http://localhost:8081/admin` (oracle-fiap)     | **Painel de mensagens enviadas** — histórico paginado de SMS (somente `ROLE_ADMIN`)                   |
 
 
 **Usuários de demonstração** (senha em ambos: `password`):
@@ -85,15 +85,17 @@ Os hashes BCrypt estão nas migrations `V2__seed_users.sql` (pastas `db/migratio
 
 **Produção Oracle (alinhado com o app mobile):**
 
-| Item | Valor |
-|------|--------|
-| Perfil recomendado | `oracle-fiap` (FIAP) ou `prod` (equivale a `oracle-fiap` via grupo de perfis) |
-| Alternativa genérica Oracle | `oracle` — mesmo Flyway em `db/migration/oracle`, `ddl-auto: validate` |
-| Flyway | `classpath:db/migration/oracle` — cria/atualiza `T_SOS_EVENTO`, `T_SOS_SMS`, `T_SOS_APP_USER` + colunas de perfil (V6/V7) |
-| JPA | `validate` — o schema vem das migrations; não use `update`/`create-drop` em produção |
-| Porta padrão | **8081** (`oracle-fiap`) vs **8082** (`dev`, alinhado ao Metro Expo do app em **8081**) — no Expo use `EXPO_PUBLIC_API_BASE_URL` com a porta do Spring |
-| Variáveis | `ORACLE_HOST`, `ORACLE_PORT`, `ORACLE_SID`, `ORACLE_USERNAME`, `ORACLE_PASSWORD` (obrigatória em FIAP se o default vazio não servir) |
-| Dados iniciais | Migrations `V2`/`V5` inserem `admin` e `citizen`; `DataInitializer` roda em `dev` e `oracle-fiap` e cria eventos de exemplo se a tabela estiver vazia |
+
+| Item                        | Valor                                                                                                                                                  |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Perfil recomendado          | `oracle-fiap` (FIAP) ou `prod` (equivale a `oracle-fiap` via grupo de perfis)                                                                          |
+| Alternativa genérica Oracle | `oracle` — mesmo Flyway em `db/migration/oracle`, `ddl-auto: validate`                                                                                 |
+| Flyway                      | `classpath:db/migration/oracle` — cria/atualiza `T_SOS_EVENTO`, `T_SOS_SMS`, `T_SOS_APP_USER` + colunas de perfil (V6/V7)                              |
+| JPA                         | `validate` — o schema vem das migrations; não use `update`/`create-drop` em produção                                                                   |
+| Porta padrão                | **8081** (`oracle-fiap`) vs **8082** (`dev`, alinhado ao Metro Expo do app em **8081**) — no Expo use `EXPO_PUBLIC_API_BASE_URL` com a porta do Spring |
+| Variáveis                   | `ORACLE_HOST`, `ORACLE_PORT`, `ORACLE_SID`, `ORACLE_USERNAME`, `ORACLE_PASSWORD` (obrigatória em FIAP se o default vazio não servir)                   |
+| Dados iniciais              | Migrations `V2`/`V5` inserem `admin` e `citizen`; `DataInitializer` roda em `dev` e `oracle-fiap` e cria eventos de exemplo se a tabela estiver vazia  |
+
 
 Exemplo: `mvnw spring-boot:run -Dspring-boot.run.profiles=oracle-fiap` ou `SPRING_PROFILES_ACTIVE=prod`.
 
@@ -370,22 +372,22 @@ Base HTTP: `http://localhost:8081` — rotas REST usam o prefixo `/api/...`. Aut
 ### SMS
 
 
-| Método  | Endpoint                                                              | Descrição                                      |
-| ------- | --------------------------------------------------------------------- | ---------------------------------------------- |
-| `POST`  | `/api/sms`                                                            | Enviar SMS                                     |
-| `POST`  | `/api/sms/emergencia/{idEvento}`                                      | Enviar SMS de emergência vinculado a um evento |
-| `GET`   | `/api/sms/getById/{id}`                                               | Buscar SMS por ID                              |
-| `PUT`   | `/api/sms/update/{id}`                                                | Atualizar SMS (inclui vínculo com evento)      |
-| `DELETE`| `/api/sms/delete/{id}`                                                | Excluir SMS                                    |
-| `GET`   | `/api/sms/getAll`                                                     | Listar todos os SMS (com paginação)            |
-| `GET`   | `/api/sms/buscarPorNumero?numeroTelefone={numero}`                    | Buscar SMS por número de telefone              |
-| `GET`   | `/api/sms/buscarPorDdd?ddd={ddd}`                                     | Buscar SMS por DDD                             |
-| `GET`   | `/api/sms/buscarPorEvento/{idEvento}`                                 | Buscar SMS por evento                          |
-| `GET`   | `/api/sms/buscarPorPeriodo?dataInicio={dataInicio}&dataFim={dataFim}` | Buscar SMS por período                         |
-| `GET`   | `/api/sms/ultimoSms/{numero}`                                         | Buscar último SMS enviado para um número       |
-| `GET`   | `/api/sms/estatisticas`                                               | Obter estatísticas dos SMS                     |
-| `PATCH` | `/api/sms/marcarSucesso/{id}`                                         | Marcar SMS como enviado com sucesso            |
-| `PATCH` | `/api/sms/marcarErro/{id}?erro={mensagemErro}`                        | Marcar SMS como erro                           |
+| Método   | Endpoint                                                              | Descrição                                      |
+| -------- | --------------------------------------------------------------------- | ---------------------------------------------- |
+| `POST`   | `/api/sms`                                                            | Enviar SMS                                     |
+| `POST`   | `/api/sms/emergencia/{idEvento}`                                      | Enviar SMS de emergência vinculado a um evento |
+| `GET`    | `/api/sms/getById/{id}`                                               | Buscar SMS por ID                              |
+| `PUT`    | `/api/sms/update/{id}`                                                | Atualizar SMS (inclui vínculo com evento)      |
+| `DELETE` | `/api/sms/delete/{id}`                                                | Excluir SMS                                    |
+| `GET`    | `/api/sms/getAll`                                                     | Listar todos os SMS (com paginação)            |
+| `GET`    | `/api/sms/buscarPorNumero?numeroTelefone={numero}`                    | Buscar SMS por número de telefone              |
+| `GET`    | `/api/sms/buscarPorDdd?ddd={ddd}`                                     | Buscar SMS por DDD                             |
+| `GET`    | `/api/sms/buscarPorEvento/{idEvento}`                                 | Buscar SMS por evento                          |
+| `GET`    | `/api/sms/buscarPorPeriodo?dataInicio={dataInicio}&dataFim={dataFim}` | Buscar SMS por período                         |
+| `GET`    | `/api/sms/ultimoSms/{numero}`                                         | Buscar último SMS enviado para um número       |
+| `GET`    | `/api/sms/estatisticas`                                               | Obter estatísticas dos SMS                     |
+| `PATCH`  | `/api/sms/marcarSucesso/{id}`                                         | Marcar SMS como enviado com sucesso            |
+| `PATCH`  | `/api/sms/marcarErro/{id}?erro={mensagemErro}`                        | Marcar SMS como erro                           |
 
 
 **Parâmetros de Paginação (para getAll):**
