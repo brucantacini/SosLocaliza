@@ -1,8 +1,7 @@
 # Arquivos e diretórios a serem ignorados no build Docker
 
-# Maven
+# Maven (app.jar na raiz é gerado pela pipeline antes do docker build)
 target/
-!target/SosLocaliza-0.0.1-SNAPSHOT.jar
 .mvn/
 mvnw
 mvnw.cmd

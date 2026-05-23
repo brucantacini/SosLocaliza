@@ -45,6 +45,11 @@ stages:
               ./mvnw -B package -DskipTests
             displayName: 'Maven package (JAR)'
 
+          - script: |
+              cp target/SosLocaliza-0.0.1-SNAPSHOT.jar app.jar
+              ls -lh app.jar
+            displayName: 'Preparar app.jar para Docker (CI)'
+
           - task: Docker@2
             displayName: 'Build imagem Docker (validação CI)'
             inputs:
@@ -85,9 +90,21 @@ stages:
 
                 - script: |
                     set -euo pipefail
-                    test -f target/SosLocaliza-0.0.1-SNAPSHOT.jar
-                    ls -lh target/SosLocaliza-0.0.1-SNAPSHOT.jar
-                  displayName: 'Validar JAR para Docker'
+                    mkdir -p target
+                    JAR=target/SosLocaliza-0.0.1-SNAPSHOT.jar
+                    if [ ! -f "$JAR" ]; then
+                      FOUND="$(find "$(Pipeline.Workspace)" -name 'SosLocaliza-0.0.1-SNAPSHOT.jar' -type f | head -1)"
+                      if [ -z "$FOUND" ]; then
+                        echo "##vso[task.logissue type=error]JAR não encontrado no artefato CI"
+                        find "$(Pipeline.Workspace)" -type f
+                        exit 1
+                      fi
+                      cp "$FOUND" "$JAR"
+                    fi
+                    ls -lh "$JAR"
+                    # Garante que o Docker enxerga o JAR no contexto (além do .dockerignore)
+                    cp "$JAR" app.jar
+                  displayName: 'Preparar JAR para Docker'
 
                 - task: Docker@2
                   displayName: 'Login ACR'
@@ -140,9 +157,20 @@ stages:
 
                 - script: |
                     set -euo pipefail
-                    test -f target/SosLocaliza-0.0.1-SNAPSHOT.jar
-                    ls -lh target/SosLocaliza-0.0.1-SNAPSHOT.jar
-                  displayName: 'Validar JAR para Docker'
+                    mkdir -p target
+                    JAR=target/SosLocaliza-0.0.1-SNAPSHOT.jar
+                    if [ ! -f "$JAR" ]; then
+                      FOUND="$(find "$(Pipeline.Workspace)" -name 'SosLocaliza-0.0.1-SNAPSHOT.jar' -type f | head -1)"
+                      if [ -z "$FOUND" ]; then
+                        echo "##vso[task.logissue type=error]JAR não encontrado no artefato CI"
+                        find "$(Pipeline.Workspace)" -type f
+                        exit 1
+                      fi
+                      cp "$FOUND" "$JAR"
+                    fi
+                    ls -lh "$JAR"
+                    cp "$JAR" app.jar
+                  displayName: 'Preparar JAR para Docker'
 
                 - task: Docker@2
                   displayName: 'Login ACR'

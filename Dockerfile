@@ -1,12 +1,13 @@
-# Imagem de runtime — o JAR é gerado na etapa Maven da pipeline (azure-pipelines.yml).
-# O .dockerignore exclui mvnw/.mvn e inclui apenas target/SosLocaliza-0.0.1-SNAPSHOT.jar.
+# Imagem de runtime — a pipeline copia target/*.jar para app.jar antes do docker build.
+# Local: mvn package -DskipTests && cp target/SosLocaliza-0.0.1-SNAPSHOT.jar app.jar
 
 FROM eclipse-temurin:21-jre-alpine
 
 RUN addgroup -S spring && adduser -S spring -G spring
 WORKDIR /app
 
-COPY target/SosLocaliza-0.0.1-SNAPSHOT.jar app.jar
+# app.jar: cópia na pipeline CD; target/...: build local ou CI com Maven
+COPY app.jar app.jar
 RUN chown spring:spring app.jar
 
 USER spring:spring
