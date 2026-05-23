@@ -1,26 +1,18 @@
-# Dockerfile para SOS Localiza - Spring Boot Application
-# Usando imagem Alpine Linux para melhor desempenho (requisito: imagens slim/Alpine)
-
-FROM eclipse-temurin:21-jre-alpine
-
-# Criar grupo e usuário sem privilégios administrativos (requisito: usuário não-root)
-RUN addgroup -S spring && adduser -S spring -G spring
-
-# Definir diretório padrão para o projeto (requisito: diretório padrão)
+# Build
+FROM eclipse-temurin:21-jdk-alpine AS build
 WORKDIR /app
+COPY mvnw pom.xml ./
+COPY .mvn .mvn
+COPY src src
+RUN chmod +x mvnw && ./mvnw -q -DskipTests package
 
-# Copiar o JAR da aplicação
-COPY target/SosLocaliza-0.0.1-SNAPSHOT.jar app.jar
-
-# Mudar propriedade do arquivo para o usuário não-root
+# Runtime
+FROM eclipse-temurin:21-jre-alpine
+RUN addgroup -S spring && adduser -S spring -G spring
+WORKDIR /app
+COPY --from=build /app/target/SosLocaliza-0.0.1-SNAPSHOT.jar app.jar
 RUN chown spring:spring app.jar
-
-# Mudar para usuário não-root (requisito: executar sem privilégios administrativos)
 USER spring:spring
-
-# Expor a porta da aplicação
-EXPOSE 8081
-
-# Executar a aplicação em background (requisito: projeto em background)
+EXPOSE 8080
+ENV SERVER_PORT=8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
-

@@ -1,6 +1,9 @@
-# Pipeline CI + CD — SOS Localiza (sem UseJavaVersion / Cache / Maven task — só script + artefato + Azure CLI)
+# SOS Localiza — CI/CD Java (Spring Boot) + Docker + ACR + App Service
+# Guia: devops/cp5_devops/GUIA_CICD_AZURE.md (variáveis e recursos Azure iguais; stack Java)
 #
-# AZURE_SERVICE_CONNECTION deve ser IGUAL ao nome em: Project settings → Service connections (Azure Resource Manager).
+# Variáveis no Azure DevOps (Pipeline > Variables):
+#   ACR_LOGIN_SERVER, ACR_SERVICE_CONNECTION, AZURE_SUBSCRIPTION,
+#   RESOURCE_GROUP, STAGING_WEBAPP_NAME, PRODUCTION_WEBAPP_NAME
 
 trigger:
   branches:
@@ -12,68 +15,127 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  jarName: SosLocaliza-0.0.1-SNAPSHOT.jar
-  AZURE_RESOURCE_GROUP: rg-soslocaliza
-  AZURE_WEBAPP_NAME: app-soslocaliza-560242
-  # Crie em Project settings → Service connections; se o nome for outro, altere só aqui.
-  AZURE_SERVICE_CONNECTION: Azure-RM-SOSLocaliza
+  javaVersion: '21'
+  acrLoginServer: '$(ACR_LOGIN_SERVER)'
+  imageRepository: 'sos-localiza-api'
+  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+  tag: '$(Build.BuildId)'
 
 stages:
-  - stage: CI_Build
-    displayName: CI — Build (Maven via apt)
+  - stage: Build
+    displayName: 'CI — Maven, testes e imagem Docker'
     jobs:
-      - job: MavenBuild
-        displayName: Compilar e publicar JAR
+      - job: BuildAndTest
+        displayName: 'Testes, JAR e build Docker'
         steps:
-          - checkout: self
+          - task: JavaToolInstaller@0
+            inputs:
+              versionSpec: '$(javaVersion)'
+              jdkArchitectureOption: x64
+              jdkSourceOption: PreInstalled
+            displayName: 'Java 21'
 
           - script: |
-              set -euo pipefail
-              sudo apt-get update -qq
-              sudo apt-get install -y maven
-              MVN_EXTRA=""
-              if sudo apt-get install -y openjdk-21-jdk-headless; then
-                export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
-              else
-                sudo apt-get install -y openjdk-17-jdk-headless
-                export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-                MVN_EXTRA="-Dmaven.compiler.release=17"
-              fi
-              export PATH="$JAVA_HOME/bin:$PATH"
-              java -version
-              mvn -version
-              mvn clean package -DskipTests -B $MVN_EXTRA
-            displayName: Instalar JDK + Maven e gerar JAR
+              chmod +x mvnw
+              export SPRING_PROFILES_ACTIVE=test
+              ./mvnw -B test
+            displayName: 'Maven test (perfil test / H2)'
 
-          - task: PublishBuildArtifacts@1
-            displayName: Publicar JAR
+          - script: |
+              ./mvnw -B package -DskipTests
+            displayName: 'Maven package (JAR)'
+
+          - task: Docker@2
+            displayName: 'Build imagem Docker (validação CI)'
             inputs:
-              PathtoPublish: $(System.DefaultWorkingDirectory)/target/$(jarName)
-              ArtifactName: app-jar
-              publishLocation: pipeline
+              command: build
+              repository: '$(imageRepository)'
+              dockerfile: '$(dockerfilePath)'
+              buildContext: '$(Build.SourcesDirectory)'
+              tags: |
+                $(tag)
+                latest
 
-  - stage: CD_Deploy
-    displayName: CD — Deploy Azure App Service
-    dependsOn: CI_Build
+          - publish: '$(Build.SourcesDirectory)/target/SosLocaliza-0.0.1-SNAPSHOT.jar'
+            artifact: sos-localiza-jar
+            displayName: 'Publicar JAR (artefato)'
+
+  - stage: DeployStaging
+    displayName: 'CD — Deploy Staging'
+    dependsOn: Build
     condition: succeeded()
     jobs:
-      - job: DeployJar
-        displayName: Deploy JAR
-        steps:
-          - download: current
-            artifact: app-jar
+      - deployment: DeployStagingJob
+        displayName: 'Push ACR e Web App staging'
+        environment: staging
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
 
-          - task: AzureCLI@2
-            displayName: az webapp deploy --type jar
-            inputs:
-              azureSubscription: $(AZURE_SERVICE_CONNECTION)
-              scriptType: bash
-              inlineScript: |
-                set -euo pipefail
-                JAR_PATH="$(Pipeline.Workspace)/app-jar/$(jarName)"
-                test -f "$JAR_PATH"
-                az webapp deploy \
-                  --resource-group "$(AZURE_RESOURCE_GROUP)" \
-                  --name "$(AZURE_WEBAPP_NAME)" \
-                  --src-path "$JAR_PATH" \
-                  --type jar
+                - task: Docker@2
+                  displayName: 'Login ACR'
+                  inputs:
+                    command: login
+                    containerRegistry: '$(ACR_SERVICE_CONNECTION)'
+
+                - task: Docker@2
+                  displayName: 'Build e push (staging)'
+                  inputs:
+                    command: buildAndPush
+                    repository: '$(imageRepository)'
+                    dockerfile: '$(dockerfilePath)'
+                    buildContext: '$(Build.SourcesDirectory)'
+                    containerRegistry: '$(ACR_SERVICE_CONNECTION)'
+                    tags: |
+                      $(tag)-staging
+                      staging-latest
+
+                - task: AzureWebAppContainer@1
+                  displayName: 'Atualizar Web App — Staging'
+                  inputs:
+                    azureSubscription: '$(AZURE_SUBSCRIPTION)'
+                    resourceGroupName: '$(RESOURCE_GROUP)'
+                    appName: '$(STAGING_WEBAPP_NAME)'
+                    containers: '$(acrLoginServer)/$(imageRepository):$(tag)-staging'
+
+  - stage: DeployProduction
+    displayName: 'CD — Deploy Produção'
+    dependsOn: DeployStaging
+    condition: succeeded()
+    jobs:
+      - deployment: DeployProductionJob
+        displayName: 'Push ACR e Web App produção'
+        environment: production
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+
+                - task: Docker@2
+                  displayName: 'Login ACR'
+                  inputs:
+                    command: login
+                    containerRegistry: '$(ACR_SERVICE_CONNECTION)'
+
+                - task: Docker@2
+                  displayName: 'Build e push (produção)'
+                  inputs:
+                    command: buildAndPush
+                    repository: '$(imageRepository)'
+                    dockerfile: '$(dockerfilePath)'
+                    buildContext: '$(Build.SourcesDirectory)'
+                    containerRegistry: '$(ACR_SERVICE_CONNECTION)'
+                    tags: |
+                      $(tag)-prod
+                      prod-latest
+
+                - task: AzureWebAppContainer@1
+                  displayName: 'Atualizar Web App — Produção'
+                  inputs:
+                    azureSubscription: '$(AZURE_SUBSCRIPTION)'
+                    resourceGroupName: '$(RESOURCE_GROUP)'
+                    appName: '$(PRODUCTION_WEBAPP_NAME)'
+                    containers: '$(acrLoginServer)/$(imageRepository):$(tag)-prod'
