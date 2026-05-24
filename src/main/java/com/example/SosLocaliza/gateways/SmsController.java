@@ -5,7 +5,6 @@ import com.example.SosLocaliza.gateways.dtos.request.SmsRequestDto;
 import com.example.SosLocaliza.gateways.dtos.request.SmsUpdateDto;
 import com.example.SosLocaliza.gateways.dtos.response.SmsResponseDto;
 import com.example.SosLocaliza.services.SmsService;
-import com.example.SosLocaliza.services.TwilioSmsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,12 +27,11 @@ import java.util.Optional;
 public class SmsController {
 
     private final SmsService smsService;
-    private final TwilioSmsService twilioSmsService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public SmsResponseDto enviarSms(@RequestBody @Valid SmsRequestDto smsRequestDto) {
-        SmsMessage smsEnviado = twilioSmsService.enviarSmsComEvento(smsRequestDto, smsRequestDto.getIdEvento());
+        SmsMessage smsEnviado = smsService.registrarEnvioComEvento(smsRequestDto, smsRequestDto.getIdEvento());
         SmsResponseDto response = SmsResponseDto.fromSmsMessage(smsEnviado);
         HateoasLinkBuilder.adicionarLinksSms(response);
         return response;
@@ -45,7 +43,7 @@ public class SmsController {
             @PathVariable Long idEvento,
             @RequestBody @Valid SmsRequestDto smsRequestDto
     ) {
-        SmsMessage smsEnviado = twilioSmsService.enviarSmsComEvento(smsRequestDto, idEvento);
+        SmsMessage smsEnviado = smsService.registrarEnvioComEvento(smsRequestDto, idEvento);
         SmsResponseDto response = SmsResponseDto.fromSmsMessage(smsEnviado);
         HateoasLinkBuilder.adicionarLinksSms(response);
         return response;

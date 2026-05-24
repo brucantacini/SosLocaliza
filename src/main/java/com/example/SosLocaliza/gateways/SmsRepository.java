@@ -15,10 +15,6 @@ public interface SmsRepository extends JpaRepository<SmsMessage, Long> {
 
     List<SmsMessage> findByNumeroTelefone(String numeroTelefone);
 
-    List<SmsMessage> findByEnviadoComSucessoTrue();
-
-    List<SmsMessage> findByEnviadoComSucessoFalse();
-
     List<SmsMessage> findByEventoIdEvento(Long idEvento);
 
     List<SmsMessage> findByDdd(String ddd);
@@ -26,8 +22,6 @@ public interface SmsRepository extends JpaRepository<SmsMessage, Long> {
     @EntityGraph(attributePaths = "evento")
     @Query("SELECT s FROM SmsMessage s")
     Page<SmsMessage> findAllWithEvento(Pageable pageable);
-
-    Page<SmsMessage> findAll(Pageable pageable);
 
     Page<SmsMessage> findByEnviadoComSucessoTrue(Pageable pageable);
 

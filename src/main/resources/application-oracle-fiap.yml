@@ -36,13 +36,6 @@ spring:
         order_updates: true
     open-in-view: false
 
-# Configurações do Twilio (use variáveis de ambiente; não versionar segredos)
-twilio:
-  account-sid: ${TWILIO_ACCOUNT_SID:}
-  auth-token: ${TWILIO_AUTH_TOKEN:}
-  trial-number: ${TWILIO_TRIAL_NUMBER:+12176248670}
-  enabled: ${TWILIO_ENABLED:false}
-
 # Porta 8082: mesmo padrão do perfil dev (Expo/Metro costuma usar 8081)
 server:
   port: ${SERVER_PORT:8082}
@@ -64,5 +57,4 @@ logging:
     org.springframework.web: INFO
     org.hibernate.SQL: INFO
     org.hibernate.type.descriptor.sql.BasicBinder: WARN
-    com.twilio: INFO
     oracle.jdbc: WARN

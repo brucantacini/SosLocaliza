@@ -14,7 +14,6 @@ services:
     environment:
       # Perfil Spring Boot (Oracle produção / FIAP)
       - SPRING_PROFILES_ACTIVE=oracle-fiap
-      - TWILIO_ENABLED=false
       # Defina no host ou num ficheiro .env na mesma pasta: ORACLE_USERNAME, ORACLE_PASSWORD
       # Opcional: SPRING_DATASOURCE_URL=jdbc:oracle:thin:@host:1521:ORCL
       - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL:-jdbc:oracle:thin:@oracle.fiap.com.br:1521:ORCL}

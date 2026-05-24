@@ -4,10 +4,12 @@ import com.example.SosLocaliza.domains.Evento;
 import com.example.SosLocaliza.domains.SmsMessage;
 import com.example.SosLocaliza.exceptions.EventoNotFoundException;
 import com.example.SosLocaliza.exceptions.SmsNotFoundException;
+import com.example.SosLocaliza.gateways.dtos.request.SmsRequestDto;
 import com.example.SosLocaliza.gateways.dtos.request.SmsUpdateDto;
 import com.example.SosLocaliza.gateways.EventoRepository;
 import com.example.SosLocaliza.gateways.SmsRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 @Transactional
 public class SmsService {
 
@@ -36,6 +39,40 @@ public class SmsService {
             smsMessage = smsMessage.withEvento(evento);
         }
         return smsRepository.save(smsMessage);
+    }
+
+    /**
+     * Valida o pedido, simula o envio do SMS (sem provedor externo) e persiste no Oracle.
+     */
+    public SmsMessage registrarEnvioComEvento(SmsRequestDto smsRequestDto, Long idEvento) {
+        SmsMessage smsMessage = smsRequestDto.toSmsMessage();
+
+        if (!isValidPhoneNumber(smsMessage.getNumeroTelefone())) {
+            smsMessage = smsMessage.withEnviadoComSucesso(false)
+                    .withErro("Número de telefone inválido: " + smsMessage.getNumeroTelefone());
+            log.warn("Número de telefone inválido: {}", smsMessage.getNumeroTelefone());
+            return enviarSmsComEvento(smsMessage, idEvento);
+        }
+
+        try {
+            log.info("[SMS] Envio simulado registrado para {}", smsMessage.getNumeroTelefone());
+            smsMessage = smsMessage.withEnviadoComSucesso(true).withErro(null);
+        } catch (Exception e) {
+            smsMessage = smsMessage.withEnviadoComSucesso(false).withErro("Erro ao registrar envio: " + e.getMessage());
+            log.error("Erro ao registrar envio de SMS: {}", e.getMessage());
+        }
+
+        return enviarSmsComEvento(smsMessage, idEvento);
+    }
+
+    private boolean isValidPhoneNumber(String phoneNumber) {
+        if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
+            return false;
+        }
+        if (phoneNumber.startsWith("+55") && phoneNumber.length() >= 13) {
+            return true;
+        }
+        return phoneNumber.startsWith("+") && phoneNumber.length() >= 10;
     }
 
     public List<SmsMessage> buscarSmsPorNumero(String numeroTelefone) {

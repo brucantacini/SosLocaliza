@@ -33,12 +33,6 @@ spring:
         format_sql: true
     open-in-view: false
 
-# Configurações do Twilio - Removido (usando simulação local)
-# twilio:
-#   account-sid: ${TWILIO_ACCOUNT_SID:ACb84a1c0afbb6628678209002a9db4d6c}
-#   auth-token: ${TWILIO_AUTH_TOKEN:7a420445aa2fc29161ac7cc22e2b8353}
-#   trial-number: ${TWILIO_TRIAL_NUMBER:+15005550006}
-
 # Configurações do servidor (8082 para não conflitar com Metro Expo em 8081 no sosLocal)
 server:
   port: 8082
@@ -50,4 +44,3 @@ logging:
     org.springframework.web: DEBUG
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    com.twilio: DEBUG

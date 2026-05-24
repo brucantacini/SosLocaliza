@@ -31,7 +31,7 @@ mvn spring-boot:run
 - **Porta**: 8081
 - **Context Path**: `/api`
 - **Banco**: Oracle FIAP
-- **SMS**: Twilio Real (configurado) ou Simulado
+- **SMS**: envio simulado (registro no banco)
 
 ---
 
@@ -496,10 +496,9 @@ Todos os endpoints de SMS retornam objeto `_links` com:
 - **Status**: 400
 - **Erro**: `VALIDATION_ERROR`
 
-### **Erro Twilio**
-- **Endpoint**: `POST /api/sms` com credenciais inválidas
-- **Status**: 503
-- **Erro**: `TWILIO_ERROR`
+### **Telefone inválido (persistido com falha)**
+- **Endpoint**: `POST /api/sms` com número fora do padrão internacional
+- **Status**: 201 (registro gravado com `enviadoComSucesso: false`)
 
 ## 📝 Relatório de Testes
 
@@ -531,10 +530,9 @@ Todos os endpoints de SMS retornam objeto `_links` com:
 - Verifique se os dados estão no formato correto
 - Confirme se os campos obrigatórios estão preenchidos
 
-### **Erro Twilio**
-- Verifique se as variáveis de ambiente estão configuradas
-- Confirme se as credenciais estão corretas
-- Teste com números de teste do Twilio
+### **SMS não enviado / falha de validação**
+- Use telefone no formato internacional (`+5511999999999`)
+- Consulte o histórico em `GET /api/sms` ou no painel admin
 
 ### **Erro de Banco**
 - Verifique se o Oracle FIAP está acessível

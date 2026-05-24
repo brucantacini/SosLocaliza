@@ -64,22 +64,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(ex.getStatus()).body(error);
     }
 
-    @ExceptionHandler(TwilioException.class)
-    public ResponseEntity<ErrorResponseDto> handleTwilioException(
-            TwilioException ex, 
-            HttpServletRequest request) {
-        
-        log.error("Erro no Twilio: {}", ex.getMessage());
-        
-        ErrorResponseDto error = ErrorResponseDto.of(
-                ex.getErrorCode(),
-                ex.getMessage(),
-                request.getRequestURI()
-        );
-        
-        return ResponseEntity.status(ex.getStatus()).body(error);
-    }
-
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<ErrorResponseDto> handleValidationException(
             ValidationException ex, 

@@ -5,7 +5,7 @@ import com.example.SosLocaliza.gateways.dtos.request.SmsRequestDto;
 import com.example.SosLocaliza.gateways.dtos.request.SocorroForm;
 import com.example.SosLocaliza.services.AppUserService;
 import com.example.SosLocaliza.services.EventoService;
-import com.example.SosLocaliza.services.TwilioSmsService;
+import com.example.SosLocaliza.services.SmsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -25,7 +25,7 @@ import java.security.Principal;
 @RequiredArgsConstructor
 public class SocorroController {
 
-    private final TwilioSmsService twilioSmsService;
+    private final SmsService smsService;
     private final EventoService eventoService;
     private final AppUserService appUserService;
 
@@ -64,7 +64,7 @@ public class SocorroController {
         dto.setDdd(usuario.getDdd().trim());
         dto.setNumeroTelefone(usuario.getNumeroLocal().trim());
         dto.setMensagem(form.getMensagem());
-        twilioSmsService.enviarSmsComEvento(dto, form.getIdEvento());
+        smsService.registrarEnvioComEvento(dto, form.getIdEvento());
         redirectAttributes.addFlashAttribute("successMessage", "Solicitação de socorro registrada. Acompanhe o status no painel de mensagens enviadas.");
         return "redirect:/socorro";
     }
