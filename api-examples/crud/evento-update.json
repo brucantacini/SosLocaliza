@@ -1,0 +1,10 @@
+{
+  "nomeEvento": "Enchente na Região Sul - ATUALIZADO",
+  "descricaoEvento": "Alagamento severo - situação crítica",
+  "causas": "Chuva intensa e sistema de drenagem inadequado",
+  "alertas": "Nível do rio subindo rapidamente - alerta máximo",
+  "acoesAntes": "Evacuar áreas de risco imediatamente",
+  "acoesDurante": "Não atravessar ruas alagadas",
+  "acoesDepois": "Verificar danos estruturais",
+  "ativo": true
+}

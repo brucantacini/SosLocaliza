@@ -7,8 +7,8 @@ Este documento é o **manual para reproduzir** a entrega DevOps: pipeline Azure,
 | ------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------- |
 | **[README.md](README.md)**                                                                             | API Java — produto, endpoints, autenticação, rodar local          |
 | **Este arquivo**                                                                                       | CI/CD, Azure, Docker, testes da entrega                           |
-| **[devops/sprint4/DISSERTACAO_PIPELINE_CI_CD.md](../../devops/sprint4/DISSERTACAO_PIPELINE_CI_CD.md)** | Dissertação das etapas da pipeline (20 pts)                       |
-| **Diagrama**                                                                                           | `devops/sprint4/CI_CD pipeline and runtime architecture copy.png` |
+| **Dissertação pipeline**                                                                               | [Seção 5 deste README](#5-pipeline-cicd-itens-2-e-3) + `azure-pipelines.yml` |
+| **Diagrama CI/CD**                                                                                     | [Docs/sprint4/DesenhoPipelineCICD.png](Docs/sprint4/DesenhoPipelineCICD.png) |
 
 
 ---
@@ -64,10 +64,10 @@ A esteira **CI/CD no Azure DevOps** automatiza: testes → build Maven → image
 | Item                       | Link / caminho                                                                             |
 | -------------------------- | ------------------------------------------------------------------------------------------ |
 | GitHub (código + pipeline) | [https://github.com/brucantacini/SosLocaliza](https://github.com/brucantacini/SosLocaliza) |
-| Vídeo YouTube              | *preencher no PDF da equipe*                                                               |
+| Vídeo YouTube (DevOps)     | [https://youtu.be/EjIRXvjaivI](https://youtu.be/EjIRXvjaivI)                             |
 | Pipeline YAML              | `azure-pipelines.yml` (raiz do repo)                                                       |
-| Dissertação pipeline       | `devops/sprint4/DISSERTACAO_PIPELINE_CI_CD.md`                                             |
-| Diagrama CI/CD             | `devops/sprint4/CI_CD pipeline and runtime architecture copy.png`                          |
+| Diagrama CI/CD             | `Docs/sprint4/DesenhoPipelineCICD.png`                                                     |
+| JSON CRUD + Postman        | `api-examples/crud/` e `postman-collection.json`                                           |
 
 
 **Credenciais de demonstração:** `admin` / `password` ou `citizen` / `password`
@@ -98,7 +98,7 @@ A esteira **CI/CD no Azure DevOps** automatiza: testes → build Maven → image
 
 Marque na ordem:
 
-- **1.** Abrir GitHub e confirmar `azure-pipelines.yml`, `Dockerfile`, `pom.xml`, pasta `api-examples/crud/`
+- **1.** Abrir GitHub e confirmar `azure-pipelines.yml`, `Dockerfile`, `pom.xml`, `api-examples/crud/`, `postman-collection.json`
 - **2.** Azure DevOps → Pipelines → última execução **verde** (branch `main`)
 - **3.** Abrir health **staging** ou **produção** → status `UP` (pode demorar ~1 min se API estava parada)  
   - Staging: [https://soslocaliza-api-staging-560242.azurewebsites.net/actuator/health](https://soslocaliza-api-staging-560242.azurewebsites.net/actuator/health)  
@@ -336,33 +336,35 @@ curl -u citizen:password https://soslocaliza-api-prod-560242.azurewebsites.net/a
 
 ## 9. Scripts JSON de CRUD (item 5)
 
-### Insomnia (collection completa)
+Três formas de testar (use a que preferir):
 
+### Opção A — Coleção Postman (recomendado)
 
-| Arquivo                                                | Uso                                                |
-| ------------------------------------------------------ | -------------------------------------------------- |
-| `**api-examples/insomnia/SOS_Localiza.insomnia.json**` | Import no Insomnia — todas as requests prontas     |
-| `**api-examples/insomnia/ENDPOINTS_INSOMNIA.md**`      | Documento com lista de endpoints e ordem de testes |
+1. Postman → **Import** → `postman-collection.json` (raiz do repo)
+2. Opcional: `postman-procedures-collection.json` (localização/usuário)
+3. Variável `base_url` = `https://soslocaliza-api-prod-560242.azurewebsites.net`
+4. Collection Auth: **Basic** `citizen` / `password` (admin para criar evento)
 
+### Opção B — JSON avulsos (pasta `api-examples/crud/`)
 
-### JSON avulsos (CRUD)
+Copie o conteúdo do arquivo no **Body → raw → JSON** da request:
 
-Pasta: `**api-examples/crud/**`
+| Arquivo | Método | Endpoint |
+| ------- | ------ | -------- |
+| `evento-create.json` | POST | `/api/eventos/add` (user **admin**) |
+| `evento-update.json` | PUT | `/api/eventos/update/{id}` |
+| `sms-create.json` | POST | `/api/sms` |
+| `sms-update.json` | PUT | `/api/sms/update/{id}` |
+| `localizacao-create.json` | POST | `/api/procedures/localizacao` |
+| `localizacao-update.json` | PUT | `/api/procedures/localizacao/{id}` |
+| `usuario-create.json` | POST | `/api/procedures/usuario` |
+| `usuario-update.json` | PUT | `/api/procedures/usuario/{id}` |
 
+Detalhes: [api-examples/crud/README.md](api-examples/crud/README.md)
 
-| Arquivo                   | Endpoint sugerido                      |
-| ------------------------- | -------------------------------------- |
-| `evento-create.json`      | POST `/api/eventos/add` (ADMIN)        |
-| `evento-update.json`      | PUT `/api/eventos/update/{id}`         |
-| `sms-create.json`         | POST `/api/sms`                        |
-| `sms-update.json`         | PUT `/api/sms/update/{id}`             |
-| `localizacao-create.json` | POST `/api/procedures/localizacao`     |
-| `localizacao-update.json` | PUT `/api/procedures/localizacao/{id}` |
-| `usuario-create.json`     | POST `/api/procedures/usuario`         |
-| `usuario-update.json`     | PUT `/api/procedures/usuario/{id}`     |
+### Opção C — Insomnia
 
-
-No Postman: **Import** → selecione o JSON como body da request.
+Siga a ordem em [api-examples/insomnia/ENDPOINTS_INSOMNIA.md](api-examples/insomnia/ENDPOINTS_INSOMNIA.md) usando os JSON da opção B ou importando as coleções Postman.
 
 ---
 

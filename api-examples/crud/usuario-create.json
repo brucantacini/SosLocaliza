@@ -1,0 +1,9 @@
+{
+  "nomeCompleto": "João Teste Silva",
+  "email": "joao.teste@email.com",
+  "senha": "senha123",
+  "cpf": "12345678909",
+  "dataNascimento": "1990-05-15",
+  "idLocal": 1,
+  "ativo": 1
+}
