@@ -1,44 +1,17 @@
-HELP.md
-target/
-app.jar
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
-
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+dist/
+*.tsbuildinfo
+.impeccable/config.local.json
+node_modules/
+.next/
+out/
 build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
-.vscode/
-
-### Configurações Locais (NÃO COMMITAR) ###
-application-local.yml
-application-secrets.yml
-*.secrets.yml
+dist/
+coverage/
 .env
-.env.local
-
-# H2 em ficheiro (perfil dev — ./data/soslocaliza-dev.*)
-data/
+.env.*
+!.env.example
+.vercel/
+.DS_Store
+Thumbs.db
+npm-debug.log*
+.agents/

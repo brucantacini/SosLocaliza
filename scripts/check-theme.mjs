@@ -1,0 +1,95 @@
+import { Browser, sleep } from '../.agents/skills/design-taste-frontend/scripts/lib/cdp.mjs'
+import assert from 'node:assert/strict'
+import { mkdirSync, writeFileSync } from 'node:fs'
+
+const browser=await Browser.launch()
+const url='http://127.0.0.1:5173/'
+const key='sos-localiza-theme'
+const results=[]
+const media=theme=>({features:[{name:'prefers-color-scheme',value:theme}]})
+const themeOf=page=>page.eval(()=>document.documentElement.dataset.theme)
+async function choose(page,theme){
+  await page.eval(theme=>document.querySelector(`[aria-label="Tema ${theme==='dark'?'escuro':'claro'}"]`).click(),theme)
+  await sleep(80)
+}
+const earlyProbe=`document.addEventListener('DOMContentLoaded',()=>{window.themeAtDOMContentLoaded={theme:document.documentElement.dataset.theme,background:getComputedStyle(document.documentElement).backgroundColor,scheme:getComputedStyle(document.documentElement).colorScheme}});`
+try{
+  const page=await browser.newPage({width:390,height:900,mobile:true})
+  await page.send('Emulation.setEmulatedMedia',media('dark'))
+  await page.send('Page.addScriptToEvaluateOnNewDocument',{source:earlyProbe})
+  await page.goto(url,{settleMs:300})
+  await page.eval(()=>localStorage.clear())
+  await page.goto(url,{settleMs:300})
+  assert.equal(await themeOf(page),'dark','First visit follows device')
+  assert.deepEqual(await page.eval(()=>window.themeAtDOMContentLoaded),{theme:'dark',background:'rgb(16, 42, 67)',scheme:'dark'},'Theme applied before React rendering')
+  await page.eval(()=>{document.querySelector('input[name="name"]').value='Rascunho fictício não salvo'})
+  await page.send('Emulation.setEmulatedMedia',media('light'));await sleep(120)
+  assert.equal(await themeOf(page),'light','Device preference updates without manual choice')
+  await choose(page,'dark')
+  assert.equal(await page.eval(key=>localStorage.getItem(key),key),'dark')
+  await page.send('Emulation.setEmulatedMedia',media('dark'))
+  await page.send('Emulation.setEmulatedMedia',media('light'));await sleep(120)
+  assert.equal(await themeOf(page),'dark','Manual preference wins over device')
+  assert.equal(await page.eval(()=>document.querySelector('input[name="name"]').value),'Rascunho fictício não salvo','Unsaved form value survives theme changes')
+  await page.goto(url,{settleMs:300})
+  assert.equal(await themeOf(page),'dark','Manual preference survives refresh')
+  assert.equal(await page.eval(()=>window.themeAtDOMContentLoaded.theme),'dark')
+  results.push('First visit, live system changes, manual priority, reload and early initialization: PASS')
+
+  const second=await browser.newPage({width:1440,height:900})
+  await second.send('Emulation.setEmulatedMedia',media('light'))
+  await second.goto(url,{settleMs:300})
+  assert.equal(await themeOf(second),'dark','Reopened page preserves choice')
+  await choose(second,'light');await sleep(120)
+  assert.equal(await themeOf(page),'light','Storage sync updates other tab')
+  await page.send('Emulation.setEmulatedMedia',media('dark'))
+  await second.eval(key=>localStorage.removeItem(key),key);await sleep(120)
+  assert.equal(await themeOf(page),'dark','Removing preference restores device in other tab')
+  await choose(page,'dark')
+  // Keyboard Space activates a native theme button.
+  await page.eval(()=>document.querySelector('[aria-label="Tema claro"]').focus())
+  await page.send('Input.dispatchKeyEvent',{type:'keyDown',key:' ',code:'Space',windowsVirtualKeyCode:32})
+  await page.send('Input.dispatchKeyEvent',{type:'keyUp',key:' ',code:'Space',windowsVirtualKeyCode:32})
+  await sleep(120)
+  assert.equal(await themeOf(page),'light','Keyboard activation')
+  assert.ok(await page.eval(()=>getComputedStyle(document.activeElement).outlineStyle!=='none'),'Visible keyboard focus')
+  results.push('Reopen, cross-tab synchronization, preference removal and keyboard/focus: PASS')
+  await second.close();await page.close()
+
+  const invalid=await browser.newPage()
+  await invalid.send('Emulation.setEmulatedMedia',media('dark'))
+  await invalid.goto(url,{settleMs:200})
+  await invalid.eval(key=>localStorage.setItem(key,'invalid'),key)
+  await invalid.goto(url,{settleMs:200})
+  assert.equal(await themeOf(invalid),'dark','Invalid persisted preference uses system')
+  await invalid.close()
+
+  const blocked=await browser.newPage({width:390,height:900,mobile:true})
+  await blocked.send('Emulation.setEmulatedMedia',media('dark'))
+  await blocked.send('Page.addScriptToEvaluateOnNewDocument',{source:`Storage.prototype.getItem=function(){throw new DOMException('Blocked','SecurityError')};Storage.prototype.setItem=function(){throw new DOMException('Blocked','QuotaExceededError')};`})
+  await blocked.goto(url,{settleMs:300})
+  assert.equal(await themeOf(blocked),'dark')
+  await choose(blocked,'light')
+  assert.equal(await themeOf(blocked),'light','Blocked storage keeps current session choice')
+  await blocked.send('Emulation.setEmulatedMedia',media('light'))
+  await blocked.send('Emulation.setEmulatedMedia',media('dark'));await sleep(120)
+  assert.equal(await themeOf(blocked),'light','Blocked storage still honors manual session choice')
+  assert.deepEqual(blocked.consoleErrors,[],'Blocked storage must not crash the app')
+  results.push('Invalid saved preference and unavailable storage: PASS')
+  await blocked.close()
+
+  // Render only the head, without the React module, to check the pre-render fallback.
+  const early=await browser.newPage()
+  await early.send('Emulation.setEmulatedMedia',media('dark'))
+  await early.send('Network.enable')
+  await early.send('Network.setBlockedURLs',{urls:['*src/main.tsx*']})
+  await early.goto(url,{settleMs:100})
+  assert.equal(await themeOf(early),'dark')
+  assert.equal(await early.eval(()=>document.getElementById('root').children.length),0)
+  assert.equal(await early.eval(()=>getComputedStyle(document.documentElement).backgroundColor),'rgb(16, 42, 67)')
+  results.push('Dark background and data-theme are ready with the React module blocked: PASS')
+  await early.close()
+  mkdirSync('.impeccable/review/themes',{recursive:true})
+  writeFileSync('.impeccable/review/themes/theme-checks.json',JSON.stringify(results,null,2))
+  console.log(results.join('\n'))
+}finally{await browser.close()}

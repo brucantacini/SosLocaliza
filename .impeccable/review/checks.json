@@ -1,0 +1,330 @@
+[
+  {
+    "name": "register",
+    "width": 1440,
+    "title": "Informação que pode fazer diferença.",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "home-fixture",
+    "width": 1440,
+    "title": "Atenção ao seu entorno",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "location-allowed-fixture",
+    "width": 1440,
+    "title": "Atenção ao seu entorno",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "weather-error",
+    "width": 1440,
+    "title": "Atenção ao seu entorno",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "history-empty",
+    "width": 1440,
+    "title": "Histórico de alertas",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "choose",
+    "width": 1440,
+    "title": "O que está acontecendo?",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "review",
+    "width": 1440,
+    "title": "Revise antes de registrar",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "success",
+    "width": 1440,
+    "title": "Registro concluído",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "history",
+    "width": 1440,
+    "title": "Histórico de alertas",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "detail",
+    "width": 1440,
+    "title": "Detalhes do registro",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "profile",
+    "width": 1440,
+    "title": "Meus dados",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "profile-edit",
+    "width": 1440,
+    "title": "Informação que pode fazer diferença.",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "register",
+    "width": 768,
+    "title": "Informação que pode fazer diferença.",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "home-fixture",
+    "width": 768,
+    "title": "Atenção ao seu entorno",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "location-allowed-fixture",
+    "width": 768,
+    "title": "Atenção ao seu entorno",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "weather-error",
+    "width": 768,
+    "title": "Atenção ao seu entorno",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "history-empty",
+    "width": 768,
+    "title": "Histórico de alertas",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "choose",
+    "width": 768,
+    "title": "O que está acontecendo?",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "review",
+    "width": 768,
+    "title": "Revise antes de registrar",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "success",
+    "width": 768,
+    "title": "Registro concluído",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "history",
+    "width": 768,
+    "title": "Histórico de alertas",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "detail",
+    "width": 768,
+    "title": "Detalhes do registro",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "profile",
+    "width": 768,
+    "title": "Meus dados",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "profile-edit",
+    "width": 768,
+    "title": "Informação que pode fazer diferença.",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "register",
+    "width": 390,
+    "title": "Informação que pode fazer diferença.",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "home-fixture",
+    "width": 390,
+    "title": "Atenção ao seu entorno",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "location-allowed-fixture",
+    "width": 390,
+    "title": "Atenção ao seu entorno",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "weather-error",
+    "width": 390,
+    "title": "Atenção ao seu entorno",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "history-empty",
+    "width": 390,
+    "title": "Histórico de alertas",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "choose",
+    "width": 390,
+    "title": "O que está acontecendo?",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "review",
+    "width": 390,
+    "title": "Revise antes de registrar",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "success",
+    "width": 390,
+    "title": "Registro concluído",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "history",
+    "width": 390,
+    "title": "Histórico de alertas",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "detail",
+    "width": 390,
+    "title": "Detalhes do registro",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "profile",
+    "width": 390,
+    "title": "Meus dados",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "profile-edit",
+    "width": 390,
+    "title": "Informação que pode fazer diferença.",
+    "overflow": false,
+    "fontLoaded": true,
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "name": "live-network",
+    "text": "Previsão por perto\n\nConsulte amostras meteorológicas aproximadas ao redor da localização.\n\nAtualizar\nDemonstração · São Paulo, SP\nConsulta feita às 21/10/2026, 20:39\nD\nM\nM\nM\nM\nM\nM\nM\nM\nM\n+\n−\n Leaflet | © OpenStreetMap contributors\nLegenda\nDemonstração\nRisco alto\nAtenção moderada\nBaixo risco estimado\nVisualizando o ponto de demonstração de São Paulo.\nUsar minha localização\nDados meteorológicos: Open-Meteo\nCC BY 4.0\n·\nMapa © OpenStreetMap contributors\nESTIMATIVA DE ATENÇÃO METEOROLÓGICA\nAtenção moderada\nEntorno da sua localização\nMaior chuva em 1h\n0,2 mm\nPrecipitação em 24h\n0,5 mm\nProbabilidade de chuva\n84%\n\nAmostra consultada às 21/10/2026, 20:39. Os pontos indicam amostras de previsão, não limites de áreas de risco.\n\nEstimativa meteorológica, não previsão de desastre. Os dados de chuva não determinam risco local de enchente ou deslizamento e não substituem os avisos oficiais da Defesa Civil. Consultar avisos meteorológicos do INMET.\n\nNíveis heurísticos configuráveis de precipitação e probabilidade. Chuva horária: moderado a partir de 5 mm e alto a partir de 20 mm; acumulado em 24h: moderado a partir de 20 mm e alto a partir de 50 mm; probabilidade a partir de 60% indica atenção moderada. Baixo só aparece com os dados completos abaixo desses limites."
+  }
+]

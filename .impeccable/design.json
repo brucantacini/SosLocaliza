@@ -1,0 +1,243 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-21T00:00:00-03:00",
+  "title": "Design System: SOS LOCALIZA",
+  "extensions": {
+    "colorMeta": {
+      "background": {
+        "role": "neutral",
+        "displayName": "Warm gray canvas"
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "White surface"
+      },
+      "surface-soft": {
+        "role": "neutral",
+        "displayName": "Off-white surface"
+      },
+      "ink": {
+        "role": "primary",
+        "displayName": "Petroleum text"
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted petroleum blue"
+      },
+      "accent": {
+        "role": "primary",
+        "displayName": "Lime ordinary action"
+      },
+      "alert-action": {
+        "role": "secondary",
+        "displayName": "Communicate-alert red"
+      },
+      "location": {
+        "role": "secondary",
+        "displayName": "Location blue"
+      },
+      "risk-high": {
+        "role": "secondary",
+        "displayName": "High attention red"
+      },
+      "risk-moderate": {
+        "role": "secondary",
+        "displayName": "Moderate attention amber"
+      },
+      "risk-low": {
+        "role": "secondary",
+        "displayName": "Low attention green"
+      }
+    },
+    "typographyMeta": {
+      "headline": {
+        "displayName": "Desktop headline",
+        "purpose": "Default h1; home has a 32px intermediate size at 1100px."
+      },
+      "headline-mobile": {
+        "displayName": "Phone headline",
+        "purpose": "Default h1 at 650px and below."
+      },
+      "title": {
+        "displayName": "Section title",
+        "purpose": "Default h2; component and mobile overrides are documented in DESIGN.md."
+      },
+      "body": {
+        "displayName": "Body copy",
+        "purpose": "Default paragraph rhythm."
+      },
+      "button": {
+        "displayName": "Action label",
+        "purpose": "Ordinary primary and secondary controls."
+      },
+      "label": {
+        "displayName": "Review field label",
+        "purpose": "Functional labels inside record and review sections; no decorative labels above page titles."
+      }
+    },
+    "shadows": [
+      {
+        "name": "shadow",
+        "value": "0 8px 28px #1237430d",
+        "purpose": "Shared source token used by map zoom and recenter controls."
+      },
+      {
+        "name": "map-location",
+        "value": "0 0 0 2px #102a43, 0 2px 8px #102a4380",
+        "purpose": "Location marker separation from map tiles."
+      },
+      {
+        "name": "map-status-overlay",
+        "value": "0 3px 12px #102a4366",
+        "purpose": "Readability of centered map status overlay."
+      },
+      {
+        "name": "map-attention-dot",
+        "value": "0 0 0 1px #789098",
+        "purpose": "Outer ring of legend and weather detail dots."
+      }
+    ],
+    "motion": [
+      {
+        "name": "button-state",
+        "value": "background .16s ease,border-color .16s ease",
+        "purpose": "Primary and secondary action transitions."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}",
+        "purpose": "Honor the device motion preference."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "compact-desktop",
+        "value": "1100px"
+      },
+      {
+        "name": "stacked-layout",
+        "value": "899px"
+      },
+      {
+        "name": "phone",
+        "value": "650px"
+      },
+      {
+        "name": "narrow-weather",
+        "value": "390px"
+      }
+    ],
+    "themes": {
+      "selector": "html[data-theme]",
+      "storageKey": "sos-localiza-theme",
+      "initial": "stored preference, otherwise prefers-color-scheme",
+      "shared": {
+        "brand": "#123743",
+        "accent": "#C9EB9D",
+        "onAccent": "#123743",
+        "onAlert": "#FFFFFF",
+        "location": "#2F80ED",
+        "high": "#D64550",
+        "moderate": "#E9A820",
+        "low": "#258A62",
+        "alertAction": "#CF3C48"
+      },
+      "light": {
+        "background": "#F1F0ED",
+        "surface": "#FFFFFF",
+        "surfaceSoft": "#F8F7F5",
+        "ink": "#123743",
+        "muted": "#496875",
+        "line": "#D8DEDF",
+        "controlBorder": "#789098",
+        "placeholder": "#60747D",
+        "secondaryHover": "#E5E8E2",
+        "selectedSurface": "#E7F1D9",
+        "warningSurface": "#FAF3E1",
+        "warningText": "#705318",
+        "dangerSurface": "#FFF0F1",
+        "dangerText": "#A22535",
+        "focus": "#123743"
+      },
+      "dark": {
+        "background": "#102A43",
+        "surface": "#183B56",
+        "surfaceSoft": "#204763",
+        "ink": "#F1F5F4",
+        "muted": "#C1CFD5",
+        "line": "#3D5D74",
+        "controlBorder": "#8CA4B3",
+        "placeholder": "#B0C1CD",
+        "secondaryHover": "#294D65",
+        "selectedSurface": "#294C42",
+        "warningSurface": "#3D3827",
+        "warningText": "#F4D58D",
+        "dangerSurface": "#472C35",
+        "dangerText": "#FFBBC3",
+        "focus": "#C9EB9D"
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "Ordinary action",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Lime action with comfortable target and visible keyboard focus.",
+      "html": "<button class=\"ds-primary\">Continuar <svg width=\"19\" height=\"19\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14M13 6l6 6-6 6\"/></svg></button>",
+      "css": ".ds-primary{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:12px 26px;border:1px solid transparent;border-radius:100px;background:var(--accent);color:var(--on-accent);font:600 16px/1.4 var(--font-body);cursor:pointer;transition:background .16s ease,border-color .16s ease}.ds-primary:hover{background:var(--accent-hover)}.ds-primary:focus-visible{outline:3px solid var(--focus);outline-offset:4px}.ds-primary:disabled{cursor:wait;opacity:.65}@media(prefers-reduced-motion:reduce){.ds-primary{transition:none}}"
+    },
+    {
+      "name": "Communicate alert",
+      "kind": "button",
+      "refersTo": "button-alert",
+      "description": "Red two-line entry action for the simulated occurrence flow.",
+      "html": "<button class=\"ds-alert\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M10.3 3.9 2.5 17.4A2 2 0 0 0 4.2 20h15.6a2 2 0 0 0 1.7-2.6L13.7 3.9a2 2 0 0 0-3.4 0Z\"/><path d=\"M12 9v4m0 4h.01\"/></svg><span><strong>Comunicar estado de alerta</strong><small>Registrar ocorrência simulada</small></span><svg width=\"21\" height=\"21\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14M13 6l6 6-6 6\"/></svg></button>",
+      "css": ".ds-alert{display:grid;grid-template-columns:28px minmax(0,1fr) 20px;align-items:center;gap:12px;min-height:72px;padding:14px 24px;border:0;border-radius:100px;background:var(--alert-action);color:#fff;font-family:var(--font-body);text-align:left;cursor:pointer;transition:background .16s ease,border-color .16s ease}.ds-alert>span{display:grid;gap:4px;min-width:0}.ds-alert strong{font-size:16px;line-height:1.4;font-weight:600}.ds-alert small{font-size:14px;font-weight:400;line-height:1.4}.ds-alert:hover{background:#bf3440}.ds-alert:focus-visible{outline:3px solid var(--focus);outline-offset:4px}@media(max-width:650px){.ds-alert{min-height:76px;padding:14px 20px;gap:10px}.ds-alert strong{font-size:15px}}@media(prefers-reduced-motion:reduce){.ds-alert{transition:none}}"
+    },
+    {
+      "name": "Secondary action",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Outlined alternative action.",
+      "html": "<button class=\"ds-secondary\">Voltar e editar</button>",
+      "css": ".ds-secondary{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:12px 26px;border:1px solid #789098;border-radius:100px;background:transparent;color:var(--ink);font:600 16px/1.4 var(--font-body);cursor:pointer;transition:background .16s ease,border-color .16s ease}.ds-secondary:hover{background:#e5e8e2}.ds-secondary:focus-visible{outline:3px solid var(--focus);outline-offset:4px}.ds-secondary:disabled{cursor:wait;opacity:.65}@media(prefers-reduced-motion:reduce){.ds-secondary{transition:none}}"
+    },
+    {
+      "name": "Labeled field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Persistent label with white field and strong outline.",
+      "html": "<label class=\"ds-label\">Nome completo<input class=\"ds-input\" autocomplete=\"name\" placeholder=\"Ex.: Alex Silva\" /></label>",
+      "css": ".ds-label{display:grid;gap:8px;font:500 16px var(--font-body);color:var(--ink)}.ds-input{width:100%;min-width:0;min-height:50px;padding:12px 14px;border:1px solid #789098;border-radius:var(--radius-control);background:var(--surface);color:var(--ink);font:400 16px/1.5 var(--font-body);caret-color:var(--ink)}.ds-input::placeholder{color:#60747d;opacity:1}.ds-input:focus-visible{outline:3px solid var(--focus);outline-offset:4px}"
+    }
+  ],
+  "narrative": {
+    "overview": "The approved visual direction adapts the supplied Webnode references into a light interface: warm gray surroundings, white surfaces, petroleum text, lime ordinary actions and a red action for communicating an occurrence. Broad rounded containers and pill controls make the experience approachable while keeping information readable on phones. This captures the implemented source; no additional metaphor or qualitative brand promise is assumed.",
+    "keyCharacteristics": [
+      "Warm neutral canvas with clear dark text",
+      "One self-hosted font family",
+      "Large rounded surfaces and comfortable action targets",
+      "Color accompanied by readable status labels",
+      "Visible academic and simulation context"
+    ],
+    "rules": [
+      {
+        "name": "Semantic color rule",
+        "body": "Keep the red action token distinct from the high attention token. Retain blue location markers and the three attention colors when adding related map UI.",
+        "section": "colors"
+      }
+    ],
+    "dos": [
+      "Do reuse source tokens and the Montserrat/Arial stack.",
+      "Do preserve the approved warm light visual world.",
+      "Do retain text alongside semantic color, visible labels and keyboard focus.",
+      "Do keep simulation and location provenance context readable."
+    ],
+    "donts": [
+      "Don't interchange meteorological attention colors as decorative accents.",
+      "Don't introduce official agency branding or imply a simulated record triggered a response.",
+      "Don't use map marker and overlay shadows as the default card treatment."
+    ]
+  }
+}

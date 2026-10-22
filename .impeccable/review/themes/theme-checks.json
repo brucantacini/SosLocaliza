@@ -1,0 +1,6 @@
+[
+  "First visit, live system changes, manual priority, reload and early initialization: PASS",
+  "Reopen, cross-tab synchronization, preference removal and keyboard/focus: PASS",
+  "Invalid saved preference and unavailable storage: PASS",
+  "Dark background and data-theme are ready with the React module blocked: PASS"
+]
