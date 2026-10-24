@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 export default function Icon({ name, size = 22, className }: { name: string; size?: number; className?: string }) {
   const common = { width: size, height: size, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, 'aria-hidden': true as const }
   const paths: Record<string, ReactNode> = {
+    logout: <><path d="M9 4H4v16h5M10 12h11m-4-4 4 4-4 4"/></>,
     guide: <><path d="M12 5C9 3 5 3 2 4v15c3-1 7-1 10 1 3-2 7-2 10-1V4c-3-1-7-1-10 1Z"/><path d="M12 5v15"/></>,
     help: <><path d="M12 3 4 6v6c0 4 4 7 8 9 4-2 8-5 8-9V6l-8-3Z"/><path d="M12 8v6m-3-3h6"/></>,
     chevron: <path d="m6 9 6 6 6-6"/>,

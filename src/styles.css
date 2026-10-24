@@ -1052,6 +1052,7 @@ html{
   font-size:14px
 }
 .success-id strong{
+  overflow-wrap:anywhere;
   font-size:24px;
   letter-spacing:.05em
 }
@@ -1451,3 +1452,8 @@ html{
   .top-actions{display:contents;}
   .theme-toggle{grid-column:1 / -1;grid-row:2;justify-self:end;}
 }
+
+.profile-session-actions{display:grid;justify-items:start;gap:16px;margin-top:24px}
+.logout-button{min-height:48px}
+.logout-error{margin:0;padding:16px;border:1px solid var(--danger-border);border-radius:var(--radius-control);background:var(--danger-surface);color:var(--danger-text);font-size:16px;line-height:1.6}
+@media(max-width:650px){.profile-session-actions .logout-button{width:100%}}

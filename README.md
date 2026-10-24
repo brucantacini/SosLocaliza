@@ -4,11 +4,11 @@ Protótipo acadêmico responsivo para demonstrar como poderia funcionar o regist
 
 ## Tecnologias
 
-- React e TypeScript para telas, fluxos e classificação demonstrativa.
+- React e TypeScript para telas, fluxos e envio de alertas à API.
 - Vite para desenvolvimento e geração da versão de apresentação.
 - Leaflet e tiles do OpenStreetMap para o mapa interativo.
 - Open-Meteo Forecast API para previsão horária de precipitação e probabilidade de chuva.
-- `localStorage` para manter perfil e histórico de alertas no navegador atual.
+- `localStorage` para cadastro local e cópias dos alertas confirmados pela API, diferenciadas de registros legados sem envio.
 
 ## Como executar
 
@@ -53,16 +53,16 @@ Para validar persistência, preferência do dispositivo, teclado, sincronizaçã
 
 Com o Vite em `http://127.0.0.1:5173/`, execute `node scripts/check-ui.mjs` para conferir os fluxos e capturar telas em 390, 768 e 1440 px. O roteiro usa o Chrome/Edge instalado e o cliente CDP local em `scripts/lib/cdp.mjs`; não adiciona dependências. Os cenários meteorológicos e de permissão são controlados somente nesse navegador de teste. Uma captura separada consulta a API real. Resultados ficam em `.impeccable/review`; nenhum dado de teste é incluído na aplicação distribuída.
 
-## Demonstração de alertas
+## Envio de alertas à Central
 
 1. Cadastre informações claramente fictícias, como “Alex Silva”, “000.000.000-00”, “(11) 90000-0000” e “Rua Exemplo, 10, Bairro Jardim, São Paulo”.
 2. Na tela inicial, toque em **COMUNICAR ESTADO DE ALERTA** e escolha uma ocorrência.
-3. Revise os dados e selecione **Confirmar registro**. A confirmação informa que a Defesa Civil não foi notificada.
+3. Revise os dados e selecione **Confirmar registro**. O app faz POST na API e só confirma quando ela devolve o alerta gravado no Oracle, com identificador e horário do servidor. A confirmação também informa que a Defesa Civil não foi notificada.
 4. Abra o histórico para consultar o registro e seus detalhes. O perfil e o histórico continuam no mesmo navegador após recarregar a página.
 
 ## Dados, privacidade e limites
 
-O perfil e os registros simulados ficam no armazenamento local do navegador e não são enviados à API meteorológica. Ao escolher a localização atual, somente as coordenadas dos nove pontos de consulta são enviadas à Open-Meteo. O navegador também carrega os tiles necessários à área visível do OpenStreetMap. A escolha do ponto demonstrativo consulta as coordenadas fixas de demonstração em São Paulo.
+O perfil fica no armazenamento local do navegador. Cada novo alerta transmite uma cópia do perfil (nome, CPF, telefone e endereço), ocorrência, observações e localização à API SOS Localiza, que grava no Oracle. As coordenadas do alerta vêm apenas da permissão GPS do próprio fluxo; endereços manuais/cadastrados enviam latitude e longitude null. O ponto demonstrativo do mapa meteorológico nunca é usado como localização do alerta. O histórico local diferencia confirmações da API de registros legados sem envio e não acompanha atualizações de status na Central. Dados pessoais não são enviados à API meteorológica. Ao escolher a localização atual, somente as coordenadas dos nove pontos de consulta são enviadas à Open-Meteo. O navegador também carrega os tiles necessários à área visível do OpenStreetMap. A escolha do ponto demonstrativo consulta as coordenadas fixas de demonstração em São Paulo.
 
 As cores são estimativas heurísticas baseadas em precipitação prevista e probabilidade de chuva. Não representam perímetros de inundação ou deslizamento e não substituem avisos oficiais. A API de previsão escolhida não oferece alertas oficiais integrados; consulte os avisos do [INMET](https://avisos.inmet.gov.br/) em situações reais. Os níveis são ocultados se a consulta local tiver mais de 30 minutos e a pessoa ainda não tiver atualizado.
 
@@ -73,3 +73,21 @@ Após o cadastro, use **Orientações** na navegação para consultar as cinco s
 Cada situação tem prevenção, ações durante a ocorrência, cuidados posteriores e busca de ajuda. Prevenção e cuidados posteriores são expansíveis. As recomendações e fontes oficiais são incluídas no aplicativo; os links abrem em nova aba. Não há garantia de abertura offline: a aplicação não tem service worker.
 
 Para validar: inicie `npm run dev`, execute `node scripts/check-safety.mjs` e `node scripts/check-ui.mjs`. Para outra porta, defina a variável `SOS_URL` com a URL completa. Os roteiros usam apenas perfis fictícios no navegador de teste.
+
+## Sair do perfil
+
+Em **Meus dados / Perfil**, toque em **Sair**. A identificação é local, sem senha, token ou autenticação em servidor. A saída remove apenas `sos-localiza-profile` e retorna ao cadastro vazio. Histórico e preferência de tema são preservados; os registros continuam contendo os dados associados no momento do cadastro da ocorrência.
+
+A saída é sincronizada entre abas e conferida ao restaurar uma página pelo histórico. Se o navegador impedir a remoção do cadastro, o perfil mostra um erro para nova tentativa, sem anunciar saída concluída.
+
+Para testar automaticamente, inicie a aplicação e execute `node scripts/check-logout.mjs`. Use `SOS_URL` se a aplicação estiver em outra porta.
+
+## API, configuração e verificação
+
+O contrato único está em [API.md](../sos-localiza-central/docs/API.md), e a operação do backend em [RUNBOOK.md](../sos-localiza-central/docs/RUNBOOK.md). Copie `.env.example` para `.env` e ajuste `VITE_API_BASE_URL` se necessário (padrão `http://localhost:3001/api/v1`). Reinicie o Vite após mudar a configuração. O backend precisa permitir a origem exata do app em `CORS_ORIGINS`. Inicie este app com `npm run dev -- --host localhost --port 5173`.
+
+Nenhuma credencial Oracle ou chave de operador é necessária no app. Elas pertencem exclusivamente ao backend/operador da Central; nunca use variáveis VITE para segredos. O POST público deste protótipo não autentica cidadãos; utilize somente dados fictícios até implementar autenticação e controles de produção.
+
+Falhas HTTP, de rede e timeout ficam visíveis na revisão. A tentativa preserva os dados e o mesmo `requestId`; **Tentar novamente** recupera a confirmação sem duplicar um alerta possivelmente gravado. Enquanto o resultado for incerto, a edição fica bloqueada; uma recusa de validação (400/413, sem gravação) permite corrigir dados mantendo o identificador. A tentativa pendente dura esta sessão da página: mantenha a página aberta até obter confirmação. O logout continua removendo apenas o cadastro local; não apaga alertas já gravados no Oracle.
+
+Execute `npm run build`, `node scripts/check-api.mjs` e, com Vite ativo, `node scripts/check-alert-api.mjs`. Os dois novos testes usam respostas de teste identificadas e não comprovam persistência Oracle. Os roteiros antigos que esperavam confirmação somente local precisam de uma API de teste ou backend real para a etapa de envio. Para validar a integração real, configure o backend conforme o runbook, envie um alerta fictício pelo app e confira o mesmo UUID no painel e no Oracle. Sem conexão Oracle válida, a API deve retornar 503 e o app deve continuar na revisão, sem adicionar confirmação ao histórico.

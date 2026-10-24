@@ -1,0 +1,16 @@
+[
+  "320px light: keyboard logout, empty registration, Back, reload, only profile removed, new session, map/guide/alert: PASS",
+  "320px dark: keyboard logout, empty registration, Back, reload, only profile removed, new session, map/guide/alert: PASS",
+  "390px light: keyboard logout, empty registration, Back, reload, only profile removed, new session, map/guide/alert: PASS",
+  "390px dark: keyboard logout, empty registration, Back, reload, only profile removed, new session, map/guide/alert: PASS",
+  "768px light: keyboard logout, empty registration, Back, reload, only profile removed, new session, map/guide/alert: PASS",
+  "768px dark: keyboard logout, empty registration, Back, reload, only profile removed, new session, map/guide/alert: PASS",
+  "1440px light: keyboard logout, empty registration, Back, reload, only profile removed, new session, map/guide/alert: PASS",
+  "1440px dark: keyboard logout, empty registration, Back, reload, only profile removed, new session, map/guide/alert: PASS",
+  "Cross-tab logout and reopened page: PASS",
+  "Removal failure leaves session intact, explicit error and successful retry: PASS",
+  "Persisted pageshow reconciliation and real cross-document Back after another-tab logout: PASS",
+  "Restoration rejects an old profile after another person re-registers: PASS",
+  "Late geolocation success/error from old session ignored: PASS",
+  "Fully unavailable storage retains existing registration fallback; logout reports failure and permits retry: PASS"
+]
