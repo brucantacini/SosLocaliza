@@ -51,13 +51,13 @@ A preferência é aplicada no HTML antes do React, inclusive ao fundo e à cor d
 
 Para validar persistência, preferência do dispositivo, teclado, sincronização e armazenamento bloqueado, execute `node scripts/check-theme.mjs` com o Vite iniciado. `node scripts/check-ui.mjs` captura cada tela nos dois temas em 390, 768 e 1440 px e verifica que a alternância mantém os campos e o mapa. Os resultados desses roteiros ficam em `.impeccable/review/themes`.
 
-Com o Vite em `http://127.0.0.1:5173/`, execute `node scripts/check-ui.mjs` para conferir os fluxos e capturar telas em 390, 768 e 1440 px. O roteiro usa o Chrome/Edge instalado e o cliente CDP da skill local; não adiciona dependências. Os cenários meteorológicos e de permissão são controlados somente nesse navegador de teste. Uma captura separada consulta a API real. Resultados ficam em `.impeccable/review`; nenhum dado de teste é incluído na aplicação distribuída.
+Com o Vite em `http://127.0.0.1:5173/`, execute `node scripts/check-ui.mjs` para conferir os fluxos e capturar telas em 390, 768 e 1440 px. O roteiro usa o Chrome/Edge instalado e o cliente CDP local em `scripts/lib/cdp.mjs`; não adiciona dependências. Os cenários meteorológicos e de permissão são controlados somente nesse navegador de teste. Uma captura separada consulta a API real. Resultados ficam em `.impeccable/review`; nenhum dado de teste é incluído na aplicação distribuída.
 
 ## Demonstração de alertas
 
 1. Cadastre informações claramente fictícias, como “Alex Silva”, “000.000.000-00”, “(11) 90000-0000” e “Rua Exemplo, 10, Bairro Jardim, São Paulo”.
 2. Na tela inicial, toque em **COMUNICAR ESTADO DE ALERTA** e escolha uma ocorrência.
-3. Revise os dados e confirme o registro simulado.
+3. Revise os dados e selecione **Confirmar registro**. A confirmação informa que a Defesa Civil não foi notificada.
 4. Abra o histórico para consultar o registro e seus detalhes. O perfil e o histórico continuam no mesmo navegador após recarregar a página.
 
 ## Dados, privacidade e limites
@@ -65,3 +65,11 @@ Com o Vite em `http://127.0.0.1:5173/`, execute `node scripts/check-ui.mjs` para
 O perfil e os registros simulados ficam no armazenamento local do navegador e não são enviados à API meteorológica. Ao escolher a localização atual, somente as coordenadas dos nove pontos de consulta são enviadas à Open-Meteo. O navegador também carrega os tiles necessários à área visível do OpenStreetMap. A escolha do ponto demonstrativo consulta as coordenadas fixas de demonstração em São Paulo.
 
 As cores são estimativas heurísticas baseadas em precipitação prevista e probabilidade de chuva. Não representam perímetros de inundação ou deslizamento e não substituem avisos oficiais. A API de previsão escolhida não oferece alertas oficiais integrados; consulte os avisos do [INMET](https://avisos.inmet.gov.br/) em situações reais. Os níveis são ocultados se a consulta local tiver mais de 30 minutos e a pessoa ainda não tiver atualizado.
+
+## Orientações de Segurança
+
+Após o cadastro, use **Orientações** na navegação para consultar as cinco situações sem registrar alertas. Após **Confirmar registro**, **Ver orientações de segurança** abre a orientação do tipo salvo. A consulta não altera o histórico nem notifica órgãos oficiais.
+
+Cada situação tem prevenção, ações durante a ocorrência, cuidados posteriores e busca de ajuda. Prevenção e cuidados posteriores são expansíveis. As recomendações e fontes oficiais são incluídas no aplicativo; os links abrem em nova aba. Não há garantia de abertura offline: a aplicação não tem service worker.
+
+Para validar: inicie `npm run dev`, execute `node scripts/check-safety.mjs` e `node scripts/check-ui.mjs`. Para outra porta, defina a variável `SOS_URL` com a URL completa. Os roteiros usam apenas perfis fictícios no navegador de teste.

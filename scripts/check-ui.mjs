@@ -1,4 +1,4 @@
-import { Browser, sleep } from '../.agents/skills/design-taste-frontend/scripts/lib/cdp.mjs'
+import { Browser, sleep } from './lib/cdp.mjs'
 import { mkdirSync, writeFileSync } from 'node:fs'
 import assert from 'node:assert/strict'
 
@@ -73,7 +73,7 @@ try {
   for (const width of [1440,768,390]) {
     const page=await browser.newPage({width,height:900,mobile:width===390})
     await page.send('Page.addScriptToEvaluateOnNewDocument',{source:setup})
-    await page.goto('http://127.0.0.1:5173/',{settleMs:300})
+    await page.goto((process.env.SOS_URL || 'http://127.0.0.1:5173/'),{settleMs:300})
     await page.eval(()=>{localStorage.clear();location.reload()})
     await sleep(400)
     await capture(page,'register',width)
@@ -124,7 +124,7 @@ try {
     assert.ok(await page.eval(()=>document.body.textContent.includes('Não foi possível acessar')),'Alert location fallback')
     await click(page,'Continuar para revisão')
     await capture(page,'review',width)
-    await click(page,'Confirmar registro simulado')
+    await click(page,'Confirmar registro')
     await capture(page,'success',width)
     await click(page,'Consultar histórico')
     await capture(page,'history',width)
@@ -136,14 +136,14 @@ try {
     await click(page,'Editar')
     await capture(page,'profile-edit',width)
     await click(page,'Salvar alterações')
-    await page.goto('http://127.0.0.1:5173/',{settleMs:1000})
+    await page.goto((process.env.SOS_URL || 'http://127.0.0.1:5173/'),{settleMs:1000})
     assert.equal(await page.eval(()=>JSON.parse(localStorage.getItem('sos-localiza-alerts')).length),1,'Persistence after reload')
     assert.deepEqual(page.consoleErrors,[],'Browser exceptions')
     await page.close()
   }
   // Check the actual external forecast independently from deterministic UI fixtures.
   const live=await browser.newPage({width:1440,height:900})
-  await live.goto('http://127.0.0.1:5173/',{settleMs:5000})
+  await live.goto((process.env.SOS_URL || 'http://127.0.0.1:5173/'),{settleMs:5000})
   await live.screenshot({path:`${out}/home-live-1440.png`,format:'png',fullPage:true})
   results.push({name:'live-network',text:await live.eval(()=>document.querySelector('.map-section')?.innerText)})
   await live.close()

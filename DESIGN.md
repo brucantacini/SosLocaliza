@@ -213,7 +213,7 @@ Inputs use white fill, a strong thin border, control corners, minimum height (50
 
 ### Selection and status
 
-Occurrence options show an icon, title, description and circular indicator. Selected options combine a pale green surface, petroleum border and filled indicator. Simulation tags, academic notices, location provenance and warning/error descriptions remain visible in their relevant contexts. They are part of the interface's information hierarchy.
+Occurrence options show an icon, title, description and circular indicator. Selected options combine a pale green surface, petroleum border and filled indicator. Record statuses use ‘Registro local’. Avoid repeated academic/simulation notices. The success heading ‘Alerta registrado no SOS Localiza.’ is immediately followed by ‘A equipe da Defesa Civil não foi notificada por este aplicativo.’ in ordinary, legible 16px body text, without a warning box. Location provenance and weather limitations remain explicit.
 
 ### Navigation
 

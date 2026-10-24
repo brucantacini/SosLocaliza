@@ -1,0 +1,526 @@
+{
+  "screens": [
+    {
+      "name": "index",
+      "width": 1440,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "confirmation-0",
+      "width": 1440,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 0
+    },
+    {
+      "name": "guide-0",
+      "width": 1440,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "guide-1",
+      "width": 1440,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "confirmation-2",
+      "width": 1440,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 0
+    },
+    {
+      "name": "guide-2",
+      "width": 1440,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "guide-3",
+      "width": 1440,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "guide-4",
+      "width": 1440,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "index",
+      "width": 1440,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "confirmation-0",
+      "width": 1440,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 0
+    },
+    {
+      "name": "guide-0",
+      "width": 1440,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "guide-1",
+      "width": 1440,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "confirmation-2",
+      "width": 1440,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 0
+    },
+    {
+      "name": "guide-2",
+      "width": 1440,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "guide-3",
+      "width": 1440,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "guide-4",
+      "width": 1440,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "index",
+      "width": 768,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "confirmation-0",
+      "width": 768,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 0
+    },
+    {
+      "name": "guide-0",
+      "width": 768,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "guide-1",
+      "width": 768,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "confirmation-2",
+      "width": 768,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 0
+    },
+    {
+      "name": "guide-2",
+      "width": 768,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "guide-3",
+      "width": 768,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "guide-4",
+      "width": 768,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "index",
+      "width": 768,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "confirmation-0",
+      "width": 768,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 0
+    },
+    {
+      "name": "guide-0",
+      "width": 768,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "guide-1",
+      "width": 768,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "confirmation-2",
+      "width": 768,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 0
+    },
+    {
+      "name": "guide-2",
+      "width": 768,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "guide-3",
+      "width": 768,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "guide-4",
+      "width": 768,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "index",
+      "width": 390,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "confirmation-0",
+      "width": 390,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 0
+    },
+    {
+      "name": "guide-0",
+      "width": 390,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "guide-1",
+      "width": 390,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "confirmation-2",
+      "width": 390,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 0
+    },
+    {
+      "name": "guide-2",
+      "width": 390,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "guide-3",
+      "width": 390,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "guide-4",
+      "width": 390,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "index",
+      "width": 390,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "confirmation-0",
+      "width": 390,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 0
+    },
+    {
+      "name": "guide-0",
+      "width": 390,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "guide-1",
+      "width": 390,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "confirmation-2",
+      "width": 390,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 0
+    },
+    {
+      "name": "guide-2",
+      "width": 390,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "guide-3",
+      "width": 390,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "guide-4",
+      "width": 390,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "index",
+      "width": 320,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "confirmation-0",
+      "width": 320,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 0
+    },
+    {
+      "name": "guide-0",
+      "width": 320,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "guide-1",
+      "width": 320,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "confirmation-2",
+      "width": 320,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 0
+    },
+    {
+      "name": "guide-2",
+      "width": 320,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "guide-3",
+      "width": 320,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "guide-4",
+      "width": 320,
+      "theme": "light",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "index",
+      "width": 320,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "confirmation-0",
+      "width": 320,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 0
+    },
+    {
+      "name": "guide-0",
+      "width": 320,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "guide-1",
+      "width": 320,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "confirmation-2",
+      "width": 320,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 0
+    },
+    {
+      "name": "guide-2",
+      "width": 320,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "guide-3",
+      "width": 320,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    },
+    {
+      "name": "guide-4",
+      "width": 320,
+      "theme": "dark",
+      "overflow": false,
+      "clipped": [],
+      "activeNav": 1
+    }
+  ],
+  "sourceLinks": [
+    "https://www.gov.br/mdr/pt-br/ultimas-noticias/conheca-medidas-de-autoprotecao-que-a-populacao-deve-tomar-em-casos-de-alagamento",
+    "https://www.cbm.sc.gov.br/index.php/dicas-de-prevencao/inundacoes",
+    "https://www.mg.gov.br/servico/solicitar-atendimento-de-urgencia-e-emergencia-pelo-corpo-de-bombeiros-militar?page=1%2C0",
+    "https://www.gov.br/mdr/pt-br/ultimas-noticias/conheca-medidas-de-autoprotecao-que-a-populacao-deve-tomar-em-casos-de-deslizamentos",
+    "https://www.defesacivil.criciuma.sc.gov.br/faq"
+  ],
+  "flows": 40,
+  "offlineGuidance": true,
+  "consoleErrors": []
+}

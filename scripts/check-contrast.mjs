@@ -1,4 +1,4 @@
-import {Browser,sleep} from '../.agents/skills/design-taste-frontend/scripts/lib/cdp.mjs'
+import {Browser,sleep} from './lib/cdp.mjs'
 import assert from 'node:assert/strict'
 import {mkdirSync,writeFileSync} from 'node:fs'
 
@@ -13,7 +13,7 @@ const browser=await Browser.launch()
 const results=[]
 try{
   const page=await browser.newPage()
-  await page.goto('http://127.0.0.1:5173/',{settleMs:300})
+  await page.goto((process.env.SOS_URL || 'http://127.0.0.1:5173/'),{settleMs:300})
   for(const theme of ['light','dark']){
     await page.eval(theme=>document.querySelector(`[aria-label="Tema ${theme==='dark'?'escuro':'claro'}"]`).click(),theme)
     await sleep(100)

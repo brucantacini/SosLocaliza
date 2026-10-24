@@ -32,11 +32,13 @@ O protótipo reúne uma previsão meteorológica centrada na localização e um 
 - Perfil e histórico de ocorrências simuladas são guardados no `localStorage` do navegador atual. Não há backend nem transmissão de alertas para autoridades ou serviços de emergência.
 - O ponto de demonstração é identificado como tal; indisponibilidade de dados não deve ser substituída por condições ou níveis inventados.
 
+- Após o cadastro, Orientações de Segurança oferece conteúdo local para as cinco ocorrências, com fontes oficiais. Após a confirmação, o botão de orientações abre o conteúdo do tipo registrado. Consultar instruções não altera alertas nem substitui autoridades locais.
+
 ## Brand Commitments
 
 - O nome do produto é SOS LOCALIZA.
 - A identidade deve ser própria do produto e não reproduzir marcas ou logotipos de órgãos públicos.
-- A comunicação deve deixar visíveis o caráter acadêmico e a simulação do protótipo; não pode sugerir que um alerta foi recebido ou que atendimento foi acionado.
+- A interface usa linguagem de registro local, sem avisos acadêmicos repetitivos. Junto à confirmação, informa: “A equipe da Defesa Civil não foi notificada por este aplicativo.” Nunca sugere envio, recebimento ou atendimento oficial.
 
 ## Evidence on Hand
 
@@ -50,7 +52,7 @@ O protótipo reúne uma previsão meteorológica centrada na localização e um 
 - Separar estimativas meteorológicas de alertas oficiais e de previsões de desastres.
 - Explicar a origem dos dados e tornar indisponibilidade explícita.
 - Tratar dados de perfil localmente e deixar claro quando coordenadas são consultadas por serviços externos.
-- Tornar a ação de registro compreensível, mantendo explícito que o envio é simulado.
+- Tornar a ação de registro local compreensível e informar a ausência de notificação à Defesa Civil junto à confirmação.
 
 ## Accessibility & Inclusion
 

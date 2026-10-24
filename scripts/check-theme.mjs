@@ -1,9 +1,9 @@
-import { Browser, sleep } from '../.agents/skills/design-taste-frontend/scripts/lib/cdp.mjs'
+import { Browser, sleep } from './lib/cdp.mjs'
 import assert from 'node:assert/strict'
 import { mkdirSync, writeFileSync } from 'node:fs'
 
 const browser=await Browser.launch()
-const url='http://127.0.0.1:5173/'
+const url=(process.env.SOS_URL || 'http://127.0.0.1:5173/')
 const key='sos-localiza-theme'
 const results=[]
 const media=theme=>({features:[{name:'prefers-color-scheme',value:theme}]})
