@@ -5,7 +5,17 @@ import ts from 'typescript'
 const source = ts.transpileModule(readFileSync(new URL('../src/api.ts', import.meta.url), 'utf8'), {
   compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext },
 }).outputText
-const { sendAlert } = await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`)
+const { sendAlert, resolveApiBase } = await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`)
+assert.equal(resolveApiBase(), 'http://localhost:3001/api/v1')
+assert.equal(resolveApiBase({ PROD: true }), '/api/v1')
+for (const value of ['http://localhost:3001/api/v1', 'http://127.0.0.1:3001/api/v1', 'http://[::1]:3001/api/v1', 'https://centralsoslocaliza.vercel.app/api/v1']) {
+  assert.equal(resolveApiBase({ PROD: true, VITE_API_BASE_URL: value }), '/api/v1')
+}
+assert.equal(resolveApiBase({ PROD: false, VITE_API_BASE_URL: 'http://localhost:3001/api/v1' }), 'http://localhost:3001/api/v1')
+assert.equal(resolveApiBase({ PROD: true, VITE_API_BASE_URL: 'https://custom.example/api/v1/' }), 'https://custom.example/api/v1')
+const deployment = JSON.parse(readFileSync(new URL('../vercel.json', import.meta.url), 'utf8'))
+const alertRoute = deployment.rewrites.find(route => route.source === '/api/v1/alerts')
+assert.equal(alertRoute.destination, 'https://centralsoslocaliza.vercel.app/api/v1/alerts')
 const input = {
   requestId: '720ad1c4-bf50-4532-8db2-fb7f4314053e', type: 'Alagamento', location: 'Teste fictício',
   source: 'Informada manualmente', latitude: null, longitude: null,

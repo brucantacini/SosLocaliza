@@ -84,6 +84,14 @@ Para testar automaticamente, inicie a aplicação e execute `node scripts/check-
 
 ## API, configuração e verificação
 
+### Produção na Vercel
+
+O app publicado em `https://soslocalizanext.vercel.app` usa `/api/v1` na mesma origem. O `vercel.json` encaminha POST de alertas e health para a API HTTPS da Central, evitando chamadas ao localhost do visitante e preflight entre domínios. A Central continua sendo o único backend que acessa o Oracle.
+
+No projeto Vercel do app, deixe `VITE_API_BASE_URL=/api/v1` ou remova a variável. Configurações antigas de localhost e a URL padrão da Central são normalizadas para esse proxy no build de produção; configurações explícitas de outra API continuam sendo respeitadas e exigem CORS correspondente. Se alterar o domínio da Central, atualize também o destino dos rewrites. Em desenvolvimento local, o padrão continua sendo `http://localhost:3001/api/v1`.
+
+Depois do deploy, `/api/v1/health` no domínio do app deve retornar o estado do Oracle. Envie um alerta fictício, aguarde o UUID e confira o mesmo protocolo na Central. Nenhuma credencial é configurada neste frontend.
+
 O contrato único está em [API.md](../sos-localiza-central/docs/API.md), e a operação do backend em [RUNBOOK.md](../sos-localiza-central/docs/RUNBOOK.md). Copie `.env.example` para `.env` e ajuste `VITE_API_BASE_URL` se necessário (padrão `http://localhost:3001/api/v1`). Reinicie o Vite após mudar a configuração. O backend precisa permitir a origem exata do app em `CORS_ORIGINS`. Inicie este app com `npm run dev -- --host localhost --port 5173`.
 
 Nenhuma credencial Oracle ou chave de operador é necessária no app. Elas pertencem exclusivamente ao backend/operador da Central; nunca use variáveis VITE para segredos. O POST público deste protótipo não autentica cidadãos; utilize somente dados fictícios até implementar autenticação e controles de produção.

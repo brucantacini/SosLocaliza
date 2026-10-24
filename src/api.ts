@@ -19,8 +19,17 @@ export type ServerAlert = AlertInput & {
   version: number
 }
 
-const env = (import.meta as ImportMeta & { env?: { VITE_API_BASE_URL?: string } }).env
-const baseUrl = env?.VITE_API_BASE_URL || 'http://localhost:3001/api/v1'
+type ApiEnvironment = { VITE_API_BASE_URL?: string; PROD?: boolean }
+const env = (import.meta as ImportMeta & { env?: ApiEnvironment }).env
+export function resolveApiBase(environment?: ApiEnvironment) {
+  const configured = environment?.VITE_API_BASE_URL?.trim().replace(/\/$/, '')
+  if (!environment?.PROD) return configured || 'http://localhost:3001/api/v1'
+  // Published builds use the same-origin Vercel proxy, never a visitor's localhost.
+  const localAddress = configured && /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?=[:/]|$)/i.test(configured)
+  if (!configured || localAddress || configured === 'https://centralsoslocaliza.vercel.app/api/v1') return '/api/v1'
+  return configured
+}
+const baseUrl = resolveApiBase(env)
 
 export class AlertApiError extends Error {
   constructor(message: string, readonly status: number) { super(message) }
